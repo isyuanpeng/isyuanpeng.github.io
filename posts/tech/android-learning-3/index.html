@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Android Learning 3 | Isyuanpeng</title>
+<meta name="keywords" content="android" />
+<meta name="description" content="Android学习的第三篇文章，跟着google的官方教程来到了lesson2，开始进行Layout的学习。
+ViewGroups
+view的集合，构成了布局的结构。layout的构建使用有层级的View和ViewGroup对象。layout的结构如下：
+
+
+LinearLayout
+线性布局，UI元素被水平或者垂直摆放。
+
+
+
+
+android:orientation: 布局方向，设置为水平或者垂直布局
+
+horizontal: 水平，默认方向
+vertical：垂直
+
+
+
+android:layout_gravity: 子控件在父控件上的对齐方式
+
+
+android:gravity: 控件内部的元素的对齐方式，支持多个方向，示例如下，下面的TextView中的text就在整个TextView的居中靠下的方向:
+
+
+
+
+1
+2
+3
+4
+5
+6
+7
+
+
+    &lt;TextView
+        android:layout_width=&#34;match_parent&#34;
+        android:layout_height=&#34;wrap_content&#34;
+        android:layout_weight=&#34;1&#34;
+        android:gravity=&#34;bottom|center&#34;
+        android:text=&#34;TEST GRAVITY&#34;
+        android:textSize=&#34;50sp&#34;/&gt;
+
+
+
+
+android:layout_weight: 子控件在父控件中的权重，说白了就是占多大，比如说一个LinearLayout有5个button，每个button的weight都是1，那么其orientation方向上均分5分，每个button占1/5
+
+
+其它的参数例如margin，padding等等和其它控件都是相同的，不赘述
+
+
+RelativeLayout
+相对布局，以相对位置显示子控件。说白了，就是可以指定子控件相对于其它控件的位置，比如说有两个buttonA和buttonB，如果想要buttonB布局在buttonA的右下方45度的未知，那么直接可以用两行就可以解决了，不需要嵌套多个LinearLayout。
+
+
+1
+2
+
+
+    android:layout_below=&#34;@&#43;id/buttonA&#34;
+    android:layout_centerHorizontal=&#34;true&#34;
+
+
+
+
+alignParentXx: 这个系列的参数都是相较于父控件而言的，相对于父控件停靠在哪个位置，Top, Bottom, left, right">
+<meta name="author" content="YuanPeng11">
+<link rel="canonical" href="https://isyuanpeng.github.io/posts/tech/android-learning-3/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7bdb1411b29ec9fed2b6395a081eabcb3262e7311bda855249d433c8b30a926e.css" integrity="sha256-e9sUEbKeyf7StjlaCB6ryzJi5zEb2oVSSdQzyLMKkm4=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.2eadbb982468c11a433a3e291f01326f2ba43f065e256bf792dbd79640a92316.js" integrity="sha256-Lq27mCRowRpDOj4pHwEybyukPwZeJWv3ktvXlkCpIxY="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://isyuanpeng.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://isyuanpeng.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://isyuanpeng.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://isyuanpeng.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://isyuanpeng.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<meta name="generator" content="Hugo 0.138.0">
+<link rel="alternate" hreflang="en" href="https://isyuanpeng.github.io/posts/tech/android-learning-3/" />
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Android Learning 3" />
+<meta property="og:description" content="Android学习的第三篇文章，跟着google的官方教程来到了lesson2，开始进行Layout的学习。
+ViewGroups
+view的集合，构成了布局的结构。layout的构建使用有层级的View和ViewGroup对象。layout的结构如下：
+
+
+LinearLayout
+线性布局，UI元素被水平或者垂直摆放。
+
+
+
+
+android:orientation: 布局方向，设置为水平或者垂直布局
+
+horizontal: 水平，默认方向
+vertical：垂直
+
+
+
+android:layout_gravity: 子控件在父控件上的对齐方式
+
+
+android:gravity: 控件内部的元素的对齐方式，支持多个方向，示例如下，下面的TextView中的text就在整个TextView的居中靠下的方向:
+
+
+
+
+1
+2
+3
+4
+5
+6
+7
+
+
+    &lt;TextView
+        android:layout_width=&#34;match_parent&#34;
+        android:layout_height=&#34;wrap_content&#34;
+        android:layout_weight=&#34;1&#34;
+        android:gravity=&#34;bottom|center&#34;
+        android:text=&#34;TEST GRAVITY&#34;
+        android:textSize=&#34;50sp&#34;/&gt;
+
+
+
+
+android:layout_weight: 子控件在父控件中的权重，说白了就是占多大，比如说一个LinearLayout有5个button，每个button的weight都是1，那么其orientation方向上均分5分，每个button占1/5
+
+
+其它的参数例如margin，padding等等和其它控件都是相同的，不赘述
+
+
+RelativeLayout
+相对布局，以相对位置显示子控件。说白了，就是可以指定子控件相对于其它控件的位置，比如说有两个buttonA和buttonB，如果想要buttonB布局在buttonA的右下方45度的未知，那么直接可以用两行就可以解决了，不需要嵌套多个LinearLayout。
+
+
+1
+2
+
+
+    android:layout_below=&#34;@&#43;id/buttonA&#34;
+    android:layout_centerHorizontal=&#34;true&#34;
+
+
+
+
+alignParentXx: 这个系列的参数都是相较于父控件而言的，相对于父控件停靠在哪个位置，Top, Bottom, left, right" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://isyuanpeng.github.io/posts/tech/android-learning-3/" /><meta property="og:image" content="https://isyuanpeng.github.io/papermod-cover.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-03-22T17:23:57&#43;08:00" />
+<meta property="article:modified_time" content="2022-03-22T17:23:57&#43;08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://isyuanpeng.github.io/papermod-cover.png"/>
+
+<meta name="twitter:title" content="Android Learning 3"/>
+<meta name="twitter:description" content="Android学习的第三篇文章，跟着google的官方教程来到了lesson2，开始进行Layout的学习。
+ViewGroups
+view的集合，构成了布局的结构。layout的构建使用有层级的View和ViewGroup对象。layout的结构如下：
+
+
+LinearLayout
+线性布局，UI元素被水平或者垂直摆放。
+
+
+
+
+android:orientation: 布局方向，设置为水平或者垂直布局
+
+horizontal: 水平，默认方向
+vertical：垂直
+
+
+
+android:layout_gravity: 子控件在父控件上的对齐方式
+
+
+android:gravity: 控件内部的元素的对齐方式，支持多个方向，示例如下，下面的TextView中的text就在整个TextView的居中靠下的方向:
+
+
+
+
+1
+2
+3
+4
+5
+6
+7
+
+
+    &lt;TextView
+        android:layout_width=&#34;match_parent&#34;
+        android:layout_height=&#34;wrap_content&#34;
+        android:layout_weight=&#34;1&#34;
+        android:gravity=&#34;bottom|center&#34;
+        android:text=&#34;TEST GRAVITY&#34;
+        android:textSize=&#34;50sp&#34;/&gt;
+
+
+
+
+android:layout_weight: 子控件在父控件中的权重，说白了就是占多大，比如说一个LinearLayout有5个button，每个button的weight都是1，那么其orientation方向上均分5分，每个button占1/5
+
+
+其它的参数例如margin，padding等等和其它控件都是相同的，不赘述
+
+
+RelativeLayout
+相对布局，以相对位置显示子控件。说白了，就是可以指定子控件相对于其它控件的位置，比如说有两个buttonA和buttonB，如果想要buttonB布局在buttonA的右下方45度的未知，那么直接可以用两行就可以解决了，不需要嵌套多个LinearLayout。
+
+
+1
+2
+
+
+    android:layout_below=&#34;@&#43;id/buttonA&#34;
+    android:layout_centerHorizontal=&#34;true&#34;
+
+
+
+
+alignParentXx: 这个系列的参数都是相较于父控件而言的，相对于父控件停靠在哪个位置，Top, Bottom, left, right"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://isyuanpeng.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Android Learning 3",
+      "item": "https://isyuanpeng.github.io/posts/tech/android-learning-3/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Android Learning 3",
+  "name": "Android Learning 3",
+  "description": "Android学习的第三篇文章，跟着google的官方教程来到了lesson2，开始进行Layout的学习。\nViewGroups view的集合，构成了布局的结构。layout的构建使用有层级的View和ViewGroup对象。layout的结构如下：\nLinearLayout 线性布局，UI元素被水平或者垂直摆放。\nandroid:orientation: 布局方向，设置为水平或者垂直布局\nhorizontal: 水平，默认方向 vertical：垂直 android:layout_gravity: 子控件在父控件上的对齐方式\nandroid:gravity: 控件内部的元素的对齐方式，支持多个方向，示例如下，下面的TextView中的text就在整个TextView的居中靠下的方向:\n1 2 3 4 5 6 7 \u0026lt;TextView android:layout_width=\u0026#34;match_parent\u0026#34; android:layout_height=\u0026#34;wrap_content\u0026#34; android:layout_weight=\u0026#34;1\u0026#34; android:gravity=\u0026#34;bottom|center\u0026#34; android:text=\u0026#34;TEST GRAVITY\u0026#34; android:textSize=\u0026#34;50sp\u0026#34;/\u0026gt; android:layout_weight: 子控件在父控件中的权重，说白了就是占多大，比如说一个LinearLayout有5个button，每个button的weight都是1，那么其orientation方向上均分5分，每个button占1/5\n其它的参数例如margin，padding等等和其它控件都是相同的，不赘述\nRelativeLayout 相对布局，以相对位置显示子控件。说白了，就是可以指定子控件相对于其它控件的位置，比如说有两个buttonA和buttonB，如果想要buttonB布局在buttonA的右下方45度的未知，那么直接可以用两行就可以解决了，不需要嵌套多个LinearLayout。\n1 2 android:layout_below=\u0026#34;@+id/buttonA\u0026#34; android:layout_centerHorizontal=\u0026#34;true\u0026#34; alignParentXx: 这个系列的参数都是相较于父控件而言的，相对于父控件停靠在哪个位置，Top, Bottom, left, right\n",
+  "keywords": [
+    "android"
+  ],
+  "articleBody": "Android学习的第三篇文章，跟着google的官方教程来到了lesson2，开始进行Layout的学习。\nViewGroups view的集合，构成了布局的结构。layout的构建使用有层级的View和ViewGroup对象。layout的结构如下：\nLinearLayout 线性布局，UI元素被水平或者垂直摆放。\nandroid:orientation: 布局方向，设置为水平或者垂直布局\nhorizontal: 水平，默认方向 vertical：垂直 android:layout_gravity: 子控件在父控件上的对齐方式\nandroid:gravity: 控件内部的元素的对齐方式，支持多个方向，示例如下，下面的TextView中的text就在整个TextView的居中靠下的方向:\n1 2 3 4 5 6 7 ",
+  "wordCount" : "462",
+  "inLanguage": "en",
+  "datePublished": "2022-03-22T17:23:57+08:00",
+  "dateModified": "2022-03-22T17:23:57+08:00",
+  "author":[{
+    "@type": "Person",
+    "name": "YuanPeng11"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://isyuanpeng.github.io/posts/tech/android-learning-3/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Isyuanpeng",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://isyuanpeng.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://isyuanpeng.github.io/" accesskey="h" title="Isyuanpeng (Alt + H)">Isyuanpeng</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://isyuanpeng.github.io/archives" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/about" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/series/" title="Series">
+                    <span>Series</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://isyuanpeng.github.io/">Home</a>&nbsp;»&nbsp;<a href="https://isyuanpeng.github.io/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Android Learning 3
+    </h1>
+    <div class="post-meta">&lt;span title=&#39;2022-03-22 17:23:57 &#43;0800 CST&#39;&gt;March 22, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;3 min&amp;nbsp;·&amp;nbsp;YuanPeng11
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#viewgroups" aria-label="ViewGroups">ViewGroups</a><ul>
+                            
+                    <li>
+                        <a href="#linearlayout" aria-label="LinearLayout">LinearLayout</a></li>
+                    <li>
+                        <a href="#relativelayout" aria-label="RelativeLayout">RelativeLayout</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#activity-and-intent" aria-label="Activity and Intent">Activity and Intent</a><ul>
+                            
+                    <li>
+                        <a href="#activity" aria-label="Activity">Activity</a><ul>
+                            
+                    <li>
+                        <a href="#%e7%94%9f%e5%91%bd%e5%91%a8%e6%9c%9f" aria-label="生命周期">生命周期</a></li>
+                    <li>
+                        <a href="#%e5%90%af%e5%8a%a8%e6%a8%a1%e5%bc%8f" aria-label="启动模式">启动模式</a></li>
+                    <li>
+                        <a href="#activity%e8%b7%b3%e8%bd%ac" aria-label="Activity跳转">Activity跳转</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#intent" aria-label="Intent">Intent</a><ul>
+                            
+                    <li>
+                        <a href="#%e5%85%b7%e4%bd%93%e4%bd%9c%e7%94%a8" aria-label="具体作用">具体作用</a></li></ul>
+                    </li></ul>
+                    </li>
+                    <li>
+                        <a href="#services" aria-label="Services">Services</a><ul>
+                            
+                    <li>
+                        <a href="#%e5%88%86%e7%b1%bb" aria-label="分类">分类</a></li>
+                    <li>
+                        <a href="#service%e7%9a%84%e6%96%b9%e6%b3%95" aria-label="Service的方法">Service的方法</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#content-provider" aria-label="Content Provider">Content Provider</a></li>
+                    <li>
+                        <a href="#broadcastreceiver" aria-label="BroadcastReceiver">BroadcastReceiver</a>
+                    </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script>
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+  <div class="post-content"><p>Android学习的第三篇文章，跟着google的官方教程来到了lesson2，开始进行Layout的学习。</p>
+<h2 id="viewgroups">ViewGroups<a hidden class="anchor" aria-hidden="true" href="#viewgroups">#</a></h2>
+<p>view的集合，构成了布局的结构。layout的构建使用有层级的<em>View</em>和<em>ViewGroup</em>对象。layout的结构如下：</p>
+<p><img loading="lazy" src="https://developer.android.com/images/viewgroup_2x.png" alt="layout"  title="Layout"  />
+</p>
+<h3 id="linearlayout">LinearLayout<a hidden class="anchor" aria-hidden="true" href="#linearlayout">#</a></h3>
+<p>线性布局，UI元素被水平或者垂直摆放。</p>
+<p><img loading="lazy" src="https://developer.android.com/codelabs/kotlin-android-training-linear-layout/img/6ad9b15635c00d6.png" alt="LinearLayout"  title="LinearLayout"  />
+</p>
+<ul>
+<li>
+<p>android:orientation: 布局方向，设置为水平或者垂直布局</p>
+<ul>
+<li>horizontal: 水平，默认方向</li>
+<li>vertical：垂直</li>
+</ul>
+</li>
+<li>
+<p>android:layout_gravity: 子控件在父控件上的对齐方式</p>
+</li>
+<li>
+<p>android:gravity: 控件内部的元素的对齐方式，支持多个方向，示例如下，下面的TextView中的text就在整个TextView的居中靠下的方向:</p>
+</li>
+</ul>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>    &lt;TextView
+</span></span><span style="display:flex;"><span>        android:layout_width=&#34;match_parent&#34;
+</span></span><span style="display:flex;"><span>        android:layout_height=&#34;wrap_content&#34;
+</span></span><span style="display:flex;"><span>        android:layout_weight=&#34;1&#34;
+</span></span><span style="display:flex;"><span>        android:gravity=&#34;bottom|center&#34;
+</span></span><span style="display:flex;"><span>        android:text=&#34;TEST GRAVITY&#34;
+</span></span><span style="display:flex;"><span>        android:textSize=&#34;50sp&#34;/&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p>android:layout_weight: 子控件在父控件中的权重，说白了就是占多大，比如说一个LinearLayout有5个button，每个button的weight都是1，那么其orientation方向上均分5分，每个button占1/5</p>
+</li>
+<li>
+<p>其它的参数例如margin，padding等等和其它控件都是相同的，不赘述</p>
+</li>
+</ul>
+<h3 id="relativelayout">RelativeLayout<a hidden class="anchor" aria-hidden="true" href="#relativelayout">#</a></h3>
+<p>相对布局，以相对位置显示子控件。说白了，就是可以指定子控件相对于其它控件的位置，比如说有两个buttonA和buttonB，如果想要buttonB布局在buttonA的右下方45度的未知，那么直接可以用两行就可以解决了，不需要嵌套多个LinearLayout。</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>    android:layout_below=&#34;@+id/buttonA&#34;
+</span></span><span style="display:flex;"><span>    android:layout_centerHorizontal=&#34;true&#34;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p>alignParentXx: 这个系列的参数都是相较于父控件而言的，相对于父控件停靠在哪个位置，Top, Bottom, left, right</p>
+</li>
+<li>
+<p>alignXx: 这个系列的参数都是与周围的空间边界对其，同样是上下左右。</p>
+</li>
+<li>
+<p>centerXx: 相对于父控件居中</p>
+</li>
+</ul>
+<p>具体的参数直接试一把就知道了是如何相对布局的了，下面是测试代码。</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 22
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 23
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 24
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 25
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 26
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 27
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 28
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 29
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 30
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 31
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 32
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 33
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 34
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 35
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 36
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 37
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 38
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 39
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 40
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 41
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 42
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 43
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 44
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 45
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 46
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 47
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 48
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 49
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 50
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 51
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 52
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 53
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 54
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 55
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 56
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 57
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 58
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 59
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 60
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 61
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 62
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 63
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 64
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 65
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 66
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 67
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 68
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 69
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 70
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 71
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 72
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 73
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 74
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 75
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 76
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 77
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 78
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 79
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 80
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 81
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 82
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 83
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 84
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 85
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 86
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 87
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 88
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 89
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 90
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 91
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 92
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 93
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 94
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 95
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 96
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 97
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 98
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 99
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">100
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">101
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">102
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">103
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">104
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">105
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">106
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">107
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">108
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">109
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">110
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">111
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>&lt;RelativeLayout xmlns:android=&#34;http://schemas.android.com/apk/res/android&#34;
+</span></span><span style="display:flex;"><span>    android:layout_width=&#34;match_parent&#34;
+</span></span><span style="display:flex;"><span>    android:layout_height=&#34;match_parent&#34;&gt;
+</span></span><span style="display:flex;"><span>    &lt;!--
+</span></span><span style="display:flex;"><span>        @+id新定义id
+</span></span><span style="display:flex;"><span>        在R类中新定义一个整数常量
+</span></span><span style="display:flex;"><span>        如果常量已存在就引用现有常量
+</span></span><span style="display:flex;"><span>        @id引用id
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        在引用id时也可以使用@+id
+</span></span><span style="display:flex;"><span>        但是如果写错的已存在的id就会新创建一个整数常量
+</span></span><span style="display:flex;"><span>        所以为了严谨应该用@id
+</span></span><span style="display:flex;"><span>    --&gt;
+</span></span><span style="display:flex;"><span>    &lt;Button
+</span></span><span style="display:flex;"><span>        android:id=&#34;@+id/button1&#34;
+</span></span><span style="display:flex;"><span>        android:layout_width=&#34;wrap_content&#34;
+</span></span><span style="display:flex;"><span>        android:layout_height=&#34;wrap_content&#34;
+</span></span><span style="display:flex;"><span>        android:text=&#34;btn1&#34; /&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    &lt;Button
+</span></span><span style="display:flex;"><span>        android:id=&#34;@+id/button2&#34;
+</span></span><span style="display:flex;"><span>        android:layout_width=&#34;wrap_content&#34;
+</span></span><span style="display:flex;"><span>        android:layout_height=&#34;wrap_content&#34;
+</span></span><span style="display:flex;"><span>        android:layout_alignParentTop=&#34;true&#34;
+</span></span><span style="display:flex;"><span>        android:layout_centerHorizontal=&#34;true&#34;
+</span></span><span style="display:flex;"><span>        android:text=&#34;btn2&#34; /&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    &lt;Button
+</span></span><span style="display:flex;"><span>        android:id=&#34;@+id/button3&#34;
+</span></span><span style="display:flex;"><span>        android:layout_width=&#34;wrap_content&#34;
+</span></span><span style="display:flex;"><span>        android:layout_height=&#34;wrap_content&#34;
+</span></span><span style="display:flex;"><span>        android:layout_alignParentTop=&#34;true&#34;
+</span></span><span style="display:flex;"><span>        android:layout_alignParentRight=&#34;true&#34;
+</span></span><span style="display:flex;"><span>        android:text=&#34;btn3&#34; /&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    &lt;Button
+</span></span><span style="display:flex;"><span>        android:id=&#34;@+id/button4&#34;
+</span></span><span style="display:flex;"><span>        android:layout_width=&#34;wrap_content&#34;
+</span></span><span style="display:flex;"><span>        android:layout_height=&#34;wrap_content&#34;
+</span></span><span style="display:flex;"><span>        android:layout_alignParentLeft=&#34;true&#34;
+</span></span><span style="display:flex;"><span>        android:layout_centerVertical=&#34;true&#34;
+</span></span><span style="display:flex;"><span>        android:text=&#34;btn4&#34; /&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    &lt;Button
+</span></span><span style="display:flex;"><span>        android:id=&#34;@+id/button5&#34;
+</span></span><span style="display:flex;"><span>        android:layout_width=&#34;wrap_content&#34;
+</span></span><span style="display:flex;"><span>        android:layout_height=&#34;wrap_content&#34;
+</span></span><span style="display:flex;"><span>        android:layout_centerInParent=&#34;true&#34;
+</span></span><span style="display:flex;"><span>        android:text=&#34;btn5&#34; /&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    &lt;Button
+</span></span><span style="display:flex;"><span>        android:id=&#34;@+id/button6&#34;
+</span></span><span style="display:flex;"><span>        android:layout_width=&#34;wrap_content&#34;
+</span></span><span style="display:flex;"><span>        android:layout_height=&#34;wrap_content&#34;
+</span></span><span style="display:flex;"><span>        android:layout_alignParentRight=&#34;true&#34;
+</span></span><span style="display:flex;"><span>        android:layout_centerVertical=&#34;true&#34;
+</span></span><span style="display:flex;"><span>        android:text=&#34;btn6&#34; /&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    &lt;Button
+</span></span><span style="display:flex;"><span>        android:id=&#34;@+id/button7&#34;
+</span></span><span style="display:flex;"><span>        android:layout_width=&#34;wrap_content&#34;
+</span></span><span style="display:flex;"><span>        android:layout_height=&#34;wrap_content&#34;
+</span></span><span style="display:flex;"><span>        android:layout_alignParentLeft=&#34;true&#34;
+</span></span><span style="display:flex;"><span>        android:layout_alignParentBottom=&#34;true&#34;
+</span></span><span style="display:flex;"><span>        android:text=&#34;btn7&#34; /&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    &lt;Button
+</span></span><span style="display:flex;"><span>        android:id=&#34;@+id/button8&#34;
+</span></span><span style="display:flex;"><span>        android:layout_width=&#34;wrap_content&#34;
+</span></span><span style="display:flex;"><span>        android:layout_height=&#34;wrap_content&#34;
+</span></span><span style="display:flex;"><span>        android:layout_alignParentBottom=&#34;true&#34;
+</span></span><span style="display:flex;"><span>        android:layout_centerHorizontal=&#34;true&#34;
+</span></span><span style="display:flex;"><span>        android:text=&#34;btn8&#34; /&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    &lt;Button
+</span></span><span style="display:flex;"><span>        android:id=&#34;@+id/button9&#34;
+</span></span><span style="display:flex;"><span>        android:layout_width=&#34;wrap_content&#34;
+</span></span><span style="display:flex;"><span>        android:layout_height=&#34;wrap_content&#34;
+</span></span><span style="display:flex;"><span>        android:layout_alignParentRight=&#34;true&#34;
+</span></span><span style="display:flex;"><span>        android:layout_alignParentBottom=&#34;true&#34;
+</span></span><span style="display:flex;"><span>        android:text=&#34;btn9&#34; /&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    &lt;Button
+</span></span><span style="display:flex;"><span>        android:id=&#34;@+id/button10&#34;
+</span></span><span style="display:flex;"><span>        android:layout_width=&#34;wrap_content&#34;
+</span></span><span style="display:flex;"><span>        android:layout_height=&#34;wrap_content&#34;
+</span></span><span style="display:flex;"><span>        android:layout_above=&#34;@id/button4&#34;
+</span></span><span style="display:flex;"><span>        android:layout_below=&#34;@id/button1&#34;
+</span></span><span style="display:flex;"><span>        android:layout_alignRight=&#34;@id/button2&#34;
+</span></span><span style="display:flex;"><span>        android:layout_toRightOf=&#34;@id/button1&#34;
+</span></span><span style="display:flex;"><span>        android:text=&#34;btn10&#34; /&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    &lt;Button
+</span></span><span style="display:flex;"><span>        android:id=&#34;@+id/button11&#34;
+</span></span><span style="display:flex;"><span>        android:layout_width=&#34;wrap_content&#34;
+</span></span><span style="display:flex;"><span>        android:layout_height=&#34;wrap_content&#34;
+</span></span><span style="display:flex;"><span>        android:layout_above=&#34;@id/button7&#34;
+</span></span><span style="display:flex;"><span>        android:layout_alignTop=&#34;@id/button4&#34;
+</span></span><span style="display:flex;"><span>        android:layout_toLeftOf=&#34;@id/button5&#34;
+</span></span><span style="display:flex;"><span>        android:layout_toRightOf=&#34;@id/button4&#34;
+</span></span><span style="display:flex;"><span>        android:text=&#34;btn11&#34; /&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    &lt;Button
+</span></span><span style="display:flex;"><span>        android:id=&#34;@+id/button12&#34;
+</span></span><span style="display:flex;"><span>        android:layout_width=&#34;wrap_content&#34;
+</span></span><span style="display:flex;"><span>        android:layout_height=&#34;wrap_content&#34;
+</span></span><span style="display:flex;"><span>        android:layout_alignBaseline=&#34;@id/button11&#34;
+</span></span><span style="display:flex;"><span>        android:layout_toLeftOf=&#34;@id/button6&#34;
+</span></span><span style="display:flex;"><span>        android:layout_toRightOf=&#34;@id/button11&#34;
+</span></span><span style="display:flex;"><span>        android:text=&#34;btn12&#34; /&gt;
+</span></span><span style="display:flex;"><span>&lt;/RelativeLayout&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="activity-and-intent">Activity and Intent<a hidden class="anchor" aria-hidden="true" href="#activity-and-intent">#</a></h2>
+<h3 id="activity">Activity<a hidden class="anchor" aria-hidden="true" href="#activity">#</a></h3>
+<blockquote>
+<p><a href="https://developer.android.com/guide/components/activities/intro-activities">https://developer.android.com/guide/components/activities/intro-activities</a></p>
+</blockquote>
+<p>其实Activity就两个作用：</p>
+<ol>
+<li>
+<p>展示页面内容</p>
+</li>
+<li>
+<p>响应用户交互</p>
+</li>
+</ol>
+<p>重点在于Activity的生命周期，因为用户在使用APP期间，Activity并不是一成不变的，需要根据用户的操作来进行不同的变化。Activity会提供很多回调类，这些回调让Activity知道状态正在改变。</p>
+<blockquote>
+<p>在生命周期回调方法中，您可以声明用户离开和再次进入 Activity 时 Activity 的行为方式。例如，如果您正构建流媒体视频播放器，当用户切换至另一应用时，您可能要暂停视频或终止网络连接。当用户返回时，您可以重新连接网络并允许用户从同一位置继续播放视频。换言之，每个回调都支持您执行适合给定状态变更的特定作业。在合适的时间执行正确的作业，并妥善处理转换，这将提升应用的稳健性和性能。</p>
+</blockquote>
+<h4 id="生命周期">生命周期<a hidden class="anchor" aria-hidden="true" href="#生命周期">#</a></h4>
+<p>简单来说，Activity归属于task管理(每个app一个task)，task中使用stack来保存Activity，用户在页面上进行操作切换Activity的时候相当于这些Activity在出栈和入栈，那么既然Activity在不停的变化，那么它整个从产生到变化到销毁的过程就会有个生命周期来定义。对于生命周期，讲解的比较多，直接看文档就行。</p>
+<blockquote>
+<p><a href="https://developer.android.google.cn/guide/components/activities/activity-lifecycle">https://developer.android.google.cn/guide/components/activities/activity-lifecycle</a></p>
+</blockquote>
+<ul>
+<li>
+<p>onCreate(): activity init</p>
+</li>
+<li>
+<p>onStart(): app becomes visble on the screem</p>
+</li>
+<li>
+<p>onResume(): app gains the user focus</p>
+</li>
+<li>
+<p>onPause(): focus is lost</p>
+</li>
+<li>
+<p>onStop(): no longerr visible</p>
+</li>
+<li>
+<p>onDestory(): destroy activity</p>
+</li>
+</ul>
+<h4 id="启动模式">启动模式<a hidden class="anchor" aria-hidden="true" href="#启动模式">#</a></h4>
+<p>在manifest文件中我们添加新的Activity，同样可以为它设置启动模式，<code>android:launchMode=</code>，这个配置用来处理Activity和task的关系，task处理Activity的逻辑</p>
+<ul>
+<li>
+<p>standard: 默认模式，系统在启动该 Activity 的任务中创建 Activity 的新实例，并将 intent 传送给该实例。Activity 可以多次实例化，每个实例可以属于不同的任务，一个任务可以拥有多个实例。</p>
+</li>
+<li>
+<p>singleTop：如果当前任务的顶部已存在 Activity 的实例，则系统会通过调用其 onNewIntent() 方法来将 intent 转送给该实例，而不是创建 Activity 的新实例。Activity 可以多次实例化，每个实例可以属于不同的任务，一个任务可以拥有多个实例（但前提是返回堆栈顶部的 Activity 不是该 Activity 的现有实例）。</p>
+</li>
+</ul>
+<blockquote>
+<p>例如，假设任务的返回堆栈包含根 Activity A 以及 Activity B、C 和位于顶部的 D（堆栈为 A-B-C-D；D 位于顶部）。收到以 D 类型 Activity 为目标的 intent。如果 D 采用默认的 &ldquo;standard&rdquo; 启动模式，则会启动该类的新实例，并且堆栈将变为 A-B-C-D-D。但是，如果 D 的启动模式为 &ldquo;singleTop&rdquo;，则 D 的现有实例会通过 onNewIntent() 接收 intent，因为它位于堆栈顶部，堆栈仍为 A-B-C-D。但是，如果收到以 B 类型 Activity 为目标的 intent，则会在堆栈中添加 B 的新实例，即使其启动模式为 &ldquo;singleTop&rdquo; 也是如此。</p>
+</blockquote>
+<ul>
+<li>
+<p>singleTask: 系统会创建新任务，并实例化新任务的根 Activity。但是，如果另外的任务中已存在该 Activity 的实例，则系统会通过调用其 onNewIntent() 方法将 intent 转送到该现有实例，而不是创建新实例。Activity 一次只能有一个实例存在。</p>
+</li>
+<li>
+<p>singleInstance: 与 &ldquo;singleTask&rdquo; 相似，唯一不同的是系统不会将任何其他 Activity 启动到包含该实例的任务中。该 Activity 始终是其任务唯一的成员；由该 Activity 启动的任何 Activity 都会在其他的任务中打开。</p>
+</li>
+</ul>
+<h4 id="activity跳转">Activity跳转<a hidden class="anchor" aria-hidden="true" href="#activity跳转">#</a></h4>
+<ol>
+<li>startActivity(): 从一个Activity启动另一个Activity，没有返回结果</li>
+</ol>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>    bind.buttonGuessWord.setOnClickListener {
+</span></span><span style="display:flex;"><span>        val intent2 = Intent(this, GuessTheWordActivity::class.java)
+</span></span><span style="display:flex;"><span>        startActivity(intent2)
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="2">
+<li>startActivityForResult(): 跳转Activity带结果</li>
+</ol>
+<h3 id="intent">Intent<a hidden class="anchor" aria-hidden="true" href="#intent">#</a></h3>
+<p>一个Activity的启动伴随着一个intent，一个Intent是一个异步的消息在不同的Activity中传递。</p>
+<p>Intent分为显性和隐性的：</p>
+<ul>
+<li>explicit 显性: 明确知道intent的target，已经知道明确的Activity的class名称。</li>
+<li>implicit 隐性：通用的，并没有明确的目标。</li>
+</ul>
+<h4 id="具体作用">具体作用<a hidden class="anchor" aria-hidden="true" href="#具体作用">#</a></h4>
+<ol>
+<li>
+<p>启动Activity，通过传递intent给startActivity()可以切换Activity。</p>
+</li>
+<li>
+<p>启动Service，通过将intent传递给startService()来启动服务执行一次性操作。</p>
+</li>
+<li>
+<p>传递广播，通过将intent传递给sendBroadcast()来将广播传递给其它应用。</p>
+</li>
+</ol>
+<h2 id="services">Services<a hidden class="anchor" aria-hidden="true" href="#services">#</a></h2>
+<p>Service是一种可以在后台执行长时间运行操作而不提供界面的应用组件。需要注意的是Service运行在主线程中，如果要在主线程之外操作，则创建线程。</p>
+<h3 id="分类">分类<a hidden class="anchor" aria-hidden="true" href="#分类">#</a></h3>
+<ol>
+<li>
+<p>前台服务：前台服务执行一些用户能注意到的操作。例如，音频应用会使用前台服务来播放音频曲目。前台服务必须显示通知。即使用户停止与应用的交互，前台服务仍会继续运行。</p>
+</li>
+<li>
+<p>后台服务：后台服务执行用户不会直接注意到的操作。例如，如果应用使用某个服务来压缩其存储空间，则此服务通常是后台服务。</p>
+</li>
+<li>
+<p>绑定服务：当应用组件通过调用 bindService() 绑定到服务时，服务即处于绑定状态。绑定服务会提供客户端-服务器接口，以便组件与服务进行交互、发送请求、接收结果，甚至是利用进程间通信 (IPC) 跨进程执行这些操作。仅当与另一个应用组件绑定时，绑定服务才会运行。多个组件可同时绑定到该服务，但全部取消绑定后，该服务即会被销毁。</p>
+</li>
+</ol>
+<h3 id="service的方法">Service的方法<a hidden class="anchor" aria-hidden="true" href="#service的方法">#</a></h3>
+<ol>
+<li>
+<p>onStartCommand(): 启动服务后会调用该方法并在后台无限期运行，此方法返回整型数，返回的标识如下：</p>
+<ul>
+<li>START_NOT_STICKY：返回后终止服务</li>
+<li>START_STICKY：无限期运行</li>
+<li>START_REDELIVER_INTENT：主动执行后立即恢复的</li>
+</ul>
+</li>
+<li>
+<p>onBind()：另外一个组件想和服务绑定，使用该方法</p>
+</li>
+<li>
+<p>onCreate()：首次创建服务，调用 onStartCommand() 或 onBind() 之前调用，执行初始化</p>
+</li>
+<li>
+<p>onDestroy()：不再使用服务，销毁时使用</p>
+</li>
+</ol>
+<h2 id="content-provider">Content Provider<a hidden class="anchor" aria-hidden="true" href="#content-provider">#</a></h2>
+<p>多个APP之间共享数据。相当于有一个Provider APP提供数据的操作，其它的APP可以访问Provider存的数据。</p>
+<p>整体的数据访问依靠约定的URI，具体如何操作看</p>
+<blockquote>
+<p><a href="https://github.com/linsir6/AndroidNote/blob/master/AndroidNote/Android%E5%9F%BA%E7%A1%80/ContentProvider%E5%AE%9E%E4%BE%8B%E8%AF%A6%E8%A7%A3.md">https://github.com/linsir6/AndroidNote/blob/master/AndroidNote/Android%E5%9F%BA%E7%A1%80/ContentProvider%E5%AE%9E%E4%BE%8B%E8%AF%A6%E8%A7%A3.md</a></p>
+</blockquote>
+<h2 id="broadcastreceiver">BroadcastReceiver<a hidden class="anchor" aria-hidden="true" href="#broadcastreceiver">#</a></h2>
+<p>主要用来监听系统或者应用发出的广播消息，然后监听该广播消息进行相应的逻辑的处理。</p>
+<blockquote>
+<p><a href="https://github.com/linsir6/AndroidNote/blob/master/AndroidNote/Android%E5%9F%BA%E7%A1%80/BroadcastReceiver%E8%AF%A6%E7%BB%86%E8%A7%A3%E6%9E%90.md">https://github.com/linsir6/AndroidNote/blob/master/AndroidNote/Android%E5%9F%BA%E7%A1%80/BroadcastReceiver%E8%AF%A6%E7%BB%86%E8%A7%A3%E6%9E%90.md</a></p>
+</blockquote>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://isyuanpeng.github.io/tags/android/">Android</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://isyuanpeng.github.io/posts/tech/android-learning-4/">
+    <span class="title">« Prev Page</span>
+    <br>
+    <span>Android Learning 4</span>
+  </a>
+  <a class="next" href="https://isyuanpeng.github.io/posts/tech/android-learning-2/">
+    <span class="title">Next Page »</span>
+    <br>
+    <span>Android Learning 2</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://isyuanpeng.github.io/">Isyuanpeng</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = 'copy';
+
+        function copyingDone() {
+            copybutton.innerText = 'copied!';
+            setTimeout(() => {
+                copybutton.innerText = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

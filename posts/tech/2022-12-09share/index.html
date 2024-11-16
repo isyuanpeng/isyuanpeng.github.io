@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Isyuanpeng</title>
+<meta name="keywords" content="" />
+<meta name="description" content="2022-12-10分享 回调-协程-观察者模式-SVN分支管理-缓存思考
+最近开发Android中遇到的一些技术点的总结。
+回调
+同步
+我们比较熟悉的编程模式就是同步，调用A函数后，等待A函数结束后返回结果给B函数进行处理。
+
+
+1
+2
+3
+
+
+res = request()
+handle(res)
+other()
+
+
+这就是函数的同步调用，顺序执行。handle(res)的调用必须等待request()的完成。
+异步
+针对上面的例子，由于request请求返回的不可预见性，我们不想去等待request()的返回，直接去调用other()，这就是异步。
+异步最常见的案例就是回调函数。
+回调
+那么对于异步的任务来说，我们想让request()请求完成后，直接去调用handle(res)方法，这时候就可以用到回调函数。
+
+
+1
+2
+
+
+request(handle)
+other()
+
+
+回调就是A函数和B函数，在A的某一个环节需要B自己告诉A怎么做，这就是回调。例如去商店里买东西，暂时缺货，留下电话号码就是一个回调函数，东西来货了，店员打电话通知就是一个调用回调函数。
+最经典的一个理解就是 don&rsquo;t call me, I&rsquo;ll call you.
+实际案例
+在Android开发中，大量使用到了回调函数，比较经典的案例就是网络请求的调用。app作为一个进程存在于Android系统中，其可以存在多个线程，其中有一个主线程，也叫UI线程负责整个app的UI绘制。那么对于UI线程来说，一旦存在耗时操作，如网络请求调用，那么UI线程就会被阻塞，导致UI的绘制停滞。
+所以在UI线程中，不能有耗时的操作出现，那么上述的回调函数就可以很好的解决这个问题。
+
+首先我们定义一个回调函数的接口，这个接口定义在请求完成后需要做的操作。
+
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+
+
+public interface ICallBack {
+
+    /**
+     * call it when request success
+     */
+    void onSuccess();
+
+    /**
+     * call it when request fail
+     */
+    void onFail();
+}
+
+
+
+其次我们定义好请求的方法，并且在传参中加入上面定义好的回调接口。
+
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+
+
+    public void call(String url, Map&lt;String, String&gt; params, final ICallBack callBack) {
+        // call request and use the callback to resolve result
+        boolean isSuccess = request(url, params);
+        if (isSuccess) {
+            callBack.onSuccess();
+        } else {
+            callBack.onFail();
+        }
+    }
+
+    public boolean request(String url, Map&lt;String, String&gt; params) {
+        return true;
+    }
+
+
+
+最终我们在执行请求的同时去补全我们的回调逻辑
+
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+
+
+    public void realCall() {
+        call(&#34;&#34;, null, new ICallBack() {
+            @Override
+            public void onSuccess() {
+                // success
+            }
+
+            @Override
+            public void onFail() {
+                // fail
+            }
+        });
+    }
+
+
+协程
+回调解决了异步调用的问题，但是异步回调同样存在问题，原本统一的逻辑流拆分开了，有可能会产生回调地狱的现象，毁掉里面嵌套回调。同时上下文也在一直改变了，需要去手动维护上下文，也就是手动维护状态。">
+<meta name="author" content="">
+<link rel="canonical" href="https://isyuanpeng.github.io/posts/tech/2022-12-09share/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7bdb1411b29ec9fed2b6395a081eabcb3262e7311bda855249d433c8b30a926e.css" integrity="sha256-e9sUEbKeyf7StjlaCB6ryzJi5zEb2oVSSdQzyLMKkm4=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.2eadbb982468c11a433a3e291f01326f2ba43f065e256bf792dbd79640a92316.js" integrity="sha256-Lq27mCRowRpDOj4pHwEybyukPwZeJWv3ktvXlkCpIxY="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://isyuanpeng.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://isyuanpeng.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://isyuanpeng.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://isyuanpeng.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://isyuanpeng.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<meta name="generator" content="Hugo 0.138.0">
+<link rel="alternate" hreflang="en" href="https://isyuanpeng.github.io/posts/tech/2022-12-09share/" />
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="" />
+<meta property="og:description" content="2022-12-10分享 回调-协程-观察者模式-SVN分支管理-缓存思考
+最近开发Android中遇到的一些技术点的总结。
+回调
+同步
+我们比较熟悉的编程模式就是同步，调用A函数后，等待A函数结束后返回结果给B函数进行处理。
+
+
+1
+2
+3
+
+
+res = request()
+handle(res)
+other()
+
+
+这就是函数的同步调用，顺序执行。handle(res)的调用必须等待request()的完成。
+异步
+针对上面的例子，由于request请求返回的不可预见性，我们不想去等待request()的返回，直接去调用other()，这就是异步。
+异步最常见的案例就是回调函数。
+回调
+那么对于异步的任务来说，我们想让request()请求完成后，直接去调用handle(res)方法，这时候就可以用到回调函数。
+
+
+1
+2
+
+
+request(handle)
+other()
+
+
+回调就是A函数和B函数，在A的某一个环节需要B自己告诉A怎么做，这就是回调。例如去商店里买东西，暂时缺货，留下电话号码就是一个回调函数，东西来货了，店员打电话通知就是一个调用回调函数。
+最经典的一个理解就是 don&rsquo;t call me, I&rsquo;ll call you.
+实际案例
+在Android开发中，大量使用到了回调函数，比较经典的案例就是网络请求的调用。app作为一个进程存在于Android系统中，其可以存在多个线程，其中有一个主线程，也叫UI线程负责整个app的UI绘制。那么对于UI线程来说，一旦存在耗时操作，如网络请求调用，那么UI线程就会被阻塞，导致UI的绘制停滞。
+所以在UI线程中，不能有耗时的操作出现，那么上述的回调函数就可以很好的解决这个问题。
+
+首先我们定义一个回调函数的接口，这个接口定义在请求完成后需要做的操作。
+
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+
+
+public interface ICallBack {
+
+    /**
+     * call it when request success
+     */
+    void onSuccess();
+
+    /**
+     * call it when request fail
+     */
+    void onFail();
+}
+
+
+
+其次我们定义好请求的方法，并且在传参中加入上面定义好的回调接口。
+
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+
+
+    public void call(String url, Map&lt;String, String&gt; params, final ICallBack callBack) {
+        // call request and use the callback to resolve result
+        boolean isSuccess = request(url, params);
+        if (isSuccess) {
+            callBack.onSuccess();
+        } else {
+            callBack.onFail();
+        }
+    }
+
+    public boolean request(String url, Map&lt;String, String&gt; params) {
+        return true;
+    }
+
+
+
+最终我们在执行请求的同时去补全我们的回调逻辑
+
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+
+
+    public void realCall() {
+        call(&#34;&#34;, null, new ICallBack() {
+            @Override
+            public void onSuccess() {
+                // success
+            }
+
+            @Override
+            public void onFail() {
+                // fail
+            }
+        });
+    }
+
+
+协程
+回调解决了异步调用的问题，但是异步回调同样存在问题，原本统一的逻辑流拆分开了，有可能会产生回调地狱的现象，毁掉里面嵌套回调。同时上下文也在一直改变了，需要去手动维护上下文，也就是手动维护状态。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://isyuanpeng.github.io/posts/tech/2022-12-09share/" /><meta property="og:image" content="https://isyuanpeng.github.io/papermod-cover.png"/><meta property="article:section" content="posts" />
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://isyuanpeng.github.io/papermod-cover.png"/>
+
+<meta name="twitter:title" content=""/>
+<meta name="twitter:description" content="2022-12-10分享 回调-协程-观察者模式-SVN分支管理-缓存思考
+最近开发Android中遇到的一些技术点的总结。
+回调
+同步
+我们比较熟悉的编程模式就是同步，调用A函数后，等待A函数结束后返回结果给B函数进行处理。
+
+
+1
+2
+3
+
+
+res = request()
+handle(res)
+other()
+
+
+这就是函数的同步调用，顺序执行。handle(res)的调用必须等待request()的完成。
+异步
+针对上面的例子，由于request请求返回的不可预见性，我们不想去等待request()的返回，直接去调用other()，这就是异步。
+异步最常见的案例就是回调函数。
+回调
+那么对于异步的任务来说，我们想让request()请求完成后，直接去调用handle(res)方法，这时候就可以用到回调函数。
+
+
+1
+2
+
+
+request(handle)
+other()
+
+
+回调就是A函数和B函数，在A的某一个环节需要B自己告诉A怎么做，这就是回调。例如去商店里买东西，暂时缺货，留下电话号码就是一个回调函数，东西来货了，店员打电话通知就是一个调用回调函数。
+最经典的一个理解就是 don&rsquo;t call me, I&rsquo;ll call you.
+实际案例
+在Android开发中，大量使用到了回调函数，比较经典的案例就是网络请求的调用。app作为一个进程存在于Android系统中，其可以存在多个线程，其中有一个主线程，也叫UI线程负责整个app的UI绘制。那么对于UI线程来说，一旦存在耗时操作，如网络请求调用，那么UI线程就会被阻塞，导致UI的绘制停滞。
+所以在UI线程中，不能有耗时的操作出现，那么上述的回调函数就可以很好的解决这个问题。
+
+首先我们定义一个回调函数的接口，这个接口定义在请求完成后需要做的操作。
+
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+
+
+public interface ICallBack {
+
+    /**
+     * call it when request success
+     */
+    void onSuccess();
+
+    /**
+     * call it when request fail
+     */
+    void onFail();
+}
+
+
+
+其次我们定义好请求的方法，并且在传参中加入上面定义好的回调接口。
+
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+
+
+    public void call(String url, Map&lt;String, String&gt; params, final ICallBack callBack) {
+        // call request and use the callback to resolve result
+        boolean isSuccess = request(url, params);
+        if (isSuccess) {
+            callBack.onSuccess();
+        } else {
+            callBack.onFail();
+        }
+    }
+
+    public boolean request(String url, Map&lt;String, String&gt; params) {
+        return true;
+    }
+
+
+
+最终我们在执行请求的同时去补全我们的回调逻辑
+
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+
+
+    public void realCall() {
+        call(&#34;&#34;, null, new ICallBack() {
+            @Override
+            public void onSuccess() {
+                // success
+            }
+
+            @Override
+            public void onFail() {
+                // fail
+            }
+        });
+    }
+
+
+协程
+回调解决了异步调用的问题，但是异步回调同样存在问题，原本统一的逻辑流拆分开了，有可能会产生回调地狱的现象，毁掉里面嵌套回调。同时上下文也在一直改变了，需要去手动维护上下文，也就是手动维护状态。"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://isyuanpeng.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "",
+      "item": "https://isyuanpeng.github.io/posts/tech/2022-12-09share/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "",
+  "name": "",
+  "description": "2022-12-10分享 回调-协程-观察者模式-SVN分支管理-缓存思考 最近开发Android中遇到的一些技术点的总结。\n回调 同步 我们比较熟悉的编程模式就是同步，调用A函数后，等待A函数结束后返回结果给B函数进行处理。\n1 2 3 res = request() handle(res) other() 这就是函数的同步调用，顺序执行。handle(res)的调用必须等待request()的完成。\n异步 针对上面的例子，由于request请求返回的不可预见性，我们不想去等待request()的返回，直接去调用other()，这就是异步。\n异步最常见的案例就是回调函数。\n回调 那么对于异步的任务来说，我们想让request()请求完成后，直接去调用handle(res)方法，这时候就可以用到回调函数。\n1 2 request(handle) other() 回调就是A函数和B函数，在A的某一个环节需要B自己告诉A怎么做，这就是回调。例如去商店里买东西，暂时缺货，留下电话号码就是一个回调函数，东西来货了，店员打电话通知就是一个调用回调函数。\n最经典的一个理解就是 don\u0026rsquo;t call me, I\u0026rsquo;ll call you.\n实际案例 在Android开发中，大量使用到了回调函数，比较经典的案例就是网络请求的调用。app作为一个进程存在于Android系统中，其可以存在多个线程，其中有一个主线程，也叫UI线程负责整个app的UI绘制。那么对于UI线程来说，一旦存在耗时操作，如网络请求调用，那么UI线程就会被阻塞，导致UI的绘制停滞。\n所以在UI线程中，不能有耗时的操作出现，那么上述的回调函数就可以很好的解决这个问题。\n首先我们定义一个回调函数的接口，这个接口定义在请求完成后需要做的操作。 1 2 3 4 5 6 7 8 9 10 11 12 public interface ICallBack { /** * call it when request success */ void onSuccess(); /** * call it when request fail */ void onFail(); } 其次我们定义好请求的方法，并且在传参中加入上面定义好的回调接口。 1 2 3 4 5 6 7 8 9 10 11 12 13 public void call(String url, Map\u0026lt;String, String\u0026gt; params, final ICallBack callBack) { // call request and use the callback to resolve result boolean isSuccess = request(url, params); if (isSuccess) { callBack.onSuccess(); } else { callBack.onFail(); } } public boolean request(String url, Map\u0026lt;String, String\u0026gt; params) { return true; } 最终我们在执行请求的同时去补全我们的回调逻辑 1 2 3 4 5 6 7 8 9 10 11 12 13 public void realCall() { call(\u0026#34;\u0026#34;, null, new ICallBack() { @Override public void onSuccess() { // success } @Override public void onFail() { // fail } }); } 协程 回调解决了异步调用的问题，但是异步回调同样存在问题，原本统一的逻辑流拆分开了，有可能会产生回调地狱的现象，毁掉里面嵌套回调。同时上下文也在一直改变了，需要去手动维护上下文，也就是手动维护状态。\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "2022-12-10分享 回调-协程-观察者模式-SVN分支管理-缓存思考 最近开发Android中遇到的一些技术点的总结。\n回调 同步 我们比较熟悉的编程模式就是同步，调用A函数后，等待A函数结束后返回结果给B函数进行处理。\n1 2 3 res = request() handle(res) other() 这就是函数的同步调用，顺序执行。handle(res)的调用必须等待request()的完成。\n异步 针对上面的例子，由于request请求返回的不可预见性，我们不想去等待request()的返回，直接去调用other()，这就是异步。\n异步最常见的案例就是回调函数。\n回调 那么对于异步的任务来说，我们想让request()请求完成后，直接去调用handle(res)方法，这时候就可以用到回调函数。\n1 2 request(handle) other() 回调就是A函数和B函数，在A的某一个环节需要B自己告诉A怎么做，这就是回调。例如去商店里买东西，暂时缺货，留下电话号码就是一个回调函数，东西来货了，店员打电话通知就是一个调用回调函数。\n最经典的一个理解就是 don’t call me, I’ll call you.\n实际案例 在Android开发中，大量使用到了回调函数，比较经典的案例就是网络请求的调用。app作为一个进程存在于Android系统中，其可以存在多个线程，其中有一个主线程，也叫UI线程负责整个app的UI绘制。那么对于UI线程来说，一旦存在耗时操作，如网络请求调用，那么UI线程就会被阻塞，导致UI的绘制停滞。\n所以在UI线程中，不能有耗时的操作出现，那么上述的回调函数就可以很好的解决这个问题。\n首先我们定义一个回调函数的接口，这个接口定义在请求完成后需要做的操作。 1 2 3 4 5 6 7 8 9 10 11 12 public interface ICallBack { /** * call it when request success */ void onSuccess(); /** * call it when request fail */ void onFail(); } 其次我们定义好请求的方法，并且在传参中加入上面定义好的回调接口。 1 2 3 4 5 6 7 8 9 10 11 12 13 public void call(String url, Map params, final ICallBack callBack) { // call request and use the callback to resolve result boolean isSuccess = request(url, params); if (isSuccess) { callBack.onSuccess(); } else { callBack.onFail(); } } public boolean request(String url, Map params) { return true; } 最终我们在执行请求的同时去补全我们的回调逻辑 1 2 3 4 5 6 7 8 9 10 11 12 13 public void realCall() { call(\"\", null, new ICallBack() { @Override public void onSuccess() { // success } @Override public void onFail() { // fail } }); } 协程 回调解决了异步调用的问题，但是异步回调同样存在问题，原本统一的逻辑流拆分开了，有可能会产生回调地狱的现象，毁掉里面嵌套回调。同时上下文也在一直改变了，需要去手动维护上下文，也就是手动维护状态。\n1 2 state = 1 request(handle) 1 2 def handle()： // 如果想用state 需要手动维护一个全局的state 除此之外，无论是代码的阅读还是后期维护的复杂度都要比同步要高。\n如果既不想要阻塞，又想要逻辑流的统一，我们可以使用协程。\n我们都知道线程，在实际的开发中也经常用多线程，线程是操作系统的资源，调度也是由操作系统来完成的。\n协程是比线程更细粒度的调度单位，可以理解为一个任务，一个人干了百分之二十，然后去干其它任务，其它任务结束后，继续回来干剩余的百分之八十的任务。\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 async def fun1(): print(1) await asyncio.sleep(2) print(2) async def fun2(): print(3) await asyncio.sleep(2) print(4) tasks = [ asyncio.ensure_future( fun1() ), asyncio.ensure_future( fun2() ) ] loop = asyncio.get_event_loop() loop.run_until_complete(asyncio.wait(tasks)) 目前，Python，Kotlin，JS，Go等语言都支持协程，Java19中也提供了虚拟线程的功能。\n观察者模式 在Android开发中，观察者模式是比较常见的一种设计模式。\n观察者模式是一种行为设计模式， 允许你定义一种订阅机制， 可在对象事件发生时通知多个 “观察” 该对象的其他对象。https://refactoringguru.cn/design-patterns/observer\n具体代码实现:\njava.util里已经完成了观察者模式。\nObservable: 被观察者，管理观察者，并给观察者发送消息通知改变 Observer: 观察者，被观察者发送通知给观察者，观察者进行改变 实际应用 Android广播机制的实现，定义广播，注册广播的接受者，当有广播发送的时候，推送给所有的接收者。 Android回调接口的实现，只有一个观察者的观察者模式。 Java案例 被观察者消费一份数据，如果有多个业务需要的话，分发给所有的观察者。\n责任链模式案例 使用阈值校验健康码，核酸，体温等。如果使用正常逻辑代码编写，情况可能会是下面这样:\n1 2 3 4 5 6 7 if (HealCode.isOk()) { if (Nucliec.isOk()) { if (Temperature.isOk()) { // something } } } 这样的代码比较直观，能够一眼看出来意图。但是后期如果在增加新的条件，那么就可能需要继续进行嵌套if，维护成本大大增加，这种情况下也可以使用责任链模式去校验，如果某个条件不成立，则退出判断。\nSVN分支管理 在写数字哨兵联通版的时候遇到这样一个svn的使用问题，现场已经存在一个稳定的开发分支，当前提出来要进行开发人脸的版本，那么如果我继续在当前开发分支上进行开发，那么后续如果现场有问题需要修改，则需要大量注释当前开发的人脸的版本。势必会在效率和准确度方面存在一些问题。\n这个时候就可以尝试利用和git一样的分支管理，svn的分支和git的分支类似，拥有一个类似于master分支的trunk分支，作为主分支，可以在主分支上拉branches, 作为开发分支，在开发完毕后，可以将开发分支的代码合并到主分支上。\n缓存的一些尝试和思考 业务上经常需要缓存数据，基本上都是点位信息，一般都是直接放到内存中，然后加定时任务。目前我感觉主要有以下几点不便：\n定时任务更新需要手动触发，可以在定制任务上写接口，技术操作不便 数据在内存中，可见性较低 维护的话，缺少某一类数据需要重新复制粘贴 ",
+  "wordCount" : "292",
+  "inLanguage": "en",
+  "datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://isyuanpeng.github.io/posts/tech/2022-12-09share/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Isyuanpeng",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://isyuanpeng.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://isyuanpeng.github.io/" accesskey="h" title="Isyuanpeng (Alt + H)">Isyuanpeng</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://isyuanpeng.github.io/archives" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/about" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/series/" title="Series">
+                    <span>Series</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://isyuanpeng.github.io/">Home</a>&nbsp;»&nbsp;<a href="https://isyuanpeng.github.io/posts/">Posts</a></div>
+    <h1 class="post-title">
+      
+    </h1>
+    <div class="post-meta">2 min
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#2022-12-10%e5%88%86%e4%ba%ab-%e5%9b%9e%e8%b0%83-%e5%8d%8f%e7%a8%8b-%e8%a7%82%e5%af%9f%e8%80%85%e6%a8%a1%e5%bc%8f-svn%e5%88%86%e6%94%af%e7%ae%a1%e7%90%86-%e7%bc%93%e5%ad%98%e6%80%9d%e8%80%83" aria-label="2022-12-10分享 回调-协程-观察者模式-SVN分支管理-缓存思考">2022-12-10分享 回调-协程-观察者模式-SVN分支管理-缓存思考</a><ul>
+                            
+                    <li>
+                        <a href="#%e5%9b%9e%e8%b0%83" aria-label="回调">回调</a><ul>
+                            
+                    <li>
+                        <a href="#%e5%90%8c%e6%ad%a5" aria-label="同步">同步</a></li>
+                    <li>
+                        <a href="#%e5%bc%82%e6%ad%a5" aria-label="异步">异步</a></li>
+                    <li>
+                        <a href="#%e5%9b%9e%e8%b0%83-1" aria-label="回调">回调</a></li>
+                    <li>
+                        <a href="#%e5%ae%9e%e9%99%85%e6%a1%88%e4%be%8b" aria-label="实际案例">实际案例</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e5%8d%8f%e7%a8%8b" aria-label="协程">协程</a></li>
+                    <li>
+                        <a href="#%e8%a7%82%e5%af%9f%e8%80%85%e6%a8%a1%e5%bc%8f" aria-label="观察者模式">观察者模式</a><ul>
+                            
+                    <li>
+                        <a href="#%e5%ae%9e%e9%99%85%e5%ba%94%e7%94%a8" aria-label="实际应用">实际应用</a></li>
+                    <li>
+                        <a href="#java%e6%a1%88%e4%be%8b" aria-label="Java案例">Java案例</a></li>
+                    <li>
+                        <a href="#%e8%b4%a3%e4%bb%bb%e9%93%be%e6%a8%a1%e5%bc%8f%e6%a1%88%e4%be%8b" aria-label="责任链模式案例">责任链模式案例</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#svn%e5%88%86%e6%94%af%e7%ae%a1%e7%90%86" aria-label="SVN分支管理">SVN分支管理</a></li>
+                    <li>
+                        <a href="#%e7%bc%93%e5%ad%98%e7%9a%84%e4%b8%80%e4%ba%9b%e5%b0%9d%e8%af%95%e5%92%8c%e6%80%9d%e8%80%83" aria-label="缓存的一些尝试和思考">缓存的一些尝试和思考</a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script>
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+  <div class="post-content"><h1 id="2022-12-10分享-回调-协程-观察者模式-svn分支管理-缓存思考">2022-12-10分享 回调-协程-观察者模式-SVN分支管理-缓存思考<a hidden class="anchor" aria-hidden="true" href="#2022-12-10分享-回调-协程-观察者模式-svn分支管理-缓存思考">#</a></h1>
+<p>最近开发Android中遇到的一些技术点的总结。</p>
+<h2 id="回调">回调<a hidden class="anchor" aria-hidden="true" href="#回调">#</a></h2>
+<h3 id="同步">同步<a hidden class="anchor" aria-hidden="true" href="#同步">#</a></h3>
+<p>我们比较熟悉的编程模式就是同步，调用A函数后，等待A函数结束后返回结果给B函数进行处理。</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>res = request()
+</span></span><span style="display:flex;"><span>handle(res)
+</span></span><span style="display:flex;"><span>other()
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这就是函数的同步调用，顺序执行。handle(res)的调用必须等待request()的完成。</p>
+<h3 id="异步">异步<a hidden class="anchor" aria-hidden="true" href="#异步">#</a></h3>
+<p>针对上面的例子，由于request请求返回的不可预见性，我们不想去等待request()的返回，直接去调用other()，这就是异步。</p>
+<p>异步最常见的案例就是回调函数。</p>
+<h3 id="回调-1">回调<a hidden class="anchor" aria-hidden="true" href="#回调-1">#</a></h3>
+<p>那么对于异步的任务来说，我们想让request()请求完成后，直接去调用handle(res)方法，这时候就可以用到回调函数。</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>request(handle)
+</span></span><span style="display:flex;"><span>other()
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>回调就是A函数和B函数，在A的某一个环节需要B自己告诉A怎么做，这就是回调。例如去商店里买东西，暂时缺货，留下电话号码就是一个回调函数，东西来货了，店员打电话通知就是一个调用回调函数。</p>
+<p>最经典的一个理解就是 don&rsquo;t call me, I&rsquo;ll call you.</p>
+<h3 id="实际案例">实际案例<a hidden class="anchor" aria-hidden="true" href="#实际案例">#</a></h3>
+<p>在Android开发中，大量使用到了回调函数，比较经典的案例就是网络请求的调用。app作为一个进程存在于Android系统中，其可以存在多个线程，其中有一个主线程，也叫UI线程负责整个app的UI绘制。那么对于UI线程来说，一旦存在耗时操作，如网络请求调用，那么UI线程就会被阻塞，导致UI的绘制停滞。</p>
+<p>所以在UI线程中，不能有耗时的操作出现，那么上述的回调函数就可以很好的解决这个问题。</p>
+<ol>
+<li>首先我们定义一个回调函数的接口，这个接口定义在请求完成后需要做的操作。</li>
+</ol>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>public interface ICallBack {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    /**
+</span></span><span style="display:flex;"><span>     * call it when request success
+</span></span><span style="display:flex;"><span>     */
+</span></span><span style="display:flex;"><span>    void onSuccess();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    /**
+</span></span><span style="display:flex;"><span>     * call it when request fail
+</span></span><span style="display:flex;"><span>     */
+</span></span><span style="display:flex;"><span>    void onFail();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="2">
+<li>其次我们定义好请求的方法，并且在传参中加入上面定义好的回调接口。</li>
+</ol>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>    public void call(String url, Map&lt;String, String&gt; params, final ICallBack callBack) {
+</span></span><span style="display:flex;"><span>        // call request and use the callback to resolve result
+</span></span><span style="display:flex;"><span>        boolean isSuccess = request(url, params);
+</span></span><span style="display:flex;"><span>        if (isSuccess) {
+</span></span><span style="display:flex;"><span>            callBack.onSuccess();
+</span></span><span style="display:flex;"><span>        } else {
+</span></span><span style="display:flex;"><span>            callBack.onFail();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    public boolean request(String url, Map&lt;String, String&gt; params) {
+</span></span><span style="display:flex;"><span>        return true;
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="3">
+<li>最终我们在执行请求的同时去补全我们的回调逻辑</li>
+</ol>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>    public void realCall() {
+</span></span><span style="display:flex;"><span>        call(&#34;&#34;, null, new ICallBack() {
+</span></span><span style="display:flex;"><span>            @Override
+</span></span><span style="display:flex;"><span>            public void onSuccess() {
+</span></span><span style="display:flex;"><span>                // success
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            @Override
+</span></span><span style="display:flex;"><span>            public void onFail() {
+</span></span><span style="display:flex;"><span>                // fail
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="协程">协程<a hidden class="anchor" aria-hidden="true" href="#协程">#</a></h2>
+<p>回调解决了异步调用的问题，但是异步回调同样存在问题，原本统一的逻辑流拆分开了，有可能会产生回调地狱的现象，毁掉里面嵌套回调。同时上下文也在一直改变了，需要去手动维护上下文，也就是手动维护状态。</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>state = 1
+</span></span><span style="display:flex;"><span>request(handle)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>def handle()：
+</span></span><span style="display:flex;"><span>    // 如果想用state 需要手动维护一个全局的state
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>除此之外，无论是代码的阅读还是后期维护的复杂度都要比同步要高。</p>
+<p>如果既不想要阻塞，又想要逻辑流的统一，我们可以使用协程。</p>
+<p>我们都知道线程，在实际的开发中也经常用多线程，线程是操作系统的资源，调度也是由操作系统来完成的。</p>
+<p>协程是比线程更细粒度的调度单位，可以理解为一个任务，一个人干了百分之二十，然后去干其它任务，其它任务结束后，继续回来干剩余的百分之八十的任务。</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>async def fun1():
+</span></span><span style="display:flex;"><span>    print(1)
+</span></span><span style="display:flex;"><span>    await asyncio.sleep(2)
+</span></span><span style="display:flex;"><span>    print(2)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>async def fun2():
+</span></span><span style="display:flex;"><span>    print(3)
+</span></span><span style="display:flex;"><span>    await asyncio.sleep(2)
+</span></span><span style="display:flex;"><span>    print(4)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>tasks = [
+</span></span><span style="display:flex;"><span>    asyncio.ensure_future( fun1() ),
+</span></span><span style="display:flex;"><span>    asyncio.ensure_future( fun2() )
+</span></span><span style="display:flex;"><span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>loop = asyncio.get_event_loop()
+</span></span><span style="display:flex;"><span>loop.run_until_complete(asyncio.wait(tasks))
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>目前，Python，Kotlin，JS，Go等语言都支持协程，Java19中也提供了虚拟线程的功能。</p>
+<h2 id="观察者模式">观察者模式<a hidden class="anchor" aria-hidden="true" href="#观察者模式">#</a></h2>
+<p>在Android开发中，观察者模式是比较常见的一种设计模式。</p>
+<blockquote>
+<p>观察者模式是一种行为设计模式， 允许你定义一种订阅机制， 可在对象事件发生时通知多个 “观察” 该对象的其他对象。https://refactoringguru.cn/design-patterns/observer</p>
+</blockquote>
+<p>具体代码实现:</p>
+<p>java.util里已经完成了观察者模式。</p>
+<ol>
+<li>Observable: 被观察者，管理观察者，并给观察者发送消息通知改变</li>
+<li>Observer: 观察者，被观察者发送通知给观察者，观察者进行改变</li>
+</ol>
+<h3 id="实际应用">实际应用<a hidden class="anchor" aria-hidden="true" href="#实际应用">#</a></h3>
+<ol>
+<li>Android广播机制的实现，定义广播，注册广播的接受者，当有广播发送的时候，推送给所有的接收者。</li>
+<li>Android回调接口的实现，只有一个观察者的观察者模式。</li>
+</ol>
+<h3 id="java案例">Java案例<a hidden class="anchor" aria-hidden="true" href="#java案例">#</a></h3>
+<p>被观察者消费一份数据，如果有多个业务需要的话，分发给所有的观察者。</p>
+<h3 id="责任链模式案例">责任链模式案例<a hidden class="anchor" aria-hidden="true" href="#责任链模式案例">#</a></h3>
+<p>使用阈值校验健康码，核酸，体温等。如果使用正常逻辑代码编写，情况可能会是下面这样:</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>if (HealCode.isOk()) {
+</span></span><span style="display:flex;"><span>    if (Nucliec.isOk()) {
+</span></span><span style="display:flex;"><span>        if (Temperature.isOk()) {
+</span></span><span style="display:flex;"><span>            // something
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这样的代码比较直观，能够一眼看出来意图。但是后期如果在增加新的条件，那么就可能需要继续进行嵌套if，维护成本大大增加，这种情况下也可以使用责任链模式去校验，如果某个条件不成立，则退出判断。</p>
+<h2 id="svn分支管理">SVN分支管理<a hidden class="anchor" aria-hidden="true" href="#svn分支管理">#</a></h2>
+<p>在写数字哨兵联通版的时候遇到这样一个svn的使用问题，现场已经存在一个稳定的开发分支，当前提出来要进行开发人脸的版本，那么如果我继续在当前开发分支上进行开发，那么后续如果现场有问题需要修改，则需要大量注释当前开发的人脸的版本。势必会在效率和准确度方面存在一些问题。</p>
+<p>这个时候就可以尝试利用和git一样的分支管理，svn的分支和git的分支类似，拥有一个类似于master分支的trunk分支，作为主分支，可以在主分支上拉branches, 作为开发分支，在开发完毕后，可以将开发分支的代码合并到主分支上。</p>
+<h2 id="缓存的一些尝试和思考">缓存的一些尝试和思考<a hidden class="anchor" aria-hidden="true" href="#缓存的一些尝试和思考">#</a></h2>
+<p>业务上经常需要缓存数据，基本上都是点位信息，一般都是直接放到内存中，然后加定时任务。目前我感觉主要有以下几点不便：</p>
+<ol>
+<li>定时任务更新需要手动触发，可以在定制任务上写接口，技术操作不便</li>
+<li>数据在内存中，可见性较低</li>
+<li>维护的话，缺少某一类数据需要重新复制粘贴</li>
+</ol>
+
+
+  </div>
+
+  <footer class="post-footer">
+<nav class="paginav">
+  <a class="prev" href="https://isyuanpeng.github.io/posts/tech/markdown-syntax/">
+    <span class="title">« Prev Page</span>
+    <br>
+    <span>Markdown Syntax Guide</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://isyuanpeng.github.io/">Isyuanpeng</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = 'copy';
+
+        function copyingDone() {
+            copybutton.innerText = 'copied!';
+            setTimeout(() => {
+                copybutton.innerText = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

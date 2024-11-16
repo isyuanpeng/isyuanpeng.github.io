@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Maven之Deploy使用 | Isyuanpeng</title>
+<meta name="keywords" content="Maven" />
+<meta name="description" content="Maven之Deploy使用
+背景
+目前公司里的项目定制一般不需要用到Deploy(上传jar包到af仓库上)，定制只是下载依赖然后使用。最近开发组件过程中，由于需要组件提供对外api给其它组件使用，在使用的过程中也不是特别顺利，所以记录一下Deploy的使用。
+Deploy
+Deploy是Maven生命周期的最后一个环节，作用是上传最终的成果物到远程仓库中，共享给其它开发人员和工程。使用方法如下：
+Step 1：需要在settings.xml配置af仓库的用户名和密码
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+
+
+  &lt;!-- servers
+   | This is a list of authentication profiles, keyed by the server-id used within the system.
+   | Authentication profiles can be used whenever maven must make a connection to a remote server.
+   |--&gt;
+  &lt;servers&gt;
+    &lt;!-- server
+     | Specifies the authentication information to use when connecting to a particular server, identified by
+     | a unique name within the system (referred to by the &#39;id&#39; attribute below).
+     | 
+     | NOTE: You should either specify username/password OR privateKey/passphrase, since these pairings are 
+     |       used together.
+     |
+	--&gt;
+	
+	&lt;server&gt;
+		&lt;id&gt;xxx-release&lt;/id&gt;
+		&lt;username&gt;xxx&lt;/username&gt;
+		&lt;password&gt;xxx&lt;/password&gt;
+	&lt;/server&gt;
+
+  &lt;/servers&gt;
+
+
+Step 2：要Deploy的module的pom文件中添加要上传的af仓库，id要和上面settings.xml中的id对应">
+<meta name="author" content="yuanpeng11">
+<link rel="canonical" href="https://isyuanpeng.github.io/posts/tech/maven%E4%B9%8Bdeploy%E4%BD%BF%E7%94%A8/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7bdb1411b29ec9fed2b6395a081eabcb3262e7311bda855249d433c8b30a926e.css" integrity="sha256-e9sUEbKeyf7StjlaCB6ryzJi5zEb2oVSSdQzyLMKkm4=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.2eadbb982468c11a433a3e291f01326f2ba43f065e256bf792dbd79640a92316.js" integrity="sha256-Lq27mCRowRpDOj4pHwEybyukPwZeJWv3ktvXlkCpIxY="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://isyuanpeng.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://isyuanpeng.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://isyuanpeng.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://isyuanpeng.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://isyuanpeng.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<meta name="generator" content="Hugo 0.138.0">
+<link rel="alternate" hreflang="en" href="https://isyuanpeng.github.io/posts/tech/maven%E4%B9%8Bdeploy%E4%BD%BF%E7%94%A8/" />
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Maven之Deploy使用" />
+<meta property="og:description" content="Maven之Deploy使用
+背景
+目前公司里的项目定制一般不需要用到Deploy(上传jar包到af仓库上)，定制只是下载依赖然后使用。最近开发组件过程中，由于需要组件提供对外api给其它组件使用，在使用的过程中也不是特别顺利，所以记录一下Deploy的使用。
+Deploy
+Deploy是Maven生命周期的最后一个环节，作用是上传最终的成果物到远程仓库中，共享给其它开发人员和工程。使用方法如下：
+Step 1：需要在settings.xml配置af仓库的用户名和密码
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+
+
+  &lt;!-- servers
+   | This is a list of authentication profiles, keyed by the server-id used within the system.
+   | Authentication profiles can be used whenever maven must make a connection to a remote server.
+   |--&gt;
+  &lt;servers&gt;
+    &lt;!-- server
+     | Specifies the authentication information to use when connecting to a particular server, identified by
+     | a unique name within the system (referred to by the &#39;id&#39; attribute below).
+     | 
+     | NOTE: You should either specify username/password OR privateKey/passphrase, since these pairings are 
+     |       used together.
+     |
+	--&gt;
+	
+	&lt;server&gt;
+		&lt;id&gt;xxx-release&lt;/id&gt;
+		&lt;username&gt;xxx&lt;/username&gt;
+		&lt;password&gt;xxx&lt;/password&gt;
+	&lt;/server&gt;
+
+  &lt;/servers&gt;
+
+
+Step 2：要Deploy的module的pom文件中添加要上传的af仓库，id要和上面settings.xml中的id对应" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://isyuanpeng.github.io/posts/tech/maven%E4%B9%8Bdeploy%E4%BD%BF%E7%94%A8/" /><meta property="og:image" content="https://isyuanpeng.github.io/papermod-cover.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-06-21T18:40:34&#43;08:00" />
+<meta property="article:modified_time" content="2023-06-21T18:40:34&#43;08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://isyuanpeng.github.io/papermod-cover.png"/>
+
+<meta name="twitter:title" content="Maven之Deploy使用"/>
+<meta name="twitter:description" content="Maven之Deploy使用
+背景
+目前公司里的项目定制一般不需要用到Deploy(上传jar包到af仓库上)，定制只是下载依赖然后使用。最近开发组件过程中，由于需要组件提供对外api给其它组件使用，在使用的过程中也不是特别顺利，所以记录一下Deploy的使用。
+Deploy
+Deploy是Maven生命周期的最后一个环节，作用是上传最终的成果物到远程仓库中，共享给其它开发人员和工程。使用方法如下：
+Step 1：需要在settings.xml配置af仓库的用户名和密码
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+
+
+  &lt;!-- servers
+   | This is a list of authentication profiles, keyed by the server-id used within the system.
+   | Authentication profiles can be used whenever maven must make a connection to a remote server.
+   |--&gt;
+  &lt;servers&gt;
+    &lt;!-- server
+     | Specifies the authentication information to use when connecting to a particular server, identified by
+     | a unique name within the system (referred to by the &#39;id&#39; attribute below).
+     | 
+     | NOTE: You should either specify username/password OR privateKey/passphrase, since these pairings are 
+     |       used together.
+     |
+	--&gt;
+	
+	&lt;server&gt;
+		&lt;id&gt;xxx-release&lt;/id&gt;
+		&lt;username&gt;xxx&lt;/username&gt;
+		&lt;password&gt;xxx&lt;/password&gt;
+	&lt;/server&gt;
+
+  &lt;/servers&gt;
+
+
+Step 2：要Deploy的module的pom文件中添加要上传的af仓库，id要和上面settings.xml中的id对应"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://isyuanpeng.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Maven之Deploy使用",
+      "item": "https://isyuanpeng.github.io/posts/tech/maven%E4%B9%8Bdeploy%E4%BD%BF%E7%94%A8/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Maven之Deploy使用",
+  "name": "Maven之Deploy使用",
+  "description": "Maven之Deploy使用 背景 目前公司里的项目定制一般不需要用到Deploy(上传jar包到af仓库上)，定制只是下载依赖然后使用。最近开发组件过程中，由于需要组件提供对外api给其它组件使用，在使用的过程中也不是特别顺利，所以记录一下Deploy的使用。\nDeploy Deploy是Maven生命周期的最后一个环节，作用是上传最终的成果物到远程仓库中，共享给其它开发人员和工程。使用方法如下：\nStep 1：需要在settings.xml配置af仓库的用户名和密码\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 \u0026lt;!-- servers | This is a list of authentication profiles, keyed by the server-id used within the system. | Authentication profiles can be used whenever maven must make a connection to a remote server. |--\u0026gt; \u0026lt;servers\u0026gt; \u0026lt;!-- server | Specifies the authentication information to use when connecting to a particular server, identified by | a unique name within the system (referred to by the \u0026#39;id\u0026#39; attribute below). | | NOTE: You should either specify username/password OR privateKey/passphrase, since these pairings are | used together. | --\u0026gt; \u0026lt;server\u0026gt; \u0026lt;id\u0026gt;xxx-release\u0026lt;/id\u0026gt; \u0026lt;username\u0026gt;xxx\u0026lt;/username\u0026gt; \u0026lt;password\u0026gt;xxx\u0026lt;/password\u0026gt; \u0026lt;/server\u0026gt; \u0026lt;/servers\u0026gt; Step 2：要Deploy的module的pom文件中添加要上传的af仓库，id要和上面settings.xml中的id对应\n",
+  "keywords": [
+    "Maven"
+  ],
+  "articleBody": "Maven之Deploy使用 背景 目前公司里的项目定制一般不需要用到Deploy(上传jar包到af仓库上)，定制只是下载依赖然后使用。最近开发组件过程中，由于需要组件提供对外api给其它组件使用，在使用的过程中也不是特别顺利，所以记录一下Deploy的使用。\nDeploy Deploy是Maven生命周期的最后一个环节，作用是上传最终的成果物到远程仓库中，共享给其它开发人员和工程。使用方法如下：\nStep 1：需要在settings.xml配置af仓库的用户名和密码\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 xxx-release xxx xxx Step 2：要Deploy的module的pom文件中添加要上传的af仓库，id要和上面settings.xml中的id对应\n1 2 3 4 5 6 7 8 xxx-release xxx-release xxx Srtep 3: 执行deploy命令，右侧maven工具栏中找到相应的module执行即可。deploy完在af仓库的地址中可以查询：xxx\nDeploy注意事项 如果只需要deploy xx-external-api module的话，需要注意在其父module api也需要deploy，直接在api的pom文件中deploy即可，会递归执行xx-external-api module。 报错403，403有时候并不是用户名或密码错误，分为download和deploy两种情况 download: 有可能是ah仓库中没有该依赖，根据报错的url查看是否有该依赖 deploy: 有可能是 release 包重复上传 接上一条，release包无法重复上传，无法重复上传，无法重复上传，重复上传后目前无法删除，只能修改版本号重新上传 报错409，一般是针对pom文件报错，根据官方文档所说，409是在进行pom文件的一致性检查时出现问题，这时候需要检查你的pom文件的artifactid和groupid和version是否正确 我遇到的错误是snapshot的版本号写错，需要注意*snapshot的版本号只能写成1.0.0-SNAPSHOT，注意是-SNAPSHOT 针对上述403和409问题，在项目开发中，一定要严格使用SNAPSHOT版本号，版本发布的时候改为RELEASE作为稳定版本。 ",
+  "wordCount" : "157",
+  "inLanguage": "en",
+  "datePublished": "2023-06-21T18:40:34+08:00",
+  "dateModified": "2023-06-21T18:40:34+08:00",
+  "author":[{
+    "@type": "Person",
+    "name": "yuanpeng11"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://isyuanpeng.github.io/posts/tech/maven%E4%B9%8Bdeploy%E4%BD%BF%E7%94%A8/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Isyuanpeng",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://isyuanpeng.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://isyuanpeng.github.io/" accesskey="h" title="Isyuanpeng (Alt + H)">Isyuanpeng</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://isyuanpeng.github.io/archives" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/about" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/series/" title="Series">
+                    <span>Series</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://isyuanpeng.github.io/">Home</a>&nbsp;»&nbsp;<a href="https://isyuanpeng.github.io/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Maven之Deploy使用
+    </h1>
+    <div class="post-meta">&lt;span title=&#39;2023-06-21 18:40:34 &#43;0800 CST&#39;&gt;June 21, 2023&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;yuanpeng11
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#maven%e4%b9%8bdeploy%e4%bd%bf%e7%94%a8" aria-label="Maven之Deploy使用">Maven之Deploy使用</a><ul>
+                            
+                    <li>
+                        <a href="#%e8%83%8c%e6%99%af" aria-label="背景">背景</a></li>
+                    <li>
+                        <a href="#deploy" aria-label="Deploy">Deploy</a></li>
+                    <li>
+                        <a href="#deploy%e6%b3%a8%e6%84%8f%e4%ba%8b%e9%a1%b9" aria-label="Deploy注意事项">Deploy注意事项</a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script>
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+  <div class="post-content"><h2 id="maven之deploy使用">Maven之Deploy使用<a hidden class="anchor" aria-hidden="true" href="#maven之deploy使用">#</a></h2>
+<h3 id="背景">背景<a hidden class="anchor" aria-hidden="true" href="#背景">#</a></h3>
+<p>目前公司里的项目定制一般不需要用到Deploy(上传jar包到af仓库上)，定制只是下载依赖然后使用。最近开发组件过程中，由于需要组件提供对外api给其它组件使用，在使用的过程中也不是特别顺利，所以记录一下Deploy的使用。</p>
+<h3 id="deploy">Deploy<a hidden class="anchor" aria-hidden="true" href="#deploy">#</a></h3>
+<p>Deploy是Maven生命周期的最后一个环节，作用是上传最终的成果物到远程仓库中，共享给其它开发人员和工程。使用方法如下：</p>
+<p><em>Step 1</em>：需要在settings.xml配置af仓库的用户名和密码</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>  &lt;!-- servers
+</span></span><span style="display:flex;"><span>   | This is a list of authentication profiles, keyed by the server-id used within the system.
+</span></span><span style="display:flex;"><span>   | Authentication profiles can be used whenever maven must make a connection to a remote server.
+</span></span><span style="display:flex;"><span>   |--&gt;
+</span></span><span style="display:flex;"><span>  &lt;servers&gt;
+</span></span><span style="display:flex;"><span>    &lt;!-- server
+</span></span><span style="display:flex;"><span>     | Specifies the authentication information to use when connecting to a particular server, identified by
+</span></span><span style="display:flex;"><span>     | a unique name within the system (referred to by the &#39;id&#39; attribute below).
+</span></span><span style="display:flex;"><span>     | 
+</span></span><span style="display:flex;"><span>     | NOTE: You should either specify username/password OR privateKey/passphrase, since these pairings are 
+</span></span><span style="display:flex;"><span>     |       used together.
+</span></span><span style="display:flex;"><span>     |
+</span></span><span style="display:flex;"><span>	--&gt;
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>	&lt;server&gt;
+</span></span><span style="display:flex;"><span>		&lt;id&gt;xxx-release&lt;/id&gt;
+</span></span><span style="display:flex;"><span>		&lt;username&gt;xxx&lt;/username&gt;
+</span></span><span style="display:flex;"><span>		&lt;password&gt;xxx&lt;/password&gt;
+</span></span><span style="display:flex;"><span>	&lt;/server&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  &lt;/servers&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><em>Step 2</em>：要Deploy的module的pom文件中添加要上传的af仓库，id要和上面settings.xml中的id对应</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>    &lt;distributionManagement&gt;
+</span></span><span style="display:flex;"><span>        &lt;repository&gt;
+</span></span><span style="display:flex;"><span>            &lt;id&gt;xxx-release&lt;/id&gt;
+</span></span><span style="display:flex;"><span>            &lt;name&gt;xxx-release&lt;/name&gt;
+</span></span><span style="display:flex;"><span>            &lt;url&gt;xxx&lt;/url&gt;
+</span></span><span style="display:flex;"><span>        &lt;/repository&gt;
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>    &lt;/distributionManagement&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><em>Srtep 3</em>: 执行deploy命令，右侧maven工具栏中找到相应的module执行即可。deploy完在af仓库的地址中可以查询：xxx</p>
+<h3 id="deploy注意事项">Deploy注意事项<a hidden class="anchor" aria-hidden="true" href="#deploy注意事项">#</a></h3>
+<ul>
+<li>如果只需要deploy xx-external-api module的话，需要注意在其父module api也需要deploy，直接在api的pom文件中deploy即可，会递归执行xx-external-api module。</li>
+<li>报错403，403有时候并不是用户名或密码错误，分为download和deploy两种情况
+<ul>
+<li>download: 有可能是ah仓库中没有该依赖，根据报错的url查看是否有该依赖</li>
+<li>deploy: 有可能是 <em>release</em> 包重复上传</li>
+<li><em>接上一条，release包无法重复上传，无法重复上传，无法重复上传，重复上传后目前无法删除，只能修改版本号重新上传</em></li>
+</ul>
+</li>
+<li>报错409，一般是针对pom文件报错，根据官方文档所说，409是在进行pom文件的一致性检查时出现问题，这时候需要检查你的pom文件的artifactid和groupid和version是否正确
+<ul>
+<li>我遇到的错误是snapshot的版本号写错，需要注意*snapshot的版本号只能写成1.0.0-SNAPSHOT，注意是-SNAPSHOT</li>
+</ul>
+</li>
+<li>针对上述403和409问题，在项目开发中，一定要严格使用SNAPSHOT版本号，版本发布的时候改为RELEASE作为稳定版本。</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://isyuanpeng.github.io/tags/maven/">Maven</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://isyuanpeng.github.io/posts/tech/%E4%B8%80%E4%B8%AA%E5%9F%BA%E4%BA%8Equic%E5%8D%8F%E8%AE%AE%E7%9A%84http%E8%BD%ACudp%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7/">
+    <span class="title">« Prev Page</span>
+    <br>
+    <span>一个基于Quic协议的Http转Udp代理工具</span>
+  </a>
+  <a class="next" href="https://isyuanpeng.github.io/posts/tech/debug/">
+    <span class="title">Next Page »</span>
+    <br>
+    <span>DEBUG</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://isyuanpeng.github.io/">Isyuanpeng</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = 'copy';
+
+        function copyingDone() {
+            copybutton.innerText = 'copied!';
+            setTimeout(() => {
+                copybutton.innerText = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

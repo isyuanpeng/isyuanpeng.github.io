@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Spring on Isyuanpeng</title>
+    <link>https://isyuanpeng.github.io/tags/spring/</link>
+    <description>Recent content in Spring on Isyuanpeng</description>
+    <image>
+      <url>https://isyuanpeng.github.io/papermod-cover.png</url>
+      <link>https://isyuanpeng.github.io/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 15 Mar 2022 17:23:11 +0800</lastBuildDate><atom:link href="https://isyuanpeng.github.io/tags/spring/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>揭秘Classpath</title>
+      <link>https://isyuanpeng.github.io/posts/tech/spring-classpath/</link>
+      <pubDate>Tue, 15 Mar 2022 17:23:11 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/spring-classpath/</guid>
+      <description>&lt;h2 id=&#34;环境变量classpath&#34;&gt;环境变量CLASSPATH&lt;/h2&gt;
+&lt;p&gt;在安装Java环境的时候，我们需要配置PATH和CLASSPATH。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;PATH：PATH比较好理解，我们在命令行需要执行某个命令的时候如python的时候，如果没有配置PATH，则需要进入python.exe所在的文件夹下，然后执行python。那配置PATH中的python所在路径，其实就相当于简化了这个过程，当配置完成后再执行python，首先去PATH中从左到右搜索所有的路径，直到搜索到python.exe，然后利用该路径执行命令，如果找不到则提示该命令不存在。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;CLASSPATH：CLASSPATH其实也很好理解，这里来一段Java官方文档的解释：&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The CLASSPATH variable is one way to tell applications, including the JDK tools, * where to look for user classes *. (Classes that are part of the JRE, JDK platform, and extensions should be defined through other means, such as the bootstrap class path or the extensions directory.)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;名如其人，classpath就是classes所在的path，那设置CLASSPATH的作用就是指定java类所在的目录，当我们执行java命令的时候，java需要去哪里找class文件呢，这时候就需要设置classpath，我们可以输出当前环境的classpath查看: * echo %CLASSPATH% *&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-gdscript3&#34; data-lang=&#34;gdscript3&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;;C:\Program Files\Java\jdk1&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;8.0&lt;/span&gt;_181\lib;C:\Program Files\Java\jdk1&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;8.0&lt;/span&gt;_181\lib\tools&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;jar
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;CLASSPATH的扫描同样是从左向右的。我们可以看到参数以 &lt;em&gt;;&lt;/em&gt; 分割，那么第一个参数 *.*指代的就是当前目录，意思是java去当前目录下寻找class文件进行执行。&lt;/p&gt;
+&lt;h2 id=&#34;spring中的classpath&#34;&gt;Spring中的classpath&lt;/h2&gt;
+&lt;p&gt;我们在很多的项目代码的config代码中都可以看到 &lt;code&gt;@PropertySource(value = &amp;quot;classpath:map-config.yaml&amp;quot;)&lt;/code&gt; 类似的代码，在这里也用到了classpath，这里的classpath什么作用呢？&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

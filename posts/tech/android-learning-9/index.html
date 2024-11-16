@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Android Learning 9 | Isyuanpeng</title>
+<meta name="keywords" content="android" />
+<meta name="description" content="知识填充
+布局相关
+LayoutInflater
+在绑定Fragment的时候我们会用到LayoutInflater.inflate(), 该方法返回一个View对象，所以我们可以知道该方法的作用就是将xml布局文件加载为View或者ViewGroup对象。而LayoutInflater就是一个总的工具，有多个inflate方法。
+获取LayoutInflater
+
+
+1
+2
+3
+
+
+LayoutInflater inflater1 = LayoutInflater.from(this);  
+LayoutInflater inflater2 = getLayoutInflater();  
+LayoutInflater inflater3 = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+
+
+后面两种其实走的都是第一种方法。this就是context。
+.infalte()方法使用
+.infalte()有多个重载的方法。
+
+
+1
+2
+3
+4
+
+
+inflate(int resource, ViewGroup root)
+inflate(int resource, ViewGroup root, boolean attachToRoot)
+inflate(XmlPullParser parser, ViewGroup root)
+inflate(XmlPullParser parser, ViewGroup root, boolean attachToRoot)
+
+
+看源码可知，四个方法，前三个其实都是调用的第四个。">
+<meta name="author" content="YuanPeng11">
+<link rel="canonical" href="https://isyuanpeng.github.io/posts/tech/android-learning-9/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7bdb1411b29ec9fed2b6395a081eabcb3262e7311bda855249d433c8b30a926e.css" integrity="sha256-e9sUEbKeyf7StjlaCB6ryzJi5zEb2oVSSdQzyLMKkm4=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.2eadbb982468c11a433a3e291f01326f2ba43f065e256bf792dbd79640a92316.js" integrity="sha256-Lq27mCRowRpDOj4pHwEybyukPwZeJWv3ktvXlkCpIxY="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://isyuanpeng.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://isyuanpeng.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://isyuanpeng.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://isyuanpeng.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://isyuanpeng.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<meta name="generator" content="Hugo 0.138.0">
+<link rel="alternate" hreflang="en" href="https://isyuanpeng.github.io/posts/tech/android-learning-9/" />
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Android Learning 9" />
+<meta property="og:description" content="知识填充
+布局相关
+LayoutInflater
+在绑定Fragment的时候我们会用到LayoutInflater.inflate(), 该方法返回一个View对象，所以我们可以知道该方法的作用就是将xml布局文件加载为View或者ViewGroup对象。而LayoutInflater就是一个总的工具，有多个inflate方法。
+获取LayoutInflater
+
+
+1
+2
+3
+
+
+LayoutInflater inflater1 = LayoutInflater.from(this);  
+LayoutInflater inflater2 = getLayoutInflater();  
+LayoutInflater inflater3 = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+
+
+后面两种其实走的都是第一种方法。this就是context。
+.infalte()方法使用
+.infalte()有多个重载的方法。
+
+
+1
+2
+3
+4
+
+
+inflate(int resource, ViewGroup root)
+inflate(int resource, ViewGroup root, boolean attachToRoot)
+inflate(XmlPullParser parser, ViewGroup root)
+inflate(XmlPullParser parser, ViewGroup root, boolean attachToRoot)
+
+
+看源码可知，四个方法，前三个其实都是调用的第四个。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://isyuanpeng.github.io/posts/tech/android-learning-9/" /><meta property="og:image" content="https://isyuanpeng.github.io/papermod-cover.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-04-06T10:25:28&#43;08:00" />
+<meta property="article:modified_time" content="2022-04-06T10:25:28&#43;08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://isyuanpeng.github.io/papermod-cover.png"/>
+
+<meta name="twitter:title" content="Android Learning 9"/>
+<meta name="twitter:description" content="知识填充
+布局相关
+LayoutInflater
+在绑定Fragment的时候我们会用到LayoutInflater.inflate(), 该方法返回一个View对象，所以我们可以知道该方法的作用就是将xml布局文件加载为View或者ViewGroup对象。而LayoutInflater就是一个总的工具，有多个inflate方法。
+获取LayoutInflater
+
+
+1
+2
+3
+
+
+LayoutInflater inflater1 = LayoutInflater.from(this);  
+LayoutInflater inflater2 = getLayoutInflater();  
+LayoutInflater inflater3 = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+
+
+后面两种其实走的都是第一种方法。this就是context。
+.infalte()方法使用
+.infalte()有多个重载的方法。
+
+
+1
+2
+3
+4
+
+
+inflate(int resource, ViewGroup root)
+inflate(int resource, ViewGroup root, boolean attachToRoot)
+inflate(XmlPullParser parser, ViewGroup root)
+inflate(XmlPullParser parser, ViewGroup root, boolean attachToRoot)
+
+
+看源码可知，四个方法，前三个其实都是调用的第四个。"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://isyuanpeng.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Android Learning 9",
+      "item": "https://isyuanpeng.github.io/posts/tech/android-learning-9/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Android Learning 9",
+  "name": "Android Learning 9",
+  "description": "知识填充 布局相关 LayoutInflater 在绑定Fragment的时候我们会用到LayoutInflater.inflate(), 该方法返回一个View对象，所以我们可以知道该方法的作用就是将xml布局文件加载为View或者ViewGroup对象。而LayoutInflater就是一个总的工具，有多个inflate方法。\n获取LayoutInflater 1 2 3 LayoutInflater inflater1 = LayoutInflater.from(this); LayoutInflater inflater2 = getLayoutInflater(); LayoutInflater inflater3 = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE); 后面两种其实走的都是第一种方法。this就是context。\n.infalte()方法使用 .infalte()有多个重载的方法。\n1 2 3 4 inflate(int resource, ViewGroup root) inflate(int resource, ViewGroup root, boolean attachToRoot) inflate(XmlPullParser parser, ViewGroup root) inflate(XmlPullParser parser, ViewGroup root, boolean attachToRoot) 看源码可知，四个方法，前三个其实都是调用的第四个。\n",
+  "keywords": [
+    "android"
+  ],
+  "articleBody": "知识填充 布局相关 LayoutInflater 在绑定Fragment的时候我们会用到LayoutInflater.inflate(), 该方法返回一个View对象，所以我们可以知道该方法的作用就是将xml布局文件加载为View或者ViewGroup对象。而LayoutInflater就是一个总的工具，有多个inflate方法。\n获取LayoutInflater 1 2 3 LayoutInflater inflater1 = LayoutInflater.from(this); LayoutInflater inflater2 = getLayoutInflater(); LayoutInflater inflater3 = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE); 后面两种其实走的都是第一种方法。this就是context。\n.infalte()方法使用 .infalte()有多个重载的方法。\n1 2 3 4 inflate(int resource, ViewGroup root) inflate(int resource, ViewGroup root, boolean attachToRoot) inflate(XmlPullParser parser, ViewGroup root) inflate(XmlPullParser parser, ViewGroup root, boolean attachToRoot) 看源码可知，四个方法，前三个其实都是调用的第四个。\n1 2 public View inflate(XmlPullParser parser, ViewGroup root, boolean attachToRoot) { } 可以看到第一个参数是一个Xml解析器，其实就是去解析布局的xml文件，这里使用的是Pull解析器。下面来看一下源码。\n1 2 3 4 5 6 7 8 9 10 11 12 int type; while ((type = parser.next()) != XmlPullParser.START_TAG \u0026\u0026 type != XmlPullParser.END_DOCUMENT) { // Empty } if (type != XmlPullParser.START_TAG) { throw new InflateException(parser.getPositionDescription() + \": No start tag found!\"); } final String name = parser.getName(); 第一段代码就是去找xml解析器中的开始节点，找到后获得名字，这个name就是xml文件的根节点的name。\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 if (TAG_MERGE.equals(name)) { if (root == null || !attachToRoot) { throw new InflateException(\" can be used only with a valid \" + \"ViewGroup root and attachToRoot=true\"); } rInflate(parser, root, inflaterContext, attrs, false); } else { // Temp is the root view that was found in the xml final View temp = createViewFromTag(root, name, inflaterContext, attrs); ViewGroup.LayoutParams params = null; if (root != null) { if (DEBUG) { System.out.println(\"Creating params from root: \" + root); } // Create layout params that match root, if supplied params = root.generateLayoutParams(attrs); if (!attachToRoot) { // Set the layout params for temp if we are not // attaching. (If we are, we use addView, below) temp.setLayoutParams(params); } } if (DEBUG) { System.out.println(\"-----\u003e start inflating children\"); } // Inflate all children under temp against its context. rInflateChildren(parser, temp, attrs, true); if (DEBUG) { System.out.println(\"-----\u003e done inflating children\"); } } A. 这段代码首先就是判断了一下根节点是不是merge，如果根节点是merge，又没有传root，attachToRoot又是false就会直接抛异常。所以说如果是merge为根节点的话，则需要传root参数或者设置attachRoot为true。\n如果merge节点并且传了root或者attachToRoot设置为true后，则直接进入递归方法rInflate()去继续解析布局，最终返回result。\nB. 如果不是merge根节点，大部分的情况。首先调用createViewFromTag创建了个temp，这个temp就是布局根View，后续又是调用递归方法rInflateChildren来完成子节点的View的创建。\nC. 值得注意的是在代码的最后有关于\n1 2 3 4 5 6 7 8 9 10 11 // We are supposed to attach all the views we found (int temp) // to root. Do that now. if (root != null \u0026\u0026 attachToRoot) { root.addView(temp, params); } // Decide whether to return the root that was passed in or the // top view found in xml. if (root == null || !attachToRoot) { result = temp; } root != null \u0026\u0026 attchToRoot 传进来的xml文件布局解析完成后会作为子View添加到root中，最终返回root。\nroot == null \u0026\u0026 !attchToRoot 传进来的xml文件布局解析完成后成为一个View直接返回，注意看代码中，返回并没有返回params，也就是说布局根View的android:layout_xxx属性会被忽略，即android:layout_xx属性只有依附在某个ViewGroup中才能生效。\nroot != null \u0026\u0026 !attchToRoot 传进来的xml文件会被加载成为一个View直接返回。布局根View中的android:layout_xx会生效。\n最后再来看一下加载xml布局的原理，我们可以看到有递归函数 rInflate 来递归完成整体的加载。其中每一步递归都是获取节点的名字，然后创建对应的实例，生成View，并且将该View添加到它的父View上。最终就返回了一个完整的View。\nShape 对于shape标签，如果有多个布局文件拥有同一个背景的话，可以考虑写个shape标签的xml来进行代码复用。相对于使用png图片来说，使用shape可以减少安装包的大小，而且能够更好的适配不同的手机。\n：shape可以指定形状，一共有四个形状，矩形: rectangle, 椭圆: oval, 线: line, 圆环: ring 1 android:shape=[\"rectangle\" | \"oval\" | \"line\" | \"ring\"] \u003e ：绘制图形的大小 1 2 3 ",
+  "wordCount" : "525",
+  "inLanguage": "en",
+  "datePublished": "2022-04-06T10:25:28+08:00",
+  "dateModified": "2022-04-06T10:25:28+08:00",
+  "author":[{
+    "@type": "Person",
+    "name": "YuanPeng11"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://isyuanpeng.github.io/posts/tech/android-learning-9/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Isyuanpeng",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://isyuanpeng.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://isyuanpeng.github.io/" accesskey="h" title="Isyuanpeng (Alt + H)">Isyuanpeng</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://isyuanpeng.github.io/archives" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/about" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/series/" title="Series">
+                    <span>Series</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://isyuanpeng.github.io/">Home</a>&nbsp;»&nbsp;<a href="https://isyuanpeng.github.io/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Android Learning 9
+    </h1>
+    <div class="post-meta">&lt;span title=&#39;2022-04-06 10:25:28 &#43;0800 CST&#39;&gt;April 6, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;3 min&amp;nbsp;·&amp;nbsp;YuanPeng11
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#%e7%9f%a5%e8%af%86%e5%a1%ab%e5%85%85" aria-label="知识填充">知识填充</a><ul>
+                            
+                    <li>
+                        <a href="#%e5%b8%83%e5%b1%80%e7%9b%b8%e5%85%b3" aria-label="布局相关">布局相关</a><ul>
+                            
+                    <li>
+                        <a href="#layoutinflater" aria-label="LayoutInflater">LayoutInflater</a><ul>
+                            
+                    <li>
+                        <a href="#%e8%8e%b7%e5%8f%96layoutinflater" aria-label="获取LayoutInflater">获取LayoutInflater</a></li>
+                    <li>
+                        <a href="#infalte%e6%96%b9%e6%b3%95%e4%bd%bf%e7%94%a8" aria-label=".infalte()方法使用">.infalte()方法使用</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#shape" aria-label="Shape">Shape</a></li>
+                    <li>
+                        <a href="#textwatcher" aria-label="TextWatcher">TextWatcher</a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script>
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+  <div class="post-content"><h2 id="知识填充">知识填充<a hidden class="anchor" aria-hidden="true" href="#知识填充">#</a></h2>
+<h3 id="布局相关">布局相关<a hidden class="anchor" aria-hidden="true" href="#布局相关">#</a></h3>
+<h4 id="layoutinflater">LayoutInflater<a hidden class="anchor" aria-hidden="true" href="#layoutinflater">#</a></h4>
+<p>在绑定Fragment的时候我们会用到LayoutInflater.inflate(), 该方法返回一个View对象，所以我们可以知道该方法的作用就是将xml布局文件加载为View或者ViewGroup对象。而LayoutInflater就是一个总的工具，有多个inflate方法。</p>
+<h5 id="获取layoutinflater">获取LayoutInflater<a hidden class="anchor" aria-hidden="true" href="#获取layoutinflater">#</a></h5>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>LayoutInflater inflater1 = LayoutInflater.from(this);  
+</span></span><span style="display:flex;"><span>LayoutInflater inflater2 = getLayoutInflater();  
+</span></span><span style="display:flex;"><span>LayoutInflater inflater3 = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>后面两种其实走的都是第一种方法。this就是context。</p>
+<h5 id="infalte方法使用">.infalte()方法使用<a hidden class="anchor" aria-hidden="true" href="#infalte方法使用">#</a></h5>
+<p>.infalte()有多个重载的方法。</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>inflate(int resource, ViewGroup root)
+</span></span><span style="display:flex;"><span>inflate(int resource, ViewGroup root, boolean attachToRoot)
+</span></span><span style="display:flex;"><span>inflate(XmlPullParser parser, ViewGroup root)
+</span></span><span style="display:flex;"><span>inflate(XmlPullParser parser, ViewGroup root, boolean attachToRoot)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>看源码可知，四个方法，前三个其实都是调用的第四个。</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>public View inflate(XmlPullParser parser, ViewGroup root, boolean attachToRoot) {
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以看到第一个参数是一个Xml解析器，其实就是去解析布局的xml文件，这里使用的是Pull解析器。下面来看一下源码。</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>    int type;
+</span></span><span style="display:flex;"><span>    while ((type = parser.next()) != XmlPullParser.START_TAG &amp;&amp;
+</span></span><span style="display:flex;"><span>            type != XmlPullParser.END_DOCUMENT) {
+</span></span><span style="display:flex;"><span>        // Empty
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    if (type != XmlPullParser.START_TAG) {
+</span></span><span style="display:flex;"><span>        throw new InflateException(parser.getPositionDescription()
+</span></span><span style="display:flex;"><span>                + &#34;: No start tag found!&#34;);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    final String name = parser.getName();
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>第一段代码就是去找xml解析器中的开始节点，找到后获得名字，这个name就是xml文件的根节点的name。</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>if (TAG_MERGE.equals(name)) {
+</span></span><span style="display:flex;"><span>    if (root == null || !attachToRoot) {
+</span></span><span style="display:flex;"><span>        throw new InflateException(&#34;&lt;merge /&gt; can be used only with a valid &#34;
+</span></span><span style="display:flex;"><span>                + &#34;ViewGroup root and attachToRoot=true&#34;);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    rInflate(parser, root, inflaterContext, attrs, false);
+</span></span><span style="display:flex;"><span>} else {
+</span></span><span style="display:flex;"><span>    // Temp is the root view that was found in the xml
+</span></span><span style="display:flex;"><span>    final View temp = createViewFromTag(root, name, inflaterContext, attrs);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    ViewGroup.LayoutParams params = null;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    if (root != null) {
+</span></span><span style="display:flex;"><span>        if (DEBUG) {
+</span></span><span style="display:flex;"><span>            System.out.println(&#34;Creating params from root: &#34; +
+</span></span><span style="display:flex;"><span>                    root);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        // Create layout params that match root, if supplied
+</span></span><span style="display:flex;"><span>        params = root.generateLayoutParams(attrs);
+</span></span><span style="display:flex;"><span>        if (!attachToRoot) {
+</span></span><span style="display:flex;"><span>            // Set the layout params for temp if we are not
+</span></span><span style="display:flex;"><span>            // attaching. (If we are, we use addView, below)
+</span></span><span style="display:flex;"><span>            temp.setLayoutParams(params);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    if (DEBUG) {
+</span></span><span style="display:flex;"><span>        System.out.println(&#34;-----&gt; start inflating children&#34;);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    // Inflate all children under temp against its context.
+</span></span><span style="display:flex;"><span>    rInflateChildren(parser, temp, attrs, true);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    if (DEBUG) {
+</span></span><span style="display:flex;"><span>        System.out.println(&#34;-----&gt; done inflating children&#34;);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>A. 这段代码首先就是判断了一下根节点是不是merge，如果根节点是merge，又没有传root，attachToRoot又是false就会直接抛异常。所以说如果是merge为根节点的话，则需要传root参数或者设置attachRoot为true。</p>
+<p>如果merge节点并且传了root或者attachToRoot设置为true后，则直接进入递归方法rInflate()去继续解析布局，最终返回result。</p>
+<p>B. 如果不是merge根节点，大部分的情况。首先调用createViewFromTag创建了个temp，这个temp就是布局根View，后续又是调用递归方法rInflateChildren来完成子节点的View的创建。</p>
+<p>C. 值得注意的是在代码的最后有关于</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>    // We are supposed to attach all the views we found (int temp)
+</span></span><span style="display:flex;"><span>    // to root. Do that now.
+</span></span><span style="display:flex;"><span>    if (root != null &amp;&amp; attachToRoot) {
+</span></span><span style="display:flex;"><span>        root.addView(temp, params);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    // Decide whether to return the root that was passed in or the
+</span></span><span style="display:flex;"><span>    // top view found in xml.
+</span></span><span style="display:flex;"><span>    if (root == null || !attachToRoot) {
+</span></span><span style="display:flex;"><span>        result = temp;
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol>
+<li>root != null &amp;&amp; attchToRoot</li>
+</ol>
+<p>传进来的xml文件布局解析完成后会作为子View添加到root中，最终返回root。</p>
+<ol start="2">
+<li>root == null &amp;&amp; !attchToRoot</li>
+</ol>
+<p>传进来的xml文件布局解析完成后成为一个View直接返回，注意看代码中，返回并没有返回params，也就是说布局根View的android:layout_xxx属性会被忽略，即android:layout_xx属性只有依附在某个ViewGroup中才能生效。</p>
+<ol start="3">
+<li>root != null &amp;&amp; !attchToRoot</li>
+</ol>
+<p>传进来的xml文件会被加载成为一个View直接返回。布局根View中的android:layout_xx会生效。</p>
+<p>最后再来看一下加载xml布局的原理，我们可以看到有递归函数 <em>rInflate</em> 来递归完成整体的加载。其中每一步递归都是获取节点的名字，然后创建对应的实例，生成View，并且将该View添加到它的父View上。最终就返回了一个完整的View。</p>
+<h4 id="shape">Shape<a hidden class="anchor" aria-hidden="true" href="#shape">#</a></h4>
+<p>对于shape标签，如果有多个布局文件拥有同一个背景的话，可以考虑写个shape标签的xml来进行代码复用。相对于使用png图片来说，使用shape可以减少安装包的大小，而且能够更好的适配不同的手机。</p>
+<ol>
+<li><shape>：shape可以指定形状，一共有四个形状，矩形: rectangle, 椭圆: oval, 线: line, 圆环: ring</li>
+</ol>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>android:shape=[&#34;rectangle&#34; | &#34;oval&#34; | &#34;line&#34; | &#34;ring&#34;] &gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="2">
+<li><size>：绘制图形的大小</li>
+</ol>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>    &lt;size
+</span></span><span style="display:flex;"><span>        android:width=&#34;integer&#34;
+</span></span><span style="display:flex;"><span>        android:height=&#34;integer&#34; /&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="3">
+<li><solid>: 填充颜色</li>
+</ol>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>    &lt;solid
+</span></span><span style="display:flex;"><span>        android:color=&#34;color&#34; /&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="4">
+<li><corners>：圆角大小</li>
+</ol>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>    &lt;corners
+</span></span><span style="display:flex;"><span>        android:radius=&#34;integer&#34;
+</span></span><span style="display:flex;"><span>        android:topLeftRadius=&#34;integer&#34;
+</span></span><span style="display:flex;"><span>        android:topRightRadius=&#34;integer&#34;
+</span></span><span style="display:flex;"><span>        android:bottomLeftRadius=&#34;integer&#34;
+</span></span><span style="display:flex;"><span>        android:bottomRightRadius=&#34;integer&#34; /&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="5">
+<li><stroke>: 描边的颜色及宽度</li>
+</ol>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>    &lt;stroke
+</span></span><span style="display:flex;"><span>        android:width=&#34;integer&#34;
+</span></span><span style="display:flex;"><span>        android:color=&#34;color&#34;
+</span></span><span style="display:flex;"><span>        android:dashWidth=&#34;integer&#34;
+</span></span><span style="display:flex;"><span>        android:dashGap=&#34;integer&#34; /&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="6">
+<li><gradient>: 渐变背景颜色</li>
+</ol>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>    &lt;gradient
+</span></span><span style="display:flex;"><span>        android:angle=&#34;integer&#34;
+</span></span><span style="display:flex;"><span>        android:centerX=&#34;integer&#34;
+</span></span><span style="display:flex;"><span>        android:centerY=&#34;integer&#34;
+</span></span><span style="display:flex;"><span>        android:centerColor=&#34;integer&#34;
+</span></span><span style="display:flex;"><span>        android:endColor=&#34;color&#34;
+</span></span><span style="display:flex;"><span>        android:gradientRadius=&#34;integer&#34;
+</span></span><span style="display:flex;"><span>        android:startColor=&#34;color&#34;
+</span></span><span style="display:flex;"><span>        android:type=[&#34;linear&#34; | &#34;radial&#34; | &#34;sweep&#34;]
+</span></span><span style="display:flex;"><span>        android:useLevel=[&#34;true&#34; | &#34;false&#34;] /&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="textwatcher">TextWatcher<a hidden class="anchor" aria-hidden="true" href="#textwatcher">#</a></h4>
+<p>顾名思义，文件监听器。就是用来监听TextView的变化，一共有3个重写方法。</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>    // 在文本变化之前 start开始的位置，count变化的字符长度 after变化后的位置
+</span></span><span style="display:flex;"><span>    public void beforeTextChanged(CharSequence s, int start,
+</span></span><span style="display:flex;"><span>                                  int count, int after);
+</span></span><span style="display:flex;"><span>    // 文本变化
+</span></span><span style="display:flex;"><span>    public void onTextChanged(CharSequence s, int start, int before, int count);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    // 文本变化之后调用  s为文本变化后的结果
+</span></span><span style="display:flex;"><span>    public void afterTextChanged(Editable s);
+</span></span></code></pre></td></tr></table>
+</div>
+</div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://isyuanpeng.github.io/tags/android/">Android</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://isyuanpeng.github.io/posts/other/effective-java-notes/">
+    <span class="title">« Prev Page</span>
+    <br>
+    <span>Effective Java Reading Notes - 1</span>
+  </a>
+  <a class="next" href="https://isyuanpeng.github.io/posts/tech/android-learning-8/">
+    <span class="title">Next Page »</span>
+    <br>
+    <span>Android Learning 8</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://isyuanpeng.github.io/">Isyuanpeng</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = 'copy';
+
+        function copyingDone() {
+            copybutton.innerText = 'copied!';
+            setTimeout(() => {
+                copybutton.innerText = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

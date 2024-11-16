@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Android on Isyuanpeng</title>
+    <link>https://isyuanpeng.github.io/tags/android/</link>
+    <description>Recent content in Android on Isyuanpeng</description>
+    <image>
+      <url>https://isyuanpeng.github.io/papermod-cover.png</url>
+      <link>https://isyuanpeng.github.io/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Wed, 06 Apr 2022 10:25:28 +0800</lastBuildDate><atom:link href="https://isyuanpeng.github.io/tags/android/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Android Learning 9</title>
+      <link>https://isyuanpeng.github.io/posts/tech/android-learning-9/</link>
+      <pubDate>Wed, 06 Apr 2022 10:25:28 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/android-learning-9/</guid>
+      <description>&lt;h2 id=&#34;知识填充&#34;&gt;知识填充&lt;/h2&gt;
+&lt;h3 id=&#34;布局相关&#34;&gt;布局相关&lt;/h3&gt;
+&lt;h4 id=&#34;layoutinflater&#34;&gt;LayoutInflater&lt;/h4&gt;
+&lt;p&gt;在绑定Fragment的时候我们会用到LayoutInflater.inflate(), 该方法返回一个View对象，所以我们可以知道该方法的作用就是将xml布局文件加载为View或者ViewGroup对象。而LayoutInflater就是一个总的工具，有多个inflate方法。&lt;/p&gt;
+&lt;h5 id=&#34;获取layoutinflater&#34;&gt;获取LayoutInflater&lt;/h5&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;LayoutInflater inflater1 = LayoutInflater.from(this);  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;LayoutInflater inflater2 = getLayoutInflater();  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;LayoutInflater inflater3 = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;后面两种其实走的都是第一种方法。this就是context。&lt;/p&gt;
+&lt;h5 id=&#34;infalte方法使用&#34;&gt;.infalte()方法使用&lt;/h5&gt;
+&lt;p&gt;.infalte()有多个重载的方法。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;inflate(int resource, ViewGroup root)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;inflate(int resource, ViewGroup root, boolean attachToRoot)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;inflate(XmlPullParser parser, ViewGroup root)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;inflate(XmlPullParser parser, ViewGroup root, boolean attachToRoot)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;看源码可知，四个方法，前三个其实都是调用的第四个。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Android Learning 8</title>
+      <link>https://isyuanpeng.github.io/posts/tech/android-learning-8/</link>
+      <pubDate>Fri, 01 Apr 2022 10:27:47 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/android-learning-8/</guid>
+      <description>&lt;p&gt;今日份学习，综合之前学习过的知识，学习google推出的总结性APP - Sunflower&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/android/sunflower&#34;&gt;https://github.com/android/sunflower&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;查漏补缺的同时将此APP进行本地化适配，因为使用的是wikimedia的源获取数据。&lt;/p&gt;
+&lt;h2 id=&#34;sunflower&#34;&gt;SunFlower&lt;/h2&gt;
+&lt;p&gt;首先拉代码，跑起来，忘记有代码，然后看一下整个APP的结构。&lt;/p&gt;
+&lt;p&gt;首页的上半部分，一个title + header是固定，这块可以写在Activity中，header中有两个button，点击切换Fragment。&lt;/p&gt;
+&lt;p&gt;我的花园-Fragment: 用了一个GridView来展示添加的花园，这块的数据应该是是存入数据库的。&lt;/p&gt;
+&lt;p&gt;我的花园-植物详情-Fragment：点击我的植物后会进入到植物详情的Fragment，展示植物的详细信息，有一个返回按钮和分享按钮。&lt;/p&gt;
+&lt;p&gt;植物目录-Fragment: 同样是一个GridView来展示植物列表，这块的数据应该是从网络上拉取，缓存到数据库的。&lt;/p&gt;
+&lt;p&gt;植物目录-植物详情-Fragment：植物详情的Fragment就是展示从wiki上拉下来的植物数据，和我的花园的植物详情可以用一个Fragment。&lt;/p&gt;
+&lt;p&gt;植物目录-植物详情-添加植物-button：植物图片的下方有一个加号，可以进行植物的添加，植物添加后入库，然后我的花园页面显示。&lt;/p&gt;
+&lt;p&gt;还有一个给自己添加的植物浇水的功能，由于等待浇水的时间都比较长，所以先开发这些，后面再来浇水。梳理完毕，剩下的就是开整，使用现成的项目学习的话比较省事的是不用寻找静态资源。&lt;/p&gt;
+&lt;h2 id=&#34;igarden&#34;&gt;IGarden&lt;/h2&gt;
+&lt;p&gt;新建项目，起名就要IGarden吧，毕竟整个项目是个花园。为了方便，首先吧Sunflower需要的所有依赖以及静态资源全部导入。&lt;/p&gt;
+&lt;h3 id=&#34;coordinatorlayout&#34;&gt;CoordinatorLayout&lt;/h3&gt;
+&lt;p&gt;这个Layout是2015年I/O大会上发布的Android Design Support Library，主要就是更好的使用material design。CoordinatorLayout是库中的一个FrameLayout，继承自ViewGroup。&lt;/p&gt;
+&lt;p&gt;顾名思义，协调者布局。为啥叫协调者？有点懵逼。CoordinatorLayout是一个&amp;quot;super-powered FrameLayout&amp;quot;。看了不少博文，终于还是有一点理解了，协调者协调的是child之间的联动，比如说有一个TopBar, TopBar下面有一个RecyclerView，当RecyclerView被滑动的时候如果我想隐藏TopBar怎么办？这时候就可以用协调者布局了。&lt;/p&gt;
+&lt;p&gt;那CoordinatorLayout是如何做到协调的呢？在CoordinatorLayout内部，每一个child都必须有一个Behavior，CoordinatorLayout根据这个Behavior去进行协调。那么Behavior到底是啥呢？&lt;/p&gt;
+&lt;p&gt;其实Behavior里面有一系列的方法，如下面所示&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;onStartNestedScroll()， onNestedScrollAccepted()，onStopNestedScroll()，onNestedScroll()， onNestedPreScroll()，onNestedFling()，onNestedPreFling()
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;所以说怎么协调的就很明了了，实际上就是使用触摸操作来控制View的滑动(我自己的理解)。&lt;/p&gt;
+&lt;h4 id=&#34;nestedscrolling&#34;&gt;NestedScrolling&lt;/h4&gt;
+&lt;p&gt;在Behavior方法中，这些方法的都有一个Nested的的标志，这个Nested又是干什么的呢？不得不说，Android东西可真多。先看下面的博文，但是下面的博文又说先让了解时间分发机制。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.jianshu.com/p/aff5e82f0174&#34;&gt;https://www.jianshu.com/p/aff5e82f0174&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;android事件分发机制&#34;&gt;Android事件分发机制&lt;/h3&gt;
+&lt;p&gt;关于Android事件，最常见的应该就是点击事件吧，对于一个View可以设置它的点击事件监听器。但是除了这个，还有巨多事件，从手指接触屏幕到手指离开屏幕的这一过程产生的一系列事件都叫做事件列。&lt;/p&gt;
+&lt;p&gt;具体的有下面的几个：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;MotionEvent.ACTION_DOWN 按下View开始&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;MotionEvent.ACTION_UO 抬起View&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;MotionEvent.ACTION_MOVE 滑动View&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;MotionEvent.ACTION_CANCEL 结束时间，非人为原因&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;viewpager2&#34;&gt;ViewPager2&lt;/h3&gt;
+&lt;p&gt;有点难以理解Sunflower如何做到在两个fragment之间滑动的，所以看了代码，发现是使用了ViewPager2+TabLayout来实现的。整体的代码实现其实不难，下面直接上代码吧。&lt;/p&gt;
+&lt;p&gt;首先在布局文件中定义TabLayout和ViewPage2，在ViewPager中可以添加控件，到ViewPager2就不行了，只能和TabLayout平级。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 4
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 5
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 6
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 7
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 8
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 9
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;10
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;11
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;12
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;13
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;14
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;15
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;16
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;17
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;18
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;19
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;20
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;21
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;22
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;23
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;24
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;25
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;26
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;27
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;28
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;29
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &amp;lt;LinearLayout
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        android:layout_width=&amp;#34;match_parent&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        android:layout_height=&amp;#34;match_parent&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        android:orientation=&amp;#34;vertical&amp;#34;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;TextView
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:id=&amp;#34;@+id/header_title&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:layout_width=&amp;#34;match_parent&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:layout_height=&amp;#34;60dp&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:gravity=&amp;#34;center&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:text=&amp;#34;@string/app_name&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:textAppearance=&amp;#34;?attr/textAppearanceHeadline5&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:textColor=&amp;#34;@color/sunflower_white&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:textSize=&amp;#34;30sp&amp;#34; /&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;com.google.android.material.tabs.TabLayout
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:id=&amp;#34;@+id/tab_layout&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:layout_width=&amp;#34;match_parent&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:layout_height=&amp;#34;60dp&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            style=&amp;#34;@style/Widget.MaterialComponents.TabLayout.Colored&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            app:tabIconTint=&amp;#34;@drawable/tab_icon_color_selector&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            app:tabTextColor=&amp;#34;?attr/colorPrimaryDark&amp;#34; /&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;androidx.viewpager2.widget.ViewPager2
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:id=&amp;#34;@+id/view_pager&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:layout_width=&amp;#34;match_parent&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:layout_height=&amp;#34;match_parent&amp;#34; /&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &amp;lt;/LinearLayout&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;为了方便，直接使用了线性布局。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Android Learning 7</title>
+      <link>https://isyuanpeng.github.io/posts/tech/android-learning-7/</link>
+      <pubDate>Thu, 31 Mar 2022 17:45:16 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/android-learning-7/</guid>
+      <description>&lt;p&gt;今天学习Repository和WorkManager&lt;/p&gt;
+&lt;h2 id=&#34;repository&#34;&gt;Repository&lt;/h2&gt;
+&lt;p&gt;Repository pattern也是一种设计模式，叫做存储库模式。看一下官方的原文：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A repository mediates between data sources (such as persistent models, web services, and caches) and the rest of the app.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;大意就是一个Repository相当于在数据源(持久化实体类，网络服务，缓存)和app其余的服务之间的中间层。简而言之，就是提供一个数据操作代理层。调用者不需要知道数据是从哪来，如何处理，只需要使用数据即可。这样有几个好处：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;代码更容易维护，切换数据源的时候业务代码不需要更改&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;数据处理逻辑和业务逻辑分离，可以对这两个代码分别进行测试&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;减少代码重复&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;降低代码出错的几率&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;为什么要有repository&#34;&gt;为什么要有Repository&lt;/h3&gt;
+&lt;p&gt;经过前几天的学习，我们已经学习了ROOM以及DAO层数据的访问，那么还需要Repository干什么呢？通过上面的优点我们可以知道，避免直接访问数据。同事也解决了多数据源的问题，一个App的数据源可以是多个，数据库，接口等等。Repository对这两种情况进行封装，可以以一种统一的方式进行数据的拉取。&lt;/p&gt;
+&lt;p&gt;所以Repository其实是一种代码规范，并不是组件。&lt;/p&gt;
+&lt;h3 id=&#34;repository例子&#34;&gt;Repository例子&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 4
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 5
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 6
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 7
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 8
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 9
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;10
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;11
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;12
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;13
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;14
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-gdscript3&#34; data-lang=&#34;gdscript3&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;@&lt;/span&gt;Singleton
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; PlantRepository &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;@&lt;/span&gt;Inject constructor(private val plantDao: PlantDao) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;//&lt;/span&gt; use the dao
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    fun getPlants() &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; plantDao&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;getPlants()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    fun getPlant(plantId: &lt;span style=&#34;color:#a6e22e&#34;&gt;String&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; plantDao&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;getPlant(plantId)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    fun getPlantsWithGrowZoneNumber(growZoneNumber: Int) &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        plantDao&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;getPlantsWithGrowZoneNumber(growZoneNumber)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;//&lt;/span&gt; use the network service
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    fun requestApi(): Plant
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;项目中的实际运用&#34;&gt;项目中的实际运用&lt;/h3&gt;
+&lt;p&gt;在市局测温项目中，实际上对Repository的使用更为复杂，整体的结构为首先定义一层datasource的接口类，然后在定义datasource的实现类，这里仅仅定义了一个remotedatasource的实现类，根据命名我感觉原本的架构想法应该是对于数据调接口一个实现类，数据库操作一个实现类。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Android Learning 6</title>
+      <link>https://isyuanpeng.github.io/posts/tech/android-learning-6/</link>
+      <pubDate>Wed, 30 Mar 2022 15:48:57 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/android-learning-6/</guid>
+      <description>&lt;p&gt;昨日主要学习了ROOM和协程，今天补充一些协程的知识，并且学习RecyclerView, Adapter和WorkManager。&lt;/p&gt;
+&lt;h2 id=&#34;recyclerview&#34;&gt;RecyclerView&lt;/h2&gt;
+&lt;p&gt;在app中，有很多地方都需要用到列表来展示多个item，android提供了RecyclerView来支持大型列表，并且RecyclerView支持滑动，在显示有限个数量的item后，剩下的item需要滑动来获取。今天在昨天的睡眠质量的app的基础上将首页的历史记录改成使用RecyclerView来展示。&lt;/p&gt;
+&lt;h3 id=&#34;adapter&#34;&gt;Adapter&lt;/h3&gt;
+&lt;h4 id=&#34;适配器模式&#34;&gt;适配器模式&lt;/h4&gt;
+&lt;p&gt;在Android的学习中，有很多的设计模式可以学习，这次来到了适配器模式。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;定义：用包装类来包装不兼容的对象，将一个类的接口转换成客户希望的另外一个接口。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;举一个所有博文中都会举的一个例子，比如说在国际旅行的时候，在不同的国家充电器的规格都不一样，如果想要充电的话就需要转换器，那么这个转换器就相当于一个中间层，这个中间层就是Adapter层，通过这层来进行一个接口的转换达到兼容的目的。&lt;/p&gt;
+&lt;p&gt;关于具体的思想在下面的慢慢使用中体会&lt;/p&gt;
+&lt;h3 id=&#34;recyclerview的使用&#34;&gt;RecyclerView的使用&lt;/h3&gt;
+&lt;p&gt;Step 1: 将所需要使用RecyclerView的布局添加RecyclerView&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;4
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;5
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;6
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;7
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;8
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-gdscript3&#34; data-lang=&#34;gdscript3&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;androidx&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;recyclerview&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;widget&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;RecyclerView
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        android:id&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;@+id/sleep_list&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        android:layout_width&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;0dp&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        android:layout_height&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;0dp&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        app:layout_constraintBottom_toTopOf&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;@+id/clear_button&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        app:layout_constraintEnd_toEndOf&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;parent&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        app:layout_constraintStart_toStartOf&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;parent&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        app:layout_constraintTop_toBottomOf&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;@+id/stop_button&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        app:layoutManager&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;androidx.recyclerview.widget.LinearLayoutManager&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Step 2：创建单个的Item的View，这里是TextView&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Android Learning 5</title>
+      <link>https://isyuanpeng.github.io/posts/tech/android-learning-5/</link>
+      <pubDate>Tue, 29 Mar 2022 17:47:49 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/android-learning-5/</guid>
+      <description>&lt;p&gt;今天学习android的数据库和协程&lt;/p&gt;
+&lt;h2 id=&#34;room&#34;&gt;ROOM&lt;/h2&gt;
+&lt;p&gt;ROOM类似于JPA，能够定义DAO层使用预置的方法进行数据的操作。ROOM主要包含下面三个组件：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Database数据库类: 用于保存数据库并作为应用持久性数据底层连接的主要访问点。其实我感觉Database的类就是提供了Dao层的实例。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Entity实体类：用于表示应用的数据库中的表。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Dao类：提供您的应用可用于查询、更新、插入和删除数据库中的数据的方法。类似于Spring中的Dao层，定义了操作数据库的方法。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;entity&#34;&gt;Entity&lt;/h3&gt;
+&lt;p&gt;实体类就是我们常见的实体类，使用的注解也和JPA类似&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;@Entity(tableName = &amp;ldquo;users&amp;rdquo;)：该注解说明该类是一个实体类，并且关联了users的表&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;@PrimaryKey：用于字段上，说明该字段是主键&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;@ColumnInfo(name = &amp;ldquo;last_name&amp;rdquo;)：用于字段上，绑定实体类中的属性和表中的字段&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;4
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;5
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;@Entity(tableName = &amp;#34;users&amp;#34;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;data class User (
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    @PrimaryKey val id: Int,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    @ColumnInfo(name = &amp;#34;first_name&amp;#34;) val firstName: String?,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    @ColumnInfo(name = &amp;#34;last_name&amp;#34;) val lastName: String?
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;dao&#34;&gt;Dao&lt;/h3&gt;
+&lt;p&gt;在Dao类中定义方法来操作数据库。下面是一个简单样例：&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Android Learning 4</title>
+      <link>https://isyuanpeng.github.io/posts/tech/android-learning-4/</link>
+      <pubDate>Mon, 28 Mar 2022 19:14:32 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/android-learning-4/</guid>
+      <description>&lt;h2 id=&#34;技术学习&#34;&gt;技术学习&lt;/h2&gt;
+&lt;p&gt;今日的技术学习内容为ViewModel和LiveData，这部分的内容相当于就是Android的架构学习，了解一个Android项目由哪些部分组成，如何去按照规范分层编写代码。&lt;/p&gt;
+&lt;h3 id=&#34;android架构&#34;&gt;Android架构&lt;/h3&gt;
+&lt;h4 id=&#34;mvvmmodel-view-viewmodel&#34;&gt;MVVM(Model-View-ViewModel)&lt;/h4&gt;
+&lt;p&gt;Google 2015年I/O大会上推出了DataBinding的框架，使用了MVVM的模式，MVVM的思想就是从APP的业务逻辑中分离数据持久层。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Model: 实体类模型。Model提供了数据提取接口供ViewModel使用，经过数据转换和操作最终映射绑定到View层的某个UI元素的属性上。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;View: 对应Activity和XML布局文件。不进行业务代码的编码，主要作用初始化控件，处理事件。简单地说：View层不做任何业务逻辑、不涉及操作数据、不处理数据，UI和数据严格的分开。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;ViewModel: 负责完成View和Model之间的交互。ViewModel只做和业务逻辑和业务数据相关的事，不做任何和UI相关的事情，ViewModel 层不会持有任何控件的引用，更不会在ViewModel中通过UI控件的引用去做更新UI的事情。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://tech.meituan.com/2016/11/11/android-mvvm.html&#34;&gt;https://tech.meituan.com/2016/11/11/android-mvvm.html&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&#34;aacandroid-architecture-components&#34;&gt;AAC(Android Architecture Components)&lt;/h4&gt;
+&lt;p&gt;Google 2017年I/O大会上发布了AAC，个人感觉就是在上述MVVM的基础上封装好了所有实现的组件，开发者仅需调用即可。其包含一下框架或者组件:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;ROOM: 类似于JPA的持久层框架，用于数据的持久化解决方案。&lt;/li&gt;
+&lt;li&gt;WorkManager: 管理后台任务，类似于一个框架去管理后台的Service。&lt;/li&gt;
+&lt;li&gt;Lifecycle: 存储生命周期状态并且允许其它组件访问。&lt;/li&gt;
+&lt;li&gt;ViewModel: 上面MVVM架构中的ViewModel的实现，专注于业务的处理。&lt;/li&gt;
+&lt;li&gt;LiveData: 使用LiveData构建数据对象，在数据改变的时候，UI改变。&lt;/li&gt;
+&lt;li&gt;Navigation：导航，负责页面的跳转。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;重点在于Room、ViewModel、LiveData、Navigation的使用，前面已经学习了Navigation，主要用于Fragment的跳转，可以定义不同的action，执行去执行该Action来进行不同Fragment的跳转。下面学习比较重要的ViewModel和LiveData。&lt;/p&gt;
+&lt;h3 id=&#34;livedata&#34;&gt;LiveData&lt;/h3&gt;
+&lt;h4 id=&#34;观察者模式&#34;&gt;观察者模式&lt;/h4&gt;
+&lt;p&gt;之前一直没有领悟到观察者模式的精髓，在Android中有很多地方都使用了观察者模式，比如，监听点击事件。对于观察者来说，它并不关心观察对象的数据是如何过来的，而只关心数据过来后进行怎样的处理。&lt;/p&gt;
+&lt;h4 id=&#34;livedata格式&#34;&gt;LiveData格式&lt;/h4&gt;
+&lt;p&gt;在写代码的时候根据固定的格式可以很轻松的写出LiveData的数据观察，ViewModel中定义LiveData，Fragment或者Activity中绑定ViewModel，然后监听LiveData的改变。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 4
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 5
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 6
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 7
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 8
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 9
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;10
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;11
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;12
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    // viewModel中定义LiveData 以及LiveData改变的处理逻辑
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    // 下面这段代码就是定义了一个游戏结束的flag，
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    private val _eventGameFinish = MutableLiveData&amp;lt;Boolean&amp;gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    val eventGameFinish: LiveData&amp;lt;Boolean&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        get() = _eventGameFinish
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    // 然后在fragment中监听LiveData的更新 根据LiveData中存储的flag进行不同的页面处理
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    viewModel.eventGameFinish.observe(viewLifecycleOwner, Observer { hasFinished -&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        if (hasFinished) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            gameFinished()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    })
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;在其中有几个点需要明确一下:&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Android Learning 3</title>
+      <link>https://isyuanpeng.github.io/posts/tech/android-learning-3/</link>
+      <pubDate>Tue, 22 Mar 2022 17:23:57 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/android-learning-3/</guid>
+      <description>&lt;p&gt;Android学习的第三篇文章，跟着google的官方教程来到了lesson2，开始进行Layout的学习。&lt;/p&gt;
+&lt;h2 id=&#34;viewgroups&#34;&gt;ViewGroups&lt;/h2&gt;
+&lt;p&gt;view的集合，构成了布局的结构。layout的构建使用有层级的&lt;em&gt;View&lt;/em&gt;和&lt;em&gt;ViewGroup&lt;/em&gt;对象。layout的结构如下：&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://developer.android.com/images/viewgroup_2x.png&#34; alt=&#34;layout&#34;  title=&#34;Layout&#34;  /&gt;
+&lt;/p&gt;
+&lt;h3 id=&#34;linearlayout&#34;&gt;LinearLayout&lt;/h3&gt;
+&lt;p&gt;线性布局，UI元素被水平或者垂直摆放。&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://developer.android.com/codelabs/kotlin-android-training-linear-layout/img/6ad9b15635c00d6.png&#34; alt=&#34;LinearLayout&#34;  title=&#34;LinearLayout&#34;  /&gt;
+&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;android:orientation: 布局方向，设置为水平或者垂直布局&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;horizontal: 水平，默认方向&lt;/li&gt;
+&lt;li&gt;vertical：垂直&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;android:layout_gravity: 子控件在父控件上的对齐方式&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;android:gravity: 控件内部的元素的对齐方式，支持多个方向，示例如下，下面的TextView中的text就在整个TextView的居中靠下的方向:&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;4
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;5
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;6
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &amp;lt;TextView
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        android:layout_width=&amp;#34;match_parent&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        android:layout_height=&amp;#34;wrap_content&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        android:layout_weight=&amp;#34;1&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        android:gravity=&amp;#34;bottom|center&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        android:text=&amp;#34;TEST GRAVITY&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        android:textSize=&amp;#34;50sp&amp;#34;/&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;android:layout_weight: 子控件在父控件中的权重，说白了就是占多大，比如说一个LinearLayout有5个button，每个button的weight都是1，那么其orientation方向上均分5分，每个button占1/5&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;其它的参数例如margin，padding等等和其它控件都是相同的，不赘述&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;relativelayout&#34;&gt;RelativeLayout&lt;/h3&gt;
+&lt;p&gt;相对布局，以相对位置显示子控件。说白了，就是可以指定子控件相对于其它控件的位置，比如说有两个buttonA和buttonB，如果想要buttonB布局在buttonA的右下方45度的未知，那么直接可以用两行就可以解决了，不需要嵌套多个LinearLayout。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    android:layout_below=&amp;#34;@+id/buttonA&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    android:layout_centerHorizontal=&amp;#34;true&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;alignParentXx: 这个系列的参数都是相较于父控件而言的，相对于父控件停靠在哪个位置，Top, Bottom, left, right&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Android Learning 2</title>
+      <link>https://isyuanpeng.github.io/posts/tech/android-learning-2/</link>
+      <pubDate>Fri, 18 Mar 2022 10:20:34 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/android-learning-2/</guid>
+      <description>&lt;p&gt;今天先创建第一个app，跟的课程是google推荐的Developing Android Apps with Kotlin &lt;a href=&#34;https://classroom.udacity.com/courses/ud9012&#34;&gt;https://classroom.udacity.com/courses/ud9012&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;由于上面这个课程都是视频，所以也跟着google的kotlin android training get started补充理论知识&lt;/p&gt;
+&lt;h2 id=&#34;1-explore-android-studio&#34;&gt;1. Explore Android Studio&lt;/h2&gt;
+&lt;p&gt;上一篇文章已经讲过了gradle在项目中的结构，除了gradle外，其它的代码文件的分布也和java的项目类似，主要说一下其它文件夹。&lt;/p&gt;
+&lt;h3 id=&#34;reslayout&#34;&gt;res/layout&lt;/h3&gt;
+&lt;p&gt;android的布局文件夹，每一个Activity对应一个xml布局文件，在布局文件里面可以看到Activity的页面UI显示。&lt;/p&gt;
+&lt;h3 id=&#34;androidmanifestxml&#34;&gt;AndroidManifest.xml&lt;/h3&gt;
+&lt;p&gt;一直以为是mainfest，结果是manifest(清单)，列举了android系统运行app所需要的清单(Activity列表和权限)。&lt;/p&gt;
+&lt;h2 id=&#34;2-anatomy剖析-of-basic-android-project&#34;&gt;2. Anatomy(剖析) of Basic Android Project&lt;/h2&gt;
+&lt;p&gt;下面就开始进行第一个app的开发，app叫dice roller(投色子)，创建一个空项目后打开运行可以看到Hello World，就证明整个环境是通的。下面看代码。&lt;/p&gt;
+&lt;h3 id=&#34;mainactivity&#34;&gt;MainActivity&lt;/h3&gt;
+&lt;p&gt;首先看到的类是MainActivity，MainActivity就是Hello world这个页面的Activity。而页面的layout就是res/layout下的activity_main.xml，layout命名规则名称后置。对于Activity和layout中的xml的理解，和前端的html和js的关系类似，js处理交互逻辑，html显示页面UI，这里就是Activity处理交互逻辑，xml文件显示页面UI。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;class MainActivity : AppCompatActivity() { ...
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;可以看到MainActicity继承自AppCompatActivity，AppCompatAcitvity是Activity的一个子类，兼容性和新特性都很好。&lt;/p&gt;
+&lt;h3 id=&#34;oncreate&#34;&gt;onCreate()&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;override fun onCreate(savedInstanceState: Bundle?) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   super.onCreate(savedInstanceState)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   setContentView(R.layout.activity_main)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Activity不用构造器去初始化对象，而是用生命周期函数，onCreate()就是一个生命周期函数，它是Activity生命周期中的开始。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Android Learning 1</title>
+      <link>https://isyuanpeng.github.io/posts/tech/android-learning-1/</link>
+      <pubDate>Thu, 17 Mar 2022 10:35:42 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/android-learning-1/</guid>
+      <description>&lt;p&gt;2021年10月份成为兼职Android开发，之前一直没正式系统学习，现在开一个series来记录Android的学习。&lt;/p&gt;
+&lt;h2 id=&#34;gradle&#34;&gt;Gradle&lt;/h2&gt;
+&lt;p&gt;开始学习android的时候，相信gradle是大家绕不开的一个地方，因为android的环境很难调通，很多依赖下载也是状况百出。但是即使这样，很多人也是选择解决问题后就不去深究背后的原理，选择直接绕过gradle直接写项目，遂在android学习的第一章先学习gradle。
+题外话，最新版的springboot已经由maven改为使用gradle来进行构建项目。&lt;/p&gt;
+&lt;h3 id=&#34;什么是gradle&#34;&gt;什么是Gradle&lt;/h3&gt;
+&lt;p&gt;gradle本质上是个打包工具，结合了ant和maven的优点(没感觉出来)&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.zhihu.com/question/30432152&#34;&gt;https://www.zhihu.com/question/30432152&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;先把普通的gradle目录结构放出来，便于后面的理解。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;4
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;5
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;6
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;7
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;8
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  gradle:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    wrapper:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - gradle-wrapper.properties # 指定gradle版本号
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - gradle-wrapper.jar # 安装部署gradle包
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  - build.gradle # 构建脚本
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  - settings.gradle # 指定工程名
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  - gradlew.bat # windows安装gradle命令 去执行jar包
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  - gradlew # linux安装gradle命令 去执行jar包
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;gradle-wrappergradlew&#34;&gt;Gradle Wrapper(gradlew)&lt;/h3&gt;
+&lt;p&gt;直到现在见到Gradle Wrapper(包装纸)也很迷惑，不知道这是什么，有什么作用。下面先从官方的解释开始看起：&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

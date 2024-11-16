@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Question on Isyuanpeng</title>
+    <link>https://isyuanpeng.github.io/tags/question/</link>
+    <description>Recent content in Question on Isyuanpeng</description>
+    <image>
+      <url>https://isyuanpeng.github.io/papermod-cover.png</url>
+      <link>https://isyuanpeng.github.io/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Wed, 22 Jun 2022 10:18:49 +0800</lastBuildDate><atom:link href="https://isyuanpeng.github.io/tags/question/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Everyday Question</title>
+      <link>https://isyuanpeng.github.io/posts/other/everyday-question/</link>
+      <pubDate>Wed, 22 Jun 2022 10:18:49 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/other/everyday-question/</guid>
+      <description>&lt;h2 id=&#34;每日一问&#34;&gt;每日一问&lt;/h2&gt;
+&lt;h3 id=&#34;2022-06-21-setter--getter&#34;&gt;2022-06-21 setter &amp;amp; getter&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;setter 和 gettter 的实际意义&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;为什么要有setter &amp;amp; getter, public dot直接使用不是更方便快捷吗？ 而且setter和getter最终的效果也是读写&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;安全：程序可以选择只读或只写或读写&lt;/li&gt;
+&lt;li&gt;灵活：如果不仅仅只是读写属性值，可以自由变换&lt;/li&gt;
+&lt;li&gt;封装：隐藏内部实现细节&lt;/li&gt;
+&lt;li&gt;健壮：便于维护，扩展&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;由上一问，为什么public是不安全的呢？&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;如果写sdk的话，那么有些数据是不想对外修改的，这时候public的作用就体现出来了。如果只是业务代码则，权限体现的不太大。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;扩展：Java的四大特性 - 直接粘贴&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;封装&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;What：隐藏信息，保护数据访问。
+How：暴露有限接口和属性，需要编程语言提供访问控制的语法。
+Why：提高代码可维护性；降低接口复杂度，提高类的易用性。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;抽象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;What: 隐藏具体实现，使用者只需关心功能，无需关心实现。
+How: 通过接口类或者抽象类实现，特殊语法机制非必须。
+Why: 提高代码的扩展性、维护性；降低复杂度，减少细节负担。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;继承&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;What: 表示 is-a 关系，分为单继承和多继承。
+How: 需要编程语言提供特殊语法机制。例如 Java 的 “extends”，C++ 的 “:” 。
+Why: 解决代码复用问题。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;多态&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;What: 子类替换父类，在运行时调用子类的实现。
+How: 需要编程语言提供特殊的语法机制。比如继承、接口类、duck-typing。
+Why: 提高代码扩展性和复用性。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;2022-06-22-编译反编译&#34;&gt;2022-06-22 编译&amp;amp;反编译&lt;/h3&gt;
+&lt;p&gt;编译：源码 -&amp;gt; 字节码
+反编译：字节码 -&amp;gt; 源码&lt;/p&gt;
+&lt;h4 id=&#34;什么是字节码采用字节码的好处是什么&#34;&gt;什么是字节码，采用字节码的好处是什么？&lt;/h4&gt;
+&lt;p&gt;在 Java 中，JVM 可以理解的代码就叫做字节码（即扩展名为 .class 的文件），它不面向任何特定的处理器，只面向虚拟机。Java 语言通过字节码的方式，在一定程度上解决了传统解释型语言执行效率低的问题，同时又保留了解释型语言可移植的特点。所以 Java 程序运行时比较高效，而且，由于字节码并不针对一种特定的机器，因此，Java 程序无须重新编译便可在多种不同操作系统的计算机上运行。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

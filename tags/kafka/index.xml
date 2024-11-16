@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Kafka on Isyuanpeng</title>
+    <link>https://isyuanpeng.github.io/tags/kafka/</link>
+    <description>Recent content in Kafka on Isyuanpeng</description>
+    <image>
+      <url>https://isyuanpeng.github.io/papermod-cover.png</url>
+      <link>https://isyuanpeng.github.io/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 10 Jun 2022 18:09:16 +0800</lastBuildDate><atom:link href="https://isyuanpeng.github.io/tags/kafka/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>论如何在没有Kafkatool的情况下存活</title>
+      <link>https://isyuanpeng.github.io/posts/tech/kafka-commond/</link>
+      <pubDate>Fri, 10 Jun 2022 18:09:16 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/kafka-commond/</guid>
+      <description>&lt;h2 id=&#34;论如何在没有kafkatool的情况下存活&#34;&gt;论如何在没有Kafkatool的情况下存活&lt;/h2&gt;
+&lt;p&gt;众所周知，最近服务器加固的越来越高，导致有些服务器的kafka已经不能在kafkatool上访问，当然不排除是kafkatool有问题，但是无论是哪种情况，Kafka命令的使用已经迫在眉睫，所以总结一下。&lt;/p&gt;
+&lt;h3 id=&#34;kafka的安装&#34;&gt;kafka的安装&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://downloads.apache.org/kafka/&#34;&gt;https://downloads.apache.org/kafka/&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;安装 .tgz版本的，no src.tgz，src代表着source，下载下来的是资源，还需要gradle编译，有点麻烦。&lt;/p&gt;
+&lt;p&gt;安装完成后启动zookeeper，关于zookeeper，虽然我们有在使用，但是它是什么呢？为什么Kafka要用它？还有什么场景会使用Zk？关于Zk的问题有点多，后面单独开一个章节去学习Zk。&lt;/p&gt;
+&lt;p&gt;关于所有的脚本都在/bin目录下，我们可以看到命名非常清晰，我们可以直接上手使用。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;启动Zk命令&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;// -daemon代表后台运行 后面还可以指定特定的配置文件 如果没有指定就会默认使用 /config/zookeeper.properties
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; ./zookeeper-server-start.sh -daemon
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;启动kafka&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;// 和Zk同样的道理
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; ./kafka-server-start.sh -daemon
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;kafka的使用&#34;&gt;Kafka的使用&lt;/h3&gt;
+&lt;h4 id=&#34;topic的创建&#34;&gt;Topic的创建&lt;/h4&gt;
+&lt;h3 id=&#34;常用命令&#34;&gt;常用命令&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;查询kafka topic列表&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;./kafka-topics.sh &amp;ndash;list &amp;ndash;zookeeper localhost:&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

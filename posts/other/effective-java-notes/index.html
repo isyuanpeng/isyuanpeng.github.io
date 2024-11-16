@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Effective Java Reading Notes - 1 | Isyuanpeng</title>
+<meta name="keywords" content="java" />
+<meta name="description" content="Effective Java Reading Notes - 1
+最近感觉自己对于Java越来越陌生了，遂看EffectiveJava来温习一下。这本书就是一个清单，分为90个item。
+Introduction
+简介里面就简单说明了一下本书的重点，重点不在于如何写出高性能的Java代码，而是写出clear，correct，usable，robust，flexible，maintainable的代码。
+Creating and Destroying Objects
+Item 1: Consider static factory methods instead of constructors
+获取一个类的实例的传统方式是提供构造方法。另外一种方式是创建静态工厂方法，这里的工厂并不是设计模式中的工厂。之前有个同事喜欢使用静态工厂方法来创建类（Luzihao5），具体看到他的代码就可以知道。
+
+
+1
+2
+3
+4
+
+
+// 书中的样例使用了基本类型转换包装类的例子
+public static Boolean valueOf(boolean b) {
+    return b ? Boolean.TRUE : Boolean.FALSE;
+}
+
+
+下面列举一下静态工厂方法获取类实例的优点和缺点：
+
+advantages:
+
+自定义方法名称：构造方法只能是类名称，而静态工厂方法可以取具体含义的名称。这点确实，如果有多个构造函数的话，往往需要去找到底使用哪个构造函数来创建实例。
+不需要每次都创建一个新的对象：如上面的例子，每次只需要返回定义好的常量即可。
+静态方法返回的类型可以是定义返回类型的子类
+
+
+
+Item 6: Avoid creating unnecessary objects
+如题名，避免创建不必要的对象。
+
+以String作为例子：
+
+
+
+1
+2
+
+
+String s = new String(&#34;bikini&#34;);    // 创建一个新的实例
+String s = &#34;bikini&#34;;    // 从String池创建 以后无论创建多少个 bikini 都会指向第一次创建的地址
+
+
+
+以正则表达式的匹配为例：
+
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+
+
+// Performance can be greatly inproved
+static boolean isRomanNumberal(String s) {
+    return s.matches(&#34;^(?=.)&#34;)
+}
+
+// Reusing expensive object for improved performence
+public class RomanNumberals {
+    private static final Pattern ROMAN = Pattern.compile(&#34;^(?=.)&#34;);
+    static boolean isRomanNumeral(String s) {
+        return ROMAN.matchers(s).matches();
+    }
+}
+
+
+
+使用基础类型而不是包装类
+">
+<meta name="author" content="YuanPeng11">
+<link rel="canonical" href="https://isyuanpeng.github.io/posts/other/effective-java-notes/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7bdb1411b29ec9fed2b6395a081eabcb3262e7311bda855249d433c8b30a926e.css" integrity="sha256-e9sUEbKeyf7StjlaCB6ryzJi5zEb2oVSSdQzyLMKkm4=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.2eadbb982468c11a433a3e291f01326f2ba43f065e256bf792dbd79640a92316.js" integrity="sha256-Lq27mCRowRpDOj4pHwEybyukPwZeJWv3ktvXlkCpIxY="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://isyuanpeng.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://isyuanpeng.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://isyuanpeng.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://isyuanpeng.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://isyuanpeng.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<meta name="generator" content="Hugo 0.138.0">
+<link rel="alternate" hreflang="en" href="https://isyuanpeng.github.io/posts/other/effective-java-notes/" />
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Effective Java Reading Notes - 1" />
+<meta property="og:description" content="Effective Java Reading Notes - 1
+最近感觉自己对于Java越来越陌生了，遂看EffectiveJava来温习一下。这本书就是一个清单，分为90个item。
+Introduction
+简介里面就简单说明了一下本书的重点，重点不在于如何写出高性能的Java代码，而是写出clear，correct，usable，robust，flexible，maintainable的代码。
+Creating and Destroying Objects
+Item 1: Consider static factory methods instead of constructors
+获取一个类的实例的传统方式是提供构造方法。另外一种方式是创建静态工厂方法，这里的工厂并不是设计模式中的工厂。之前有个同事喜欢使用静态工厂方法来创建类（Luzihao5），具体看到他的代码就可以知道。
+
+
+1
+2
+3
+4
+
+
+// 书中的样例使用了基本类型转换包装类的例子
+public static Boolean valueOf(boolean b) {
+    return b ? Boolean.TRUE : Boolean.FALSE;
+}
+
+
+下面列举一下静态工厂方法获取类实例的优点和缺点：
+
+advantages:
+
+自定义方法名称：构造方法只能是类名称，而静态工厂方法可以取具体含义的名称。这点确实，如果有多个构造函数的话，往往需要去找到底使用哪个构造函数来创建实例。
+不需要每次都创建一个新的对象：如上面的例子，每次只需要返回定义好的常量即可。
+静态方法返回的类型可以是定义返回类型的子类
+
+
+
+Item 6: Avoid creating unnecessary objects
+如题名，避免创建不必要的对象。
+
+以String作为例子：
+
+
+
+1
+2
+
+
+String s = new String(&#34;bikini&#34;);    // 创建一个新的实例
+String s = &#34;bikini&#34;;    // 从String池创建 以后无论创建多少个 bikini 都会指向第一次创建的地址
+
+
+
+以正则表达式的匹配为例：
+
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+
+
+// Performance can be greatly inproved
+static boolean isRomanNumberal(String s) {
+    return s.matches(&#34;^(?=.)&#34;)
+}
+
+// Reusing expensive object for improved performence
+public class RomanNumberals {
+    private static final Pattern ROMAN = Pattern.compile(&#34;^(?=.)&#34;);
+    static boolean isRomanNumeral(String s) {
+        return ROMAN.matchers(s).matches();
+    }
+}
+
+
+
+使用基础类型而不是包装类
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://isyuanpeng.github.io/posts/other/effective-java-notes/" /><meta property="og:image" content="https://isyuanpeng.github.io/papermod-cover.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-06-09T15:53:18&#43;08:00" />
+<meta property="article:modified_time" content="2022-06-09T15:53:18&#43;08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://isyuanpeng.github.io/papermod-cover.png"/>
+
+<meta name="twitter:title" content="Effective Java Reading Notes - 1"/>
+<meta name="twitter:description" content="Effective Java Reading Notes - 1
+最近感觉自己对于Java越来越陌生了，遂看EffectiveJava来温习一下。这本书就是一个清单，分为90个item。
+Introduction
+简介里面就简单说明了一下本书的重点，重点不在于如何写出高性能的Java代码，而是写出clear，correct，usable，robust，flexible，maintainable的代码。
+Creating and Destroying Objects
+Item 1: Consider static factory methods instead of constructors
+获取一个类的实例的传统方式是提供构造方法。另外一种方式是创建静态工厂方法，这里的工厂并不是设计模式中的工厂。之前有个同事喜欢使用静态工厂方法来创建类（Luzihao5），具体看到他的代码就可以知道。
+
+
+1
+2
+3
+4
+
+
+// 书中的样例使用了基本类型转换包装类的例子
+public static Boolean valueOf(boolean b) {
+    return b ? Boolean.TRUE : Boolean.FALSE;
+}
+
+
+下面列举一下静态工厂方法获取类实例的优点和缺点：
+
+advantages:
+
+自定义方法名称：构造方法只能是类名称，而静态工厂方法可以取具体含义的名称。这点确实，如果有多个构造函数的话，往往需要去找到底使用哪个构造函数来创建实例。
+不需要每次都创建一个新的对象：如上面的例子，每次只需要返回定义好的常量即可。
+静态方法返回的类型可以是定义返回类型的子类
+
+
+
+Item 6: Avoid creating unnecessary objects
+如题名，避免创建不必要的对象。
+
+以String作为例子：
+
+
+
+1
+2
+
+
+String s = new String(&#34;bikini&#34;);    // 创建一个新的实例
+String s = &#34;bikini&#34;;    // 从String池创建 以后无论创建多少个 bikini 都会指向第一次创建的地址
+
+
+
+以正则表达式的匹配为例：
+
+
+
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+
+
+// Performance can be greatly inproved
+static boolean isRomanNumberal(String s) {
+    return s.matches(&#34;^(?=.)&#34;)
+}
+
+// Reusing expensive object for improved performence
+public class RomanNumberals {
+    private static final Pattern ROMAN = Pattern.compile(&#34;^(?=.)&#34;);
+    static boolean isRomanNumeral(String s) {
+        return ROMAN.matchers(s).matches();
+    }
+}
+
+
+
+使用基础类型而不是包装类
+"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://isyuanpeng.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Effective Java Reading Notes - 1",
+      "item": "https://isyuanpeng.github.io/posts/other/effective-java-notes/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Effective Java Reading Notes - 1",
+  "name": "Effective Java Reading Notes - 1",
+  "description": "Effective Java Reading Notes - 1 最近感觉自己对于Java越来越陌生了，遂看EffectiveJava来温习一下。这本书就是一个清单，分为90个item。\nIntroduction 简介里面就简单说明了一下本书的重点，重点不在于如何写出高性能的Java代码，而是写出clear，correct，usable，robust，flexible，maintainable的代码。\nCreating and Destroying Objects Item 1: Consider static factory methods instead of constructors 获取一个类的实例的传统方式是提供构造方法。另外一种方式是创建静态工厂方法，这里的工厂并不是设计模式中的工厂。之前有个同事喜欢使用静态工厂方法来创建类（Luzihao5），具体看到他的代码就可以知道。\n1 2 3 4 // 书中的样例使用了基本类型转换包装类的例子 public static Boolean valueOf(boolean b) { return b ? Boolean.TRUE : Boolean.FALSE; } 下面列举一下静态工厂方法获取类实例的优点和缺点：\nadvantages: 自定义方法名称：构造方法只能是类名称，而静态工厂方法可以取具体含义的名称。这点确实，如果有多个构造函数的话，往往需要去找到底使用哪个构造函数来创建实例。 不需要每次都创建一个新的对象：如上面的例子，每次只需要返回定义好的常量即可。 静态方法返回的类型可以是定义返回类型的子类 Item 6: Avoid creating unnecessary objects 如题名，避免创建不必要的对象。\n以String作为例子： 1 2 String s = new String(\u0026#34;bikini\u0026#34;); // 创建一个新的实例 String s = \u0026#34;bikini\u0026#34;; // 从String池创建 以后无论创建多少个 bikini 都会指向第一次创建的地址 以正则表达式的匹配为例： 1 2 3 4 5 6 7 8 9 10 11 12 // Performance can be greatly inproved static boolean isRomanNumberal(String s) { return s.matches(\u0026#34;^(?=.)\u0026#34;) } // Reusing expensive object for improved performence public class RomanNumberals { private static final Pattern ROMAN = Pattern.compile(\u0026#34;^(?=.)\u0026#34;); static boolean isRomanNumeral(String s) { return ROMAN.matchers(s).matches(); } } 使用基础类型而不是包装类 ",
+  "keywords": [
+    "java"
+  ],
+  "articleBody": "Effective Java Reading Notes - 1 最近感觉自己对于Java越来越陌生了，遂看EffectiveJava来温习一下。这本书就是一个清单，分为90个item。\nIntroduction 简介里面就简单说明了一下本书的重点，重点不在于如何写出高性能的Java代码，而是写出clear，correct，usable，robust，flexible，maintainable的代码。\nCreating and Destroying Objects Item 1: Consider static factory methods instead of constructors 获取一个类的实例的传统方式是提供构造方法。另外一种方式是创建静态工厂方法，这里的工厂并不是设计模式中的工厂。之前有个同事喜欢使用静态工厂方法来创建类（Luzihao5），具体看到他的代码就可以知道。\n1 2 3 4 // 书中的样例使用了基本类型转换包装类的例子 public static Boolean valueOf(boolean b) { return b ? Boolean.TRUE : Boolean.FALSE; } 下面列举一下静态工厂方法获取类实例的优点和缺点：\nadvantages: 自定义方法名称：构造方法只能是类名称，而静态工厂方法可以取具体含义的名称。这点确实，如果有多个构造函数的话，往往需要去找到底使用哪个构造函数来创建实例。 不需要每次都创建一个新的对象：如上面的例子，每次只需要返回定义好的常量即可。 静态方法返回的类型可以是定义返回类型的子类 Item 6: Avoid creating unnecessary objects 如题名，避免创建不必要的对象。\n以String作为例子： 1 2 String s = new String(\"bikini\"); // 创建一个新的实例 String s = \"bikini\"; // 从String池创建 以后无论创建多少个 bikini 都会指向第一次创建的地址 以正则表达式的匹配为例： 1 2 3 4 5 6 7 8 9 10 11 12 // Performance can be greatly inproved static boolean isRomanNumberal(String s) { return s.matches(\"^(?=.)\") } // Reusing expensive object for improved performence public class RomanNumberals { private static final Pattern ROMAN = Pattern.compile(\"^(?=.)\"); static boolean isRomanNumeral(String s) { return ROMAN.matchers(s).matches(); } } 使用基础类型而不是包装类 ",
+  "wordCount" : "128",
+  "inLanguage": "en",
+  "datePublished": "2022-06-09T15:53:18+08:00",
+  "dateModified": "2022-06-09T15:53:18+08:00",
+  "author":[{
+    "@type": "Person",
+    "name": "YuanPeng11"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://isyuanpeng.github.io/posts/other/effective-java-notes/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Isyuanpeng",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://isyuanpeng.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://isyuanpeng.github.io/" accesskey="h" title="Isyuanpeng (Alt + H)">Isyuanpeng</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://isyuanpeng.github.io/archives" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/about" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/series/" title="Series">
+                    <span>Series</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://isyuanpeng.github.io/">Home</a>&nbsp;»&nbsp;<a href="https://isyuanpeng.github.io/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Effective Java Reading Notes - 1
+    </h1>
+    <div class="post-meta">&lt;span title=&#39;2022-06-09 15:53:18 &#43;0800 CST&#39;&gt;June 9, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;YuanPeng11
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#effective-java-reading-notes---1" aria-label="Effective Java Reading Notes - 1">Effective Java Reading Notes - 1</a></li>
+                    <li>
+                        <a href="#introduction" aria-label="Introduction">Introduction</a></li>
+                    <li>
+                        <a href="#creating-and-destroying-objects" aria-label="Creating and Destroying Objects">Creating and Destroying Objects</a><ul>
+                            
+                    <li>
+                        <a href="#item-1-consider-static-factory-methods-instead-of-constructors" aria-label="Item 1: Consider static factory methods instead of constructors">Item 1: Consider static factory methods instead of constructors</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#item-6-avoid-creating-unnecessary-objects" aria-label="Item 6: Avoid creating unnecessary objects">Item 6: Avoid creating unnecessary objects</a>
+                    </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script>
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+  <div class="post-content"><h2 id="effective-java-reading-notes---1">Effective Java Reading Notes - 1<a hidden class="anchor" aria-hidden="true" href="#effective-java-reading-notes---1">#</a></h2>
+<p>最近感觉自己对于Java越来越陌生了，遂看EffectiveJava来温习一下。这本书就是一个清单，分为90个item。</p>
+<h2 id="introduction">Introduction<a hidden class="anchor" aria-hidden="true" href="#introduction">#</a></h2>
+<p>简介里面就简单说明了一下本书的重点，重点不在于如何写出高性能的Java代码，而是写出clear，correct，usable，robust，flexible，maintainable的代码。</p>
+<h2 id="creating-and-destroying-objects">Creating and Destroying Objects<a hidden class="anchor" aria-hidden="true" href="#creating-and-destroying-objects">#</a></h2>
+<h3 id="item-1-consider-static-factory-methods-instead-of-constructors">Item 1: Consider static factory methods instead of constructors<a hidden class="anchor" aria-hidden="true" href="#item-1-consider-static-factory-methods-instead-of-constructors">#</a></h3>
+<p>获取一个类的实例的传统方式是提供构造方法。另外一种方式是创建静态工厂方法，这里的工厂并不是设计模式中的工厂。之前有个同事喜欢使用静态工厂方法来创建类（Luzihao5），具体看到他的代码就可以知道。</p>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>// 书中的样例使用了基本类型转换包装类的例子
+</span></span><span style="display:flex;"><span>public static Boolean valueOf(boolean b) {
+</span></span><span style="display:flex;"><span>    return b ? Boolean.TRUE : Boolean.FALSE;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>下面列举一下静态工厂方法获取类实例的优点和缺点：</p>
+<ul>
+<li>advantages:
+<ul>
+<li>自定义方法名称：构造方法只能是类名称，而静态工厂方法可以取具体含义的名称。这点确实，如果有多个构造函数的话，往往需要去找到底使用哪个构造函数来创建实例。</li>
+<li>不需要每次都创建一个新的对象：如上面的例子，每次只需要返回定义好的常量即可。</li>
+<li>静态方法返回的类型可以是定义返回类型的子类</li>
+</ul>
+</li>
+</ul>
+<h2 id="item-6-avoid-creating-unnecessary-objects">Item 6: Avoid creating unnecessary objects<a hidden class="anchor" aria-hidden="true" href="#item-6-avoid-creating-unnecessary-objects">#</a></h2>
+<p>如题名，避免创建不必要的对象。</p>
+<ol>
+<li>以String作为例子：</li>
+</ol>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>String s = new String(&#34;bikini&#34;);    // 创建一个新的实例
+</span></span><span style="display:flex;"><span>String s = &#34;bikini&#34;;    // 从String池创建 以后无论创建多少个 bikini 都会指向第一次创建的地址
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="2">
+<li>以正则表达式的匹配为例：</li>
+</ol>
+<div class="highlight"><div style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>// Performance can be greatly inproved
+</span></span><span style="display:flex;"><span>static boolean isRomanNumberal(String s) {
+</span></span><span style="display:flex;"><span>    return s.matches(&#34;^(?=.)&#34;)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>// Reusing expensive object for improved performence
+</span></span><span style="display:flex;"><span>public class RomanNumberals {
+</span></span><span style="display:flex;"><span>    private static final Pattern ROMAN = Pattern.compile(&#34;^(?=.)&#34;);
+</span></span><span style="display:flex;"><span>    static boolean isRomanNumeral(String s) {
+</span></span><span style="display:flex;"><span>        return ROMAN.matchers(s).matches();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="3">
+<li>使用基础类型而不是包装类</li>
+</ol>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://isyuanpeng.github.io/tags/java/">Java</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://isyuanpeng.github.io/posts/tech/kafka-commond/">
+    <span class="title">« Prev Page</span>
+    <br>
+    <span>论如何在没有Kafkatool的情况下存活</span>
+  </a>
+  <a class="next" href="https://isyuanpeng.github.io/posts/tech/android-learning-9/">
+    <span class="title">Next Page »</span>
+    <br>
+    <span>Android Learning 9</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://isyuanpeng.github.io/">Isyuanpeng</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = 'copy';
+
+        function copyingDone() {
+            copybutton.innerText = 'copied!';
+            setTimeout(() => {
+                copybutton.innerText = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

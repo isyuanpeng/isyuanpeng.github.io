@@ -1,0 +1,1241 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>技术 on Isyuanpeng</title>
+    <link>https://isyuanpeng.github.io/categories/%E6%8A%80%E6%9C%AF/</link>
+    <description>Recent content in 技术 on Isyuanpeng</description>
+    <image>
+      <url>https://isyuanpeng.github.io/papermod-cover.png</url>
+      <link>https://isyuanpeng.github.io/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 25 Nov 2023 11:39:30 +0800</lastBuildDate><atom:link href="https://isyuanpeng.github.io/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>一个基于Quic协议的Http转Udp代理工具</title>
+      <link>https://isyuanpeng.github.io/posts/tech/%E4%B8%80%E4%B8%AA%E5%9F%BA%E4%BA%8Equic%E5%8D%8F%E8%AE%AE%E7%9A%84http%E8%BD%ACudp%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7/</link>
+      <pubDate>Sat, 25 Nov 2023 11:39:30 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/%E4%B8%80%E4%B8%AA%E5%9F%BA%E4%BA%8Equic%E5%8D%8F%E8%AE%AE%E7%9A%84http%E8%BD%ACudp%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7/</guid>
+      <description>&lt;h1 id=&#34;一个基于quic协议的http转udp代理工具&#34;&gt;一个基于Quic协议的Http转Udp代理工具&lt;/h1&gt;
+&lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
+&lt;p&gt;某地存在A和B两个网络，A中搭建了上级平台，用户平时正常办公使用该平台。B搭建了下级平台，接入设备。&lt;/p&gt;
+&lt;p&gt;两个网络的边界端口映射有一个唯一的限制：&lt;strong&gt;两个网络之间端口映射只能映射Udp的端口&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;现在B网中的设备想要接入A网，B网中的设备接入基本上都是http请求，所以整体的对接只需要对接http请求。&lt;/p&gt;
+&lt;h2 id=&#34;探索&#34;&gt;探索&lt;/h2&gt;
+&lt;p&gt;针对该问题，进行相关的预研探索。目前已有的条件就是udp通道的边界，那么实现该目标的办法就是利用该udp通道去传输http请求，也就是说要开发http-udp，udp-http的代理工具。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;TCP和UDP&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;处在TCP/IP模型的传输层中，传输控制协议TCP和用户数据报协议UDP&lt;/li&gt;
+&lt;li&gt;TCP可靠，UDP不可靠&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Http&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;处在TCP/IP模型的应用层中，基于tcp协议的应用&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;上述的概念比较清晰，其中也暴露了一个非常关键的点，TCP可靠，UDP不可靠。我们都知道tcp的三次握手和四次挥手，tcp是面向连接的协议，通过严格的确认连接来保证整个连接的正常通信。而udp面向非连接，不需要维护连接状态，只需要交付报文即可。&lt;/p&gt;
+&lt;p&gt;经过一些了解后，如果要开发一个http和udp互相转换的代理工具，主要需要解决以下的问题：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Udp不可靠，存在丢包的情况&lt;/li&gt;
+&lt;li&gt;Udp有报文大小限制，1480bytes&lt;/li&gt;
+&lt;li&gt;Udp不保证数据顺序&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;对于一个网络方面的小白来说，想要独自开发上述代理工具至少需要半年起步。&lt;/p&gt;
+&lt;p&gt;既然从0开发需要耗时太长，那么就需要找目前已经存在的代理工具，经过搜索发现相关内容少之又少。&lt;/p&gt;
+&lt;p&gt;在一次偶然的搜索中发现http3.0是基于Quic协议开发，而Quic协议又是基于udp的，那么似乎找到了一丝问题解决的可能性。&lt;/p&gt;
+&lt;h3 id=&#34;http3--quic&#34;&gt;HTTP/3 &amp;amp; Quic&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;HTTP/3 is the third major version of the Hypertext Transfer Protocol used to exchange information on the World Wide Web, complementing the widely-deployed HTTP/1.1 and HTTP/2. Unlike previous versions which relied on the well-established TCP (published in 1974),[2] HTTP/3 uses QUIC, a multiplexed transport protocol built on UDP.[3] On 6 June 2022, IETF published HTTP/3 as a Proposed Standard in RFC 9114.[4]&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Maven之Deploy使用</title>
+      <link>https://isyuanpeng.github.io/posts/tech/maven%E4%B9%8Bdeploy%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Wed, 21 Jun 2023 18:40:34 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/maven%E4%B9%8Bdeploy%E4%BD%BF%E7%94%A8/</guid>
+      <description>&lt;h2 id=&#34;maven之deploy使用&#34;&gt;Maven之Deploy使用&lt;/h2&gt;
+&lt;h3 id=&#34;背景&#34;&gt;背景&lt;/h3&gt;
+&lt;p&gt;目前公司里的项目定制一般不需要用到Deploy(上传jar包到af仓库上)，定制只是下载依赖然后使用。最近开发组件过程中，由于需要组件提供对外api给其它组件使用，在使用的过程中也不是特别顺利，所以记录一下Deploy的使用。&lt;/p&gt;
+&lt;h3 id=&#34;deploy&#34;&gt;Deploy&lt;/h3&gt;
+&lt;p&gt;Deploy是Maven生命周期的最后一个环节，作用是上传最终的成果物到远程仓库中，共享给其它开发人员和工程。使用方法如下：&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Step 1&lt;/em&gt;：需要在settings.xml配置af仓库的用户名和密码&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 4
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 5
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 6
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 7
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 8
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 9
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;10
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;11
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;12
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;13
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;14
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;15
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;16
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;17
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;18
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;19
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;20
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;21
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &amp;lt;!-- servers
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   | This is a list of authentication profiles, keyed by the server-id used within the system.
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   | Authentication profiles can be used whenever maven must make a connection to a remote server.
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   |--&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &amp;lt;servers&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &amp;lt;!-- server
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;     | Specifies the authentication information to use when connecting to a particular server, identified by
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;     | a unique name within the system (referred to by the &amp;#39;id&amp;#39; attribute below).
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;     | 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;     | NOTE: You should either specify username/password OR privateKey/passphrase, since these pairings are 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;     |       used together.
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;     |
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	--&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&amp;lt;server&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&amp;lt;id&amp;gt;xxx-release&amp;lt;/id&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&amp;lt;username&amp;gt;xxx&amp;lt;/username&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&amp;lt;password&amp;gt;xxx&amp;lt;/password&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&amp;lt;/server&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &amp;lt;/servers&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;em&gt;Step 2&lt;/em&gt;：要Deploy的module的pom文件中添加要上传的af仓库，id要和上面settings.xml中的id对应&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>DEBUG</title>
+      <link>https://isyuanpeng.github.io/posts/tech/debug/</link>
+      <pubDate>Mon, 08 May 2023 18:52:46 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/debug/</guid>
+      <description>&lt;h2 id=&#34;浅析几种不同的debug方法欢迎大家补充&#34;&gt;浅析几种不同的DEBUG方法，欢迎大家补充&lt;/h2&gt;
+&lt;h3 id=&#34;远程debug&#34;&gt;远程DEBUG&lt;/h3&gt;
+&lt;p&gt;当本地的代码因为各种原因无法正常启动的时候，可以选择使用远程DEBUG，这种方法要求和线上的代码一致，具体方法如下，&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://blog-vx.oss-cn-beijing.aliyuncs.com/5bf8a29492a5216afb7183603bca288.png&#34; alt=&#34;remote_debug&#34;  /&gt;
+&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step1&lt;/strong&gt;: 新建一个remote jvm debug，填入需要线上服务所在服务器ip，复制Command line arguments for remote JVM，选择需要debug的module。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step2&lt;/strong&gt;: 服务器中启动脚本修改添加Step1中复制的arguments&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;java -jar -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 remote-debug-1.0-SNAPSHOT.jar
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;公司的jsvc启动的话，要放在mainclass前面，注意JDK的版本，查看JAVA_HOME的版本，jdk8就配在jdk8的启动命令处，jdk11同理。配置好启动脚本后，重启服务。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-gdscript3&#34; data-lang=&#34;gdscript3&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;_JSVC &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;D&lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;{_ServerName} &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;home &lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;JAVA_HOME &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;cwd &lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;{_HOME_DIR}&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;config &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;umask &lt;span style=&#34;color:#ae81ff&#34;&gt;0011&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;Djava&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;security&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;egd&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;file:&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;dev&lt;span style=&#34;color:#f92672&#34;&gt;/./&lt;/span&gt;urandom &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;Djava&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;net&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;preferIPv4Stack&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;true &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;Dcom&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;jndi&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ldap&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;connect&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;pool&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;protocol&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;plain ssl&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;XX:MetaspaceSize&lt;span style=&#34;color:#f92672&#34;&gt;=$&lt;/span&gt;{_MetaspaceSize} &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;XX:MaxMetaspaceSize&lt;span style=&#34;color:#f92672&#34;&gt;=$&lt;/span&gt;{_MaxMetaspaceSize} &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;Xms&lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;{_Xms} &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;Xmx&lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;{_Xmx} &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;Xmn&lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;{_Xmn} &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;XX:SurvivorRatio&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;XX:&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;HeapDumpOnOutOfMemoryError &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;XX:&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;DisableExplicitGC &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;XX:&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;PrintGCDetails &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;XX:&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;PrintGCDateStamps &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;XX:&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;PrintGCTimeStamps &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;Xloggc:&lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;{_HOME_DIR}&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;logs&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;gc&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;log &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;XX:&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;UseGCLogFileRotation &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;XX:NumberOfGCLogFiles&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;XX:GCLogFileSize&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;M &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;Djava&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;io&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;tmpdir&lt;span style=&#34;color:#f92672&#34;&gt;=$&lt;/span&gt;{_HOME_DIR}&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;temp  &lt;span style=&#34;color:#f92672&#34;&gt;*-&lt;/span&gt;agentlib:jdwp&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;transport&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;dt_socket,server&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;y,suspend&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;n,address&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;5005&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;Dloader&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;main&lt;span style=&#34;color:#f92672&#34;&gt;=$&lt;/span&gt;{_MainClass}  &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;wait &lt;span style=&#34;color:#ae81ff&#34;&gt;60&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;pidfile &lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;_Pid &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;outfile &lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;{_LogOut} &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;errfile &lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;{_LogErr} &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;cp &lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;{_Classpath_jdk8} &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;procname &lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;{_SystemctlName} &lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;{_StarCLASS}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Step3&lt;/strong&gt;: 重启好服务后，IDEA启动远程debug。显示连接正常即可，如果连接time out查询服务5005端口是否起来，如果没有起来则查看服务启动问题。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step4&lt;/strong&gt;: 打断点，线上服务页面操作即可进入断点。&lt;/p&gt;
+&lt;h3 id=&#34;nginx代理debug&#34;&gt;Nginx代理DEBUG&lt;/h3&gt;
+&lt;p&gt;在进行某次问题的排查的时候，需要debug单点登录(外部依赖)的流程，线上和线下的组件代码不一致，但是依赖的单点登录jar包一致，测试发现IDEA远程DEBUG并不能debug外部依赖的jar包。&lt;/p&gt;
+&lt;p&gt;由于线上服务使用的频率不高，所以直接启动本地的代码作为线上服务，使用nginx反向代理线上服务到本地，此时就可以愉快的进行外部jar包的debug，具体方法如下。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step1&lt;/strong&gt;: 启动本地服务&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step2&lt;/strong&gt;: 找到集群代理组件所在的服务器，进入代理组件内部/opt/opsmgr/web/components/cluster.1/data/proxy_section，修改proxy_https.conf文件，找到需要反向代理的组件location，以iface为例，修改proxy_pass的参数为本地启动服务的地址。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 4
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 5
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 6
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 7
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 8
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 9
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;location /iface-web/ {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        proxy_set_header   Host             $http_host;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        proxy_set_header   X-Real-IP        $remote_addr;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        proxy_set_header   X-Forwarded-Proto  $scheme;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        proxy_cookie_path /iface-web &amp;#34;/iface-web;httponly; secure&amp;#34;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        #proxy_pass http://10.195.185.23:8037/iface-web/;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        proxy_pass http://10.195.169.165:8037/iface-web/;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Step3&lt;/strong&gt;: 重启nginx&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Nginx代理配置实战</title>
+      <link>https://isyuanpeng.github.io/posts/tech/nginx-proxy/</link>
+      <pubDate>Thu, 23 Mar 2023 19:01:29 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/nginx-proxy/</guid>
+      <description>&lt;h2 id=&#34;浅析代理&#34;&gt;浅析代理&lt;/h2&gt;
+&lt;h3 id=&#34;nginx功能&#34;&gt;Nginx功能&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;正向代理：客户端不知道服务端，也就是说客户端需要配置代理服务器来，代理服务器再去访问真正的服务端。挂梯子就是正向代理的应用。&lt;/li&gt;
+&lt;li&gt;反向代理：服务端不知道客户端，客户端不需要进行任何配置，用户只请求反向代理地址，反向代理服务器选择目标服务器，获取数据返回客户端。&lt;/li&gt;
+&lt;li&gt;负载均衡：在反向代理中，我们可以使用负载均衡去将请求分配到不同的服务器上。&lt;/li&gt;
+&lt;li&gt;动静分离：Nginx将接到的请求分为动态请求和静态请求，这在实际的应用中对应了前后端。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;nginx原理&#34;&gt;Nginx原理&lt;/h3&gt;
+&lt;h4 id=&#34;master---worker-模式&#34;&gt;Master - Worker 模式&lt;/h4&gt;
+&lt;p&gt;在启动Nginx后，我们通过ps -ef可以发现有关nginx的进程有一个master process和n个worker process，并且我们查看nginx监听的端口，可以看到监听了80端口。&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;../image/nginx_process.png&#34; alt=&#34;nginx-process&#34;  title=&#34;Nginx Process&#34;  /&gt;
+&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Master process: master进程的作用主要是读取并且验证nginx.conf, 并且管理worker进程，给worker进程传递消息。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Worker process: 每一个Worker进程都维护了一个线程去处理连接和请求(避免一个线程造成的线程切换问题)，一般cpu几核就有几个worker进程。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;所有的worker进程都是从master进程fork()过来的，worker进程提供好listenfd的接口, 为了保证只有一个进程处理连接，所有的Worker进程在注册listenfd接口读取事件前抢互斥锁accept_mutex，抢到互斥锁的那个进程注册listenfd读事件，在读事件里面调用accept接受连接，开始处理请求。&lt;/li&gt;
+&lt;li&gt;Nginx采取上面的这种进程模型的好处：
+&lt;ul&gt;
+&lt;li&gt;独立进程不需要加锁，省去锁的开销&lt;/li&gt;
+&lt;li&gt;独立进程互不影响，服务不会中断&lt;/li&gt;
+&lt;li&gt;独立进程异常退出，只影响该进程的请求&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9e187f1f170e4efc826bb5f90f6e6b71~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp&#34; alt=&#34;nginx-arch&#34;  title=&#34;nginx arch&#34;  /&gt;
+&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Cache Manager process: 除了上面两个进程外，我们还可以看到Cache Manager process, 与之对应的还有Cache Loader process(在nginx服务启动的时候由主进程生成，缓存数据加载完成后退出), Cache Manager process负责缓存索引的还礼，通过缓存机制，可以提高对请求的响应效率。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/dadff6c0f3494d3d8863cbac729baf89~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp&#34; alt=&#34;nginx-all-arch&#34;  title=&#34;nginx all arch&#34;  /&gt;
+&lt;/p&gt;
+&lt;h4 id=&#34;模块化&#34;&gt;模块化&lt;/h4&gt;
+&lt;p&gt;Nginx从功能上可以分为：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Handlers: 处理请求，进行输出内容和修改headers等，一般只有一个&lt;/li&gt;
+&lt;li&gt;Filters: 接收请求进行链式修改&lt;/li&gt;
+&lt;li&gt;Proxies: Nginx的Htpp Upstream等模块，主要和后端进行交互，实现服务代理和负载均衡等&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Nginx（内核）本身做的工作实际很少，当它接到一个 HTTP 请求时，它仅仅是通过查找配置文件将此次请求映射到一个 location block，而此 location 中所配置的各个指令则会启动不同的模块去完成工作，因此模块可以看做 Nginx 真正的劳动工作者。通常一个 location 中的指令会涉及一个 Handler 模块和多个 Filter 模块（当然，多个location可以复用同一个模块）。Handler模块负责处理请求，完成响应内容的生成，而 Filter 模块对响应内容进行处理。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Yaml File as Config File Using</title>
+      <link>https://isyuanpeng.github.io/posts/tech/yaml-file-as-config-file-using/</link>
+      <pubDate>Sat, 08 Oct 2022 11:10:20 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/yaml-file-as-config-file-using/</guid>
+      <description>&lt;h2 id=&#34;spring中使用yaml作为配置文件&#34;&gt;Spring中使用yaml作为配置文件&lt;/h2&gt;
+&lt;p&gt;写定制的时候经常会遇到这样的情况，一些小而繁杂的配置项在数据库中配置太过麻烦，卸载application.properties中又太过臃肿，针对这种情况，我们可以使用yaml作为配置文件，直接在model类中将yaml配置引入即可。具体使用方法如下:&lt;/p&gt;
+&lt;h3 id=&#34;step1-创建yaml解析类&#34;&gt;Step1: 创建yaml解析类&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 4
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 5
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 6
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 7
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 8
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 9
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;10
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-gdscript3&#34; data-lang=&#34;gdscript3&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;public &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; YamlPropertySourceFactory implements PropertySourceFactory {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;@&lt;/span&gt;Override
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    public PropertySource&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;?&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; createPropertySource(&lt;span style=&#34;color:#a6e22e&#34;&gt;String&lt;/span&gt; name, EncodedResource resource) throws IOException {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;Resource&lt;/span&gt; classResource &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; resource&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;getResource();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (classResource&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;exists()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;           PropertySource&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;?&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; sources &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; new YamlPropertySourceLoader()&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;load(resource&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;getResource()&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;getFilename(), classResource,null);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; sources&lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt;null &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;?&lt;/span&gt; new MapPropertySource(name, new HashMap&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;()) : sources;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; new MapPropertySource(name, new HashMap&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;step2-设置配置文件&#34;&gt;Step2: 设置配置文件&lt;/h3&gt;
+&lt;p&gt;在项目的&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Chain of Responsibility</title>
+      <link>https://isyuanpeng.github.io/posts/tech/chain-of-responsibility/</link>
+      <pubDate>Thu, 29 Sep 2022 10:04:14 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/chain-of-responsibility/</guid>
+      <description>&lt;h2 id=&#34;责任链设计模式实战&#34;&gt;责任链设计模式实战&lt;/h2&gt;
+&lt;h3 id=&#34;责任链设计模式&#34;&gt;责任链设计模式&lt;/h3&gt;
+&lt;h4 id=&#34;责任链设计模式-1&#34;&gt;责任链设计模式&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;学习网站: &lt;a href=&#34;https://refactoring.guru/design-patterns&#34;&gt;https://refactoring.guru/design-patterns&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h5 id=&#34;优点&#34;&gt;优点&lt;/h5&gt;
+&lt;ol&gt;
+&lt;li&gt;符合单一职责原则：后期修改只需要修改具体的实现类。&lt;/li&gt;
+&lt;li&gt;开闭原则：后期增加逻辑只需要新增具体的实现类。&lt;/li&gt;
+&lt;/ol&gt;</description>
+    </item>
+    
+    <item>
+      <title>论如何在没有Kafkatool的情况下存活</title>
+      <link>https://isyuanpeng.github.io/posts/tech/kafka-commond/</link>
+      <pubDate>Fri, 10 Jun 2022 18:09:16 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/kafka-commond/</guid>
+      <description>&lt;h2 id=&#34;论如何在没有kafkatool的情况下存活&#34;&gt;论如何在没有Kafkatool的情况下存活&lt;/h2&gt;
+&lt;p&gt;众所周知，最近服务器加固的越来越高，导致有些服务器的kafka已经不能在kafkatool上访问，当然不排除是kafkatool有问题，但是无论是哪种情况，Kafka命令的使用已经迫在眉睫，所以总结一下。&lt;/p&gt;
+&lt;h3 id=&#34;kafka的安装&#34;&gt;kafka的安装&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://downloads.apache.org/kafka/&#34;&gt;https://downloads.apache.org/kafka/&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;安装 .tgz版本的，no src.tgz，src代表着source，下载下来的是资源，还需要gradle编译，有点麻烦。&lt;/p&gt;
+&lt;p&gt;安装完成后启动zookeeper，关于zookeeper，虽然我们有在使用，但是它是什么呢？为什么Kafka要用它？还有什么场景会使用Zk？关于Zk的问题有点多，后面单独开一个章节去学习Zk。&lt;/p&gt;
+&lt;p&gt;关于所有的脚本都在/bin目录下，我们可以看到命名非常清晰，我们可以直接上手使用。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;启动Zk命令&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;// -daemon代表后台运行 后面还可以指定特定的配置文件 如果没有指定就会默认使用 /config/zookeeper.properties
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; ./zookeeper-server-start.sh -daemon
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;启动kafka&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;// 和Zk同样的道理
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; ./kafka-server-start.sh -daemon
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;kafka的使用&#34;&gt;Kafka的使用&lt;/h3&gt;
+&lt;h4 id=&#34;topic的创建&#34;&gt;Topic的创建&lt;/h4&gt;
+&lt;h3 id=&#34;常用命令&#34;&gt;常用命令&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;查询kafka topic列表&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;./kafka-topics.sh &amp;ndash;list &amp;ndash;zookeeper localhost:&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Android Learning 9</title>
+      <link>https://isyuanpeng.github.io/posts/tech/android-learning-9/</link>
+      <pubDate>Wed, 06 Apr 2022 10:25:28 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/android-learning-9/</guid>
+      <description>&lt;h2 id=&#34;知识填充&#34;&gt;知识填充&lt;/h2&gt;
+&lt;h3 id=&#34;布局相关&#34;&gt;布局相关&lt;/h3&gt;
+&lt;h4 id=&#34;layoutinflater&#34;&gt;LayoutInflater&lt;/h4&gt;
+&lt;p&gt;在绑定Fragment的时候我们会用到LayoutInflater.inflate(), 该方法返回一个View对象，所以我们可以知道该方法的作用就是将xml布局文件加载为View或者ViewGroup对象。而LayoutInflater就是一个总的工具，有多个inflate方法。&lt;/p&gt;
+&lt;h5 id=&#34;获取layoutinflater&#34;&gt;获取LayoutInflater&lt;/h5&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;LayoutInflater inflater1 = LayoutInflater.from(this);  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;LayoutInflater inflater2 = getLayoutInflater();  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;LayoutInflater inflater3 = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;后面两种其实走的都是第一种方法。this就是context。&lt;/p&gt;
+&lt;h5 id=&#34;infalte方法使用&#34;&gt;.infalte()方法使用&lt;/h5&gt;
+&lt;p&gt;.infalte()有多个重载的方法。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;inflate(int resource, ViewGroup root)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;inflate(int resource, ViewGroup root, boolean attachToRoot)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;inflate(XmlPullParser parser, ViewGroup root)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;inflate(XmlPullParser parser, ViewGroup root, boolean attachToRoot)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;看源码可知，四个方法，前三个其实都是调用的第四个。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Android Learning 8</title>
+      <link>https://isyuanpeng.github.io/posts/tech/android-learning-8/</link>
+      <pubDate>Fri, 01 Apr 2022 10:27:47 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/android-learning-8/</guid>
+      <description>&lt;p&gt;今日份学习，综合之前学习过的知识，学习google推出的总结性APP - Sunflower&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/android/sunflower&#34;&gt;https://github.com/android/sunflower&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;查漏补缺的同时将此APP进行本地化适配，因为使用的是wikimedia的源获取数据。&lt;/p&gt;
+&lt;h2 id=&#34;sunflower&#34;&gt;SunFlower&lt;/h2&gt;
+&lt;p&gt;首先拉代码，跑起来，忘记有代码，然后看一下整个APP的结构。&lt;/p&gt;
+&lt;p&gt;首页的上半部分，一个title + header是固定，这块可以写在Activity中，header中有两个button，点击切换Fragment。&lt;/p&gt;
+&lt;p&gt;我的花园-Fragment: 用了一个GridView来展示添加的花园，这块的数据应该是是存入数据库的。&lt;/p&gt;
+&lt;p&gt;我的花园-植物详情-Fragment：点击我的植物后会进入到植物详情的Fragment，展示植物的详细信息，有一个返回按钮和分享按钮。&lt;/p&gt;
+&lt;p&gt;植物目录-Fragment: 同样是一个GridView来展示植物列表，这块的数据应该是从网络上拉取，缓存到数据库的。&lt;/p&gt;
+&lt;p&gt;植物目录-植物详情-Fragment：植物详情的Fragment就是展示从wiki上拉下来的植物数据，和我的花园的植物详情可以用一个Fragment。&lt;/p&gt;
+&lt;p&gt;植物目录-植物详情-添加植物-button：植物图片的下方有一个加号，可以进行植物的添加，植物添加后入库，然后我的花园页面显示。&lt;/p&gt;
+&lt;p&gt;还有一个给自己添加的植物浇水的功能，由于等待浇水的时间都比较长，所以先开发这些，后面再来浇水。梳理完毕，剩下的就是开整，使用现成的项目学习的话比较省事的是不用寻找静态资源。&lt;/p&gt;
+&lt;h2 id=&#34;igarden&#34;&gt;IGarden&lt;/h2&gt;
+&lt;p&gt;新建项目，起名就要IGarden吧，毕竟整个项目是个花园。为了方便，首先吧Sunflower需要的所有依赖以及静态资源全部导入。&lt;/p&gt;
+&lt;h3 id=&#34;coordinatorlayout&#34;&gt;CoordinatorLayout&lt;/h3&gt;
+&lt;p&gt;这个Layout是2015年I/O大会上发布的Android Design Support Library，主要就是更好的使用material design。CoordinatorLayout是库中的一个FrameLayout，继承自ViewGroup。&lt;/p&gt;
+&lt;p&gt;顾名思义，协调者布局。为啥叫协调者？有点懵逼。CoordinatorLayout是一个&amp;quot;super-powered FrameLayout&amp;quot;。看了不少博文，终于还是有一点理解了，协调者协调的是child之间的联动，比如说有一个TopBar, TopBar下面有一个RecyclerView，当RecyclerView被滑动的时候如果我想隐藏TopBar怎么办？这时候就可以用协调者布局了。&lt;/p&gt;
+&lt;p&gt;那CoordinatorLayout是如何做到协调的呢？在CoordinatorLayout内部，每一个child都必须有一个Behavior，CoordinatorLayout根据这个Behavior去进行协调。那么Behavior到底是啥呢？&lt;/p&gt;
+&lt;p&gt;其实Behavior里面有一系列的方法，如下面所示&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;onStartNestedScroll()， onNestedScrollAccepted()，onStopNestedScroll()，onNestedScroll()， onNestedPreScroll()，onNestedFling()，onNestedPreFling()
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;所以说怎么协调的就很明了了，实际上就是使用触摸操作来控制View的滑动(我自己的理解)。&lt;/p&gt;
+&lt;h4 id=&#34;nestedscrolling&#34;&gt;NestedScrolling&lt;/h4&gt;
+&lt;p&gt;在Behavior方法中，这些方法的都有一个Nested的的标志，这个Nested又是干什么的呢？不得不说，Android东西可真多。先看下面的博文，但是下面的博文又说先让了解时间分发机制。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.jianshu.com/p/aff5e82f0174&#34;&gt;https://www.jianshu.com/p/aff5e82f0174&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;android事件分发机制&#34;&gt;Android事件分发机制&lt;/h3&gt;
+&lt;p&gt;关于Android事件，最常见的应该就是点击事件吧，对于一个View可以设置它的点击事件监听器。但是除了这个，还有巨多事件，从手指接触屏幕到手指离开屏幕的这一过程产生的一系列事件都叫做事件列。&lt;/p&gt;
+&lt;p&gt;具体的有下面的几个：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;MotionEvent.ACTION_DOWN 按下View开始&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;MotionEvent.ACTION_UO 抬起View&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;MotionEvent.ACTION_MOVE 滑动View&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;MotionEvent.ACTION_CANCEL 结束时间，非人为原因&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;viewpager2&#34;&gt;ViewPager2&lt;/h3&gt;
+&lt;p&gt;有点难以理解Sunflower如何做到在两个fragment之间滑动的，所以看了代码，发现是使用了ViewPager2+TabLayout来实现的。整体的代码实现其实不难，下面直接上代码吧。&lt;/p&gt;
+&lt;p&gt;首先在布局文件中定义TabLayout和ViewPage2，在ViewPager中可以添加控件，到ViewPager2就不行了，只能和TabLayout平级。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 4
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 5
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 6
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 7
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 8
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 9
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;10
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;11
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;12
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;13
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;14
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;15
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;16
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;17
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;18
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;19
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;20
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;21
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;22
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;23
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;24
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;25
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;26
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;27
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;28
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;29
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &amp;lt;LinearLayout
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        android:layout_width=&amp;#34;match_parent&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        android:layout_height=&amp;#34;match_parent&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        android:orientation=&amp;#34;vertical&amp;#34;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;TextView
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:id=&amp;#34;@+id/header_title&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:layout_width=&amp;#34;match_parent&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:layout_height=&amp;#34;60dp&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:gravity=&amp;#34;center&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:text=&amp;#34;@string/app_name&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:textAppearance=&amp;#34;?attr/textAppearanceHeadline5&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:textColor=&amp;#34;@color/sunflower_white&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:textSize=&amp;#34;30sp&amp;#34; /&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;com.google.android.material.tabs.TabLayout
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:id=&amp;#34;@+id/tab_layout&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:layout_width=&amp;#34;match_parent&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:layout_height=&amp;#34;60dp&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            style=&amp;#34;@style/Widget.MaterialComponents.TabLayout.Colored&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            app:tabIconTint=&amp;#34;@drawable/tab_icon_color_selector&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            app:tabTextColor=&amp;#34;?attr/colorPrimaryDark&amp;#34; /&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;androidx.viewpager2.widget.ViewPager2
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:id=&amp;#34;@+id/view_pager&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:layout_width=&amp;#34;match_parent&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            android:layout_height=&amp;#34;match_parent&amp;#34; /&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &amp;lt;/LinearLayout&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;为了方便，直接使用了线性布局。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Android Learning 7</title>
+      <link>https://isyuanpeng.github.io/posts/tech/android-learning-7/</link>
+      <pubDate>Thu, 31 Mar 2022 17:45:16 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/android-learning-7/</guid>
+      <description>&lt;p&gt;今天学习Repository和WorkManager&lt;/p&gt;
+&lt;h2 id=&#34;repository&#34;&gt;Repository&lt;/h2&gt;
+&lt;p&gt;Repository pattern也是一种设计模式，叫做存储库模式。看一下官方的原文：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A repository mediates between data sources (such as persistent models, web services, and caches) and the rest of the app.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;大意就是一个Repository相当于在数据源(持久化实体类，网络服务，缓存)和app其余的服务之间的中间层。简而言之，就是提供一个数据操作代理层。调用者不需要知道数据是从哪来，如何处理，只需要使用数据即可。这样有几个好处：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;代码更容易维护，切换数据源的时候业务代码不需要更改&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;数据处理逻辑和业务逻辑分离，可以对这两个代码分别进行测试&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;减少代码重复&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;降低代码出错的几率&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;为什么要有repository&#34;&gt;为什么要有Repository&lt;/h3&gt;
+&lt;p&gt;经过前几天的学习，我们已经学习了ROOM以及DAO层数据的访问，那么还需要Repository干什么呢？通过上面的优点我们可以知道，避免直接访问数据。同事也解决了多数据源的问题，一个App的数据源可以是多个，数据库，接口等等。Repository对这两种情况进行封装，可以以一种统一的方式进行数据的拉取。&lt;/p&gt;
+&lt;p&gt;所以Repository其实是一种代码规范，并不是组件。&lt;/p&gt;
+&lt;h3 id=&#34;repository例子&#34;&gt;Repository例子&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 4
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 5
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 6
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 7
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 8
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 9
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;10
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;11
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;12
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;13
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;14
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-gdscript3&#34; data-lang=&#34;gdscript3&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;@&lt;/span&gt;Singleton
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; PlantRepository &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;@&lt;/span&gt;Inject constructor(private val plantDao: PlantDao) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;//&lt;/span&gt; use the dao
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    fun getPlants() &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; plantDao&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;getPlants()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    fun getPlant(plantId: &lt;span style=&#34;color:#a6e22e&#34;&gt;String&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; plantDao&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;getPlant(plantId)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    fun getPlantsWithGrowZoneNumber(growZoneNumber: Int) &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        plantDao&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;getPlantsWithGrowZoneNumber(growZoneNumber)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;//&lt;/span&gt; use the network service
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    fun requestApi(): Plant
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;项目中的实际运用&#34;&gt;项目中的实际运用&lt;/h3&gt;
+&lt;p&gt;在市局测温项目中，实际上对Repository的使用更为复杂，整体的结构为首先定义一层datasource的接口类，然后在定义datasource的实现类，这里仅仅定义了一个remotedatasource的实现类，根据命名我感觉原本的架构想法应该是对于数据调接口一个实现类，数据库操作一个实现类。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Android Learning 6</title>
+      <link>https://isyuanpeng.github.io/posts/tech/android-learning-6/</link>
+      <pubDate>Wed, 30 Mar 2022 15:48:57 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/android-learning-6/</guid>
+      <description>&lt;p&gt;昨日主要学习了ROOM和协程，今天补充一些协程的知识，并且学习RecyclerView, Adapter和WorkManager。&lt;/p&gt;
+&lt;h2 id=&#34;recyclerview&#34;&gt;RecyclerView&lt;/h2&gt;
+&lt;p&gt;在app中，有很多地方都需要用到列表来展示多个item，android提供了RecyclerView来支持大型列表，并且RecyclerView支持滑动，在显示有限个数量的item后，剩下的item需要滑动来获取。今天在昨天的睡眠质量的app的基础上将首页的历史记录改成使用RecyclerView来展示。&lt;/p&gt;
+&lt;h3 id=&#34;adapter&#34;&gt;Adapter&lt;/h3&gt;
+&lt;h4 id=&#34;适配器模式&#34;&gt;适配器模式&lt;/h4&gt;
+&lt;p&gt;在Android的学习中，有很多的设计模式可以学习，这次来到了适配器模式。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;定义：用包装类来包装不兼容的对象，将一个类的接口转换成客户希望的另外一个接口。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;举一个所有博文中都会举的一个例子，比如说在国际旅行的时候，在不同的国家充电器的规格都不一样，如果想要充电的话就需要转换器，那么这个转换器就相当于一个中间层，这个中间层就是Adapter层，通过这层来进行一个接口的转换达到兼容的目的。&lt;/p&gt;
+&lt;p&gt;关于具体的思想在下面的慢慢使用中体会&lt;/p&gt;
+&lt;h3 id=&#34;recyclerview的使用&#34;&gt;RecyclerView的使用&lt;/h3&gt;
+&lt;p&gt;Step 1: 将所需要使用RecyclerView的布局添加RecyclerView&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;4
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;5
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;6
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;7
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;8
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-gdscript3&#34; data-lang=&#34;gdscript3&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;androidx&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;recyclerview&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;widget&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;RecyclerView
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        android:id&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;@+id/sleep_list&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        android:layout_width&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;0dp&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        android:layout_height&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;0dp&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        app:layout_constraintBottom_toTopOf&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;@+id/clear_button&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        app:layout_constraintEnd_toEndOf&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;parent&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        app:layout_constraintStart_toStartOf&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;parent&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        app:layout_constraintTop_toBottomOf&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;@+id/stop_button&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        app:layoutManager&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;androidx.recyclerview.widget.LinearLayoutManager&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;/&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Step 2：创建单个的Item的View，这里是TextView&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Android Learning 5</title>
+      <link>https://isyuanpeng.github.io/posts/tech/android-learning-5/</link>
+      <pubDate>Tue, 29 Mar 2022 17:47:49 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/android-learning-5/</guid>
+      <description>&lt;p&gt;今天学习android的数据库和协程&lt;/p&gt;
+&lt;h2 id=&#34;room&#34;&gt;ROOM&lt;/h2&gt;
+&lt;p&gt;ROOM类似于JPA，能够定义DAO层使用预置的方法进行数据的操作。ROOM主要包含下面三个组件：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Database数据库类: 用于保存数据库并作为应用持久性数据底层连接的主要访问点。其实我感觉Database的类就是提供了Dao层的实例。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Entity实体类：用于表示应用的数据库中的表。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Dao类：提供您的应用可用于查询、更新、插入和删除数据库中的数据的方法。类似于Spring中的Dao层，定义了操作数据库的方法。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;entity&#34;&gt;Entity&lt;/h3&gt;
+&lt;p&gt;实体类就是我们常见的实体类，使用的注解也和JPA类似&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;@Entity(tableName = &amp;ldquo;users&amp;rdquo;)：该注解说明该类是一个实体类，并且关联了users的表&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;@PrimaryKey：用于字段上，说明该字段是主键&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;@ColumnInfo(name = &amp;ldquo;last_name&amp;rdquo;)：用于字段上，绑定实体类中的属性和表中的字段&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;4
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;5
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;@Entity(tableName = &amp;#34;users&amp;#34;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;data class User (
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    @PrimaryKey val id: Int,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    @ColumnInfo(name = &amp;#34;first_name&amp;#34;) val firstName: String?,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    @ColumnInfo(name = &amp;#34;last_name&amp;#34;) val lastName: String?
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;dao&#34;&gt;Dao&lt;/h3&gt;
+&lt;p&gt;在Dao类中定义方法来操作数据库。下面是一个简单样例：&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Android Learning 4</title>
+      <link>https://isyuanpeng.github.io/posts/tech/android-learning-4/</link>
+      <pubDate>Mon, 28 Mar 2022 19:14:32 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/android-learning-4/</guid>
+      <description>&lt;h2 id=&#34;技术学习&#34;&gt;技术学习&lt;/h2&gt;
+&lt;p&gt;今日的技术学习内容为ViewModel和LiveData，这部分的内容相当于就是Android的架构学习，了解一个Android项目由哪些部分组成，如何去按照规范分层编写代码。&lt;/p&gt;
+&lt;h3 id=&#34;android架构&#34;&gt;Android架构&lt;/h3&gt;
+&lt;h4 id=&#34;mvvmmodel-view-viewmodel&#34;&gt;MVVM(Model-View-ViewModel)&lt;/h4&gt;
+&lt;p&gt;Google 2015年I/O大会上推出了DataBinding的框架，使用了MVVM的模式，MVVM的思想就是从APP的业务逻辑中分离数据持久层。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Model: 实体类模型。Model提供了数据提取接口供ViewModel使用，经过数据转换和操作最终映射绑定到View层的某个UI元素的属性上。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;View: 对应Activity和XML布局文件。不进行业务代码的编码，主要作用初始化控件，处理事件。简单地说：View层不做任何业务逻辑、不涉及操作数据、不处理数据，UI和数据严格的分开。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;ViewModel: 负责完成View和Model之间的交互。ViewModel只做和业务逻辑和业务数据相关的事，不做任何和UI相关的事情，ViewModel 层不会持有任何控件的引用，更不会在ViewModel中通过UI控件的引用去做更新UI的事情。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://tech.meituan.com/2016/11/11/android-mvvm.html&#34;&gt;https://tech.meituan.com/2016/11/11/android-mvvm.html&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&#34;aacandroid-architecture-components&#34;&gt;AAC(Android Architecture Components)&lt;/h4&gt;
+&lt;p&gt;Google 2017年I/O大会上发布了AAC，个人感觉就是在上述MVVM的基础上封装好了所有实现的组件，开发者仅需调用即可。其包含一下框架或者组件:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;ROOM: 类似于JPA的持久层框架，用于数据的持久化解决方案。&lt;/li&gt;
+&lt;li&gt;WorkManager: 管理后台任务，类似于一个框架去管理后台的Service。&lt;/li&gt;
+&lt;li&gt;Lifecycle: 存储生命周期状态并且允许其它组件访问。&lt;/li&gt;
+&lt;li&gt;ViewModel: 上面MVVM架构中的ViewModel的实现，专注于业务的处理。&lt;/li&gt;
+&lt;li&gt;LiveData: 使用LiveData构建数据对象，在数据改变的时候，UI改变。&lt;/li&gt;
+&lt;li&gt;Navigation：导航，负责页面的跳转。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;重点在于Room、ViewModel、LiveData、Navigation的使用，前面已经学习了Navigation，主要用于Fragment的跳转，可以定义不同的action，执行去执行该Action来进行不同Fragment的跳转。下面学习比较重要的ViewModel和LiveData。&lt;/p&gt;
+&lt;h3 id=&#34;livedata&#34;&gt;LiveData&lt;/h3&gt;
+&lt;h4 id=&#34;观察者模式&#34;&gt;观察者模式&lt;/h4&gt;
+&lt;p&gt;之前一直没有领悟到观察者模式的精髓，在Android中有很多地方都使用了观察者模式，比如，监听点击事件。对于观察者来说，它并不关心观察对象的数据是如何过来的，而只关心数据过来后进行怎样的处理。&lt;/p&gt;
+&lt;h4 id=&#34;livedata格式&#34;&gt;LiveData格式&lt;/h4&gt;
+&lt;p&gt;在写代码的时候根据固定的格式可以很轻松的写出LiveData的数据观察，ViewModel中定义LiveData，Fragment或者Activity中绑定ViewModel，然后监听LiveData的改变。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 4
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 5
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 6
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 7
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 8
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 9
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;10
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;11
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;12
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    // viewModel中定义LiveData 以及LiveData改变的处理逻辑
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    // 下面这段代码就是定义了一个游戏结束的flag，
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    private val _eventGameFinish = MutableLiveData&amp;lt;Boolean&amp;gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    val eventGameFinish: LiveData&amp;lt;Boolean&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        get() = _eventGameFinish
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    // 然后在fragment中监听LiveData的更新 根据LiveData中存储的flag进行不同的页面处理
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    viewModel.eventGameFinish.observe(viewLifecycleOwner, Observer { hasFinished -&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        if (hasFinished) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            gameFinished()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    })
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;在其中有几个点需要明确一下:&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Android Learning 3</title>
+      <link>https://isyuanpeng.github.io/posts/tech/android-learning-3/</link>
+      <pubDate>Tue, 22 Mar 2022 17:23:57 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/android-learning-3/</guid>
+      <description>&lt;p&gt;Android学习的第三篇文章，跟着google的官方教程来到了lesson2，开始进行Layout的学习。&lt;/p&gt;
+&lt;h2 id=&#34;viewgroups&#34;&gt;ViewGroups&lt;/h2&gt;
+&lt;p&gt;view的集合，构成了布局的结构。layout的构建使用有层级的&lt;em&gt;View&lt;/em&gt;和&lt;em&gt;ViewGroup&lt;/em&gt;对象。layout的结构如下：&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://developer.android.com/images/viewgroup_2x.png&#34; alt=&#34;layout&#34;  title=&#34;Layout&#34;  /&gt;
+&lt;/p&gt;
+&lt;h3 id=&#34;linearlayout&#34;&gt;LinearLayout&lt;/h3&gt;
+&lt;p&gt;线性布局，UI元素被水平或者垂直摆放。&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://developer.android.com/codelabs/kotlin-android-training-linear-layout/img/6ad9b15635c00d6.png&#34; alt=&#34;LinearLayout&#34;  title=&#34;LinearLayout&#34;  /&gt;
+&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;android:orientation: 布局方向，设置为水平或者垂直布局&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;horizontal: 水平，默认方向&lt;/li&gt;
+&lt;li&gt;vertical：垂直&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;android:layout_gravity: 子控件在父控件上的对齐方式&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;android:gravity: 控件内部的元素的对齐方式，支持多个方向，示例如下，下面的TextView中的text就在整个TextView的居中靠下的方向:&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;4
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;5
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;6
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &amp;lt;TextView
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        android:layout_width=&amp;#34;match_parent&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        android:layout_height=&amp;#34;wrap_content&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        android:layout_weight=&amp;#34;1&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        android:gravity=&amp;#34;bottom|center&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        android:text=&amp;#34;TEST GRAVITY&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        android:textSize=&amp;#34;50sp&amp;#34;/&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;android:layout_weight: 子控件在父控件中的权重，说白了就是占多大，比如说一个LinearLayout有5个button，每个button的weight都是1，那么其orientation方向上均分5分，每个button占1/5&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;其它的参数例如margin，padding等等和其它控件都是相同的，不赘述&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;relativelayout&#34;&gt;RelativeLayout&lt;/h3&gt;
+&lt;p&gt;相对布局，以相对位置显示子控件。说白了，就是可以指定子控件相对于其它控件的位置，比如说有两个buttonA和buttonB，如果想要buttonB布局在buttonA的右下方45度的未知，那么直接可以用两行就可以解决了，不需要嵌套多个LinearLayout。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    android:layout_below=&amp;#34;@+id/buttonA&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    android:layout_centerHorizontal=&amp;#34;true&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;alignParentXx: 这个系列的参数都是相较于父控件而言的，相对于父控件停靠在哪个位置，Top, Bottom, left, right&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Android Learning 2</title>
+      <link>https://isyuanpeng.github.io/posts/tech/android-learning-2/</link>
+      <pubDate>Fri, 18 Mar 2022 10:20:34 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/android-learning-2/</guid>
+      <description>&lt;p&gt;今天先创建第一个app，跟的课程是google推荐的Developing Android Apps with Kotlin &lt;a href=&#34;https://classroom.udacity.com/courses/ud9012&#34;&gt;https://classroom.udacity.com/courses/ud9012&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;由于上面这个课程都是视频，所以也跟着google的kotlin android training get started补充理论知识&lt;/p&gt;
+&lt;h2 id=&#34;1-explore-android-studio&#34;&gt;1. Explore Android Studio&lt;/h2&gt;
+&lt;p&gt;上一篇文章已经讲过了gradle在项目中的结构，除了gradle外，其它的代码文件的分布也和java的项目类似，主要说一下其它文件夹。&lt;/p&gt;
+&lt;h3 id=&#34;reslayout&#34;&gt;res/layout&lt;/h3&gt;
+&lt;p&gt;android的布局文件夹，每一个Activity对应一个xml布局文件，在布局文件里面可以看到Activity的页面UI显示。&lt;/p&gt;
+&lt;h3 id=&#34;androidmanifestxml&#34;&gt;AndroidManifest.xml&lt;/h3&gt;
+&lt;p&gt;一直以为是mainfest，结果是manifest(清单)，列举了android系统运行app所需要的清单(Activity列表和权限)。&lt;/p&gt;
+&lt;h2 id=&#34;2-anatomy剖析-of-basic-android-project&#34;&gt;2. Anatomy(剖析) of Basic Android Project&lt;/h2&gt;
+&lt;p&gt;下面就开始进行第一个app的开发，app叫dice roller(投色子)，创建一个空项目后打开运行可以看到Hello World，就证明整个环境是通的。下面看代码。&lt;/p&gt;
+&lt;h3 id=&#34;mainactivity&#34;&gt;MainActivity&lt;/h3&gt;
+&lt;p&gt;首先看到的类是MainActivity，MainActivity就是Hello world这个页面的Activity。而页面的layout就是res/layout下的activity_main.xml，layout命名规则名称后置。对于Activity和layout中的xml的理解，和前端的html和js的关系类似，js处理交互逻辑，html显示页面UI，这里就是Activity处理交互逻辑，xml文件显示页面UI。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;class MainActivity : AppCompatActivity() { ...
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;可以看到MainActicity继承自AppCompatActivity，AppCompatAcitvity是Activity的一个子类，兼容性和新特性都很好。&lt;/p&gt;
+&lt;h3 id=&#34;oncreate&#34;&gt;onCreate()&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;override fun onCreate(savedInstanceState: Bundle?) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   super.onCreate(savedInstanceState)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   setContentView(R.layout.activity_main)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Activity不用构造器去初始化对象，而是用生命周期函数，onCreate()就是一个生命周期函数，它是Activity生命周期中的开始。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Android Learning 1</title>
+      <link>https://isyuanpeng.github.io/posts/tech/android-learning-1/</link>
+      <pubDate>Thu, 17 Mar 2022 10:35:42 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/android-learning-1/</guid>
+      <description>&lt;p&gt;2021年10月份成为兼职Android开发，之前一直没正式系统学习，现在开一个series来记录Android的学习。&lt;/p&gt;
+&lt;h2 id=&#34;gradle&#34;&gt;Gradle&lt;/h2&gt;
+&lt;p&gt;开始学习android的时候，相信gradle是大家绕不开的一个地方，因为android的环境很难调通，很多依赖下载也是状况百出。但是即使这样，很多人也是选择解决问题后就不去深究背后的原理，选择直接绕过gradle直接写项目，遂在android学习的第一章先学习gradle。
+题外话，最新版的springboot已经由maven改为使用gradle来进行构建项目。&lt;/p&gt;
+&lt;h3 id=&#34;什么是gradle&#34;&gt;什么是Gradle&lt;/h3&gt;
+&lt;p&gt;gradle本质上是个打包工具，结合了ant和maven的优点(没感觉出来)&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.zhihu.com/question/30432152&#34;&gt;https://www.zhihu.com/question/30432152&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;先把普通的gradle目录结构放出来，便于后面的理解。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;4
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;5
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;6
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;7
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;8
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  gradle:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    wrapper:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - gradle-wrapper.properties # 指定gradle版本号
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - gradle-wrapper.jar # 安装部署gradle包
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  - build.gradle # 构建脚本
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  - settings.gradle # 指定工程名
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  - gradlew.bat # windows安装gradle命令 去执行jar包
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  - gradlew # linux安装gradle命令 去执行jar包
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;gradle-wrappergradlew&#34;&gt;Gradle Wrapper(gradlew)&lt;/h3&gt;
+&lt;p&gt;直到现在见到Gradle Wrapper(包装纸)也很迷惑，不知道这是什么，有什么作用。下面先从官方的解释开始看起：&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>揭秘Classpath</title>
+      <link>https://isyuanpeng.github.io/posts/tech/spring-classpath/</link>
+      <pubDate>Tue, 15 Mar 2022 17:23:11 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/spring-classpath/</guid>
+      <description>&lt;h2 id=&#34;环境变量classpath&#34;&gt;环境变量CLASSPATH&lt;/h2&gt;
+&lt;p&gt;在安装Java环境的时候，我们需要配置PATH和CLASSPATH。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;PATH：PATH比较好理解，我们在命令行需要执行某个命令的时候如python的时候，如果没有配置PATH，则需要进入python.exe所在的文件夹下，然后执行python。那配置PATH中的python所在路径，其实就相当于简化了这个过程，当配置完成后再执行python，首先去PATH中从左到右搜索所有的路径，直到搜索到python.exe，然后利用该路径执行命令，如果找不到则提示该命令不存在。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;CLASSPATH：CLASSPATH其实也很好理解，这里来一段Java官方文档的解释：&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The CLASSPATH variable is one way to tell applications, including the JDK tools, * where to look for user classes *. (Classes that are part of the JRE, JDK platform, and extensions should be defined through other means, such as the bootstrap class path or the extensions directory.)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;名如其人，classpath就是classes所在的path，那设置CLASSPATH的作用就是指定java类所在的目录，当我们执行java命令的时候，java需要去哪里找class文件呢，这时候就需要设置classpath，我们可以输出当前环境的classpath查看: * echo %CLASSPATH% *&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-gdscript3&#34; data-lang=&#34;gdscript3&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;;C:\Program Files\Java\jdk1&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;8.0&lt;/span&gt;_181\lib;C:\Program Files\Java\jdk1&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;8.0&lt;/span&gt;_181\lib\tools&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;jar
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;CLASSPATH的扫描同样是从左向右的。我们可以看到参数以 &lt;em&gt;;&lt;/em&gt; 分割，那么第一个参数 *.*指代的就是当前目录，意思是java去当前目录下寻找class文件进行执行。&lt;/p&gt;
+&lt;h2 id=&#34;spring中的classpath&#34;&gt;Spring中的classpath&lt;/h2&gt;
+&lt;p&gt;我们在很多的项目代码的config代码中都可以看到 &lt;code&gt;@PropertySource(value = &amp;quot;classpath:map-config.yaml&amp;quot;)&lt;/code&gt; 类似的代码，在这里也用到了classpath，这里的classpath什么作用呢？&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>设计模式-策略模式实战</title>
+      <link>https://isyuanpeng.github.io/posts/tech/design-pattern-strategy/</link>
+      <pubDate>Thu, 03 Mar 2022 18:30:14 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/design-pattern-strategy/</guid>
+      <description>&lt;h2 id=&#34;策略模式概念&#34;&gt;策略模式概念&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://refactoringguru.cn/design-patterns/strategy&#34;&gt;https://refactoringguru.cn/design-patterns/strategy&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;实战应用&#34;&gt;实战应用&lt;/h2&gt;
+&lt;h3 id=&#34;背景&#34;&gt;背景&lt;/h3&gt;
+&lt;p&gt;健康码组件对接的前端门禁设备都多种开门的方式，刷证，人脸，二维码等。对于每一种开门方式，其需要的返回结果是一样的，只是内部的处理方式不一样。所以这里使用策略模式+工厂模式来实现，通过一个入口以及不同的type来实现调用不同的实现类。具体代码如下。&lt;/p&gt;
+&lt;h3 id=&#34;代码&#34;&gt;代码&lt;/h3&gt;
+&lt;h4 id=&#34;1-创建一个handler接口类&#34;&gt;1. 创建一个Handler接口类&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 4
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 5
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 6
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 7
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 8
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 9
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;10
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;11
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;12
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;13
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;14
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;15
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;16
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;17
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;18
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;19
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;20
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/**
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; * @Author Yuanpeng
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; * @Description 处理健康码请求携带参数的类 根据不同的类型进行 不同的处理
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; * @Date 2022/1/10
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; */
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;public interface HealthCodeHandler {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    /**
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;     * 处理健康码信息的逻辑
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;     * @param query 前置信息
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;     * @return 处理的结果 包括开门信息 健康码信息 核酸信息 疫苗信息等
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;     */
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    HealthCodeResult handle(HealthCodeQuery query);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    /**
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;     * 获取请求的类型 1.人员唯一标识 personId 2.身份证号 3.二维码 4.人员卡号 5.人脸图片 6.市民卡
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;     * @return 类型
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;     */
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Integer getType();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id=&#34;2-创建不同的handler实现类这里以二维码的实现类举例&#34;&gt;2. 创建不同的Handler实现类，这里以二维码的实现类举例&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 4
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 5
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 6
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 7
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 8
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 9
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;10
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;11
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;12
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;13
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;14
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;15
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;16
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;17
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;18
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;19
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;20
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;21
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/**
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; * @Author Yuanpeng
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; * @Description 处理二维码的实现类
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; * @Date 2022/1/10
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; */
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;@Service
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;public class QrCodeHandler implements HealthCodeHandler {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    private static final Logger log = LoggerFactory.getLogger(QrCodeHandler.class);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    @Override
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    public HealthCodeResult handle(HealthCodeQuery query) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        HealthCodeResult result = ResultUtils.getDefaultHeathCodeResult(query, false);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        // logic code
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        return result;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    @Override
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    public Integer getType() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        return HealthCodeConstants.QR_CODE_TYPE;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id=&#34;3-将所有实现了handler接口类的实例注入容器&#34;&gt;3. 将所有实现了Handler接口类的实例注入容器&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 4
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 5
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 6
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 7
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 8
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 9
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;10
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;11
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;12
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;13
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;14
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;15
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;16
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;17
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;18
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;19
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;20
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;21
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;22
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;23
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;24
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;25
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;26
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;27
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;28
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;29
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;30
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;31
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;32
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;33
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;34
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;35
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;/**
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; * @Author Yuanpeng
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; * @Description 策略模式的工厂类 加载所有的HealthCodeHandler类
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; * @Date 2022/1/10
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; */
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;@Component
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;public class HealthCodeHandlerFactory implements InitializingBean, ApplicationContextAware {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    private static final Map&amp;lt;Integer, HealthCodeHandler&amp;gt; HEALTH_CODE_HANDLER_MAP = new HashMap&amp;lt;&amp;gt;(6);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    private ApplicationContext appContext;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    /**
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;     * 根据健康码信息类型获取对应的处理器
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;     *
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;     * @param type 健康码信息类型
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;     * @return 健康码信息类型对应的处理器
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;     */
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    public HealthCodeHandler getHandler(Integer type) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        return HEALTH_CODE_HANDLER_MAP.get(type);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    @Override
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    public void afterPropertiesSet() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        // 将 Spring 容器中所有的 HealthCodeHandler 注册到 FORM_SUBMIT_HANDLER_MAP
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        appContext.getBeansOfType(HealthCodeHandler.class)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                .values()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                .forEach(handler -&amp;gt; HEALTH_CODE_HANDLER_MAP.put(handler.getType(), handler));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    @Override
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        appContext = applicationContext;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id=&#34;4-入口处根据传参中的type进行不同类的调用&#34;&gt;4. 入口处根据传参中的type进行不同类的调用&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    // 使用策略模式来实现对不同类型请求的处理，如果需要添加其它类型信息的处理 只需要实现相应的HealthCodeHandler即可
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    HealthCodeHandler handler = healthCodeHandlerFactory.getHandler(query.getCardNoType());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    HealthCodeResult result = handler.handle(query);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;至此，完成了业务上的需求，同时后期如果还有其它类型的开门方式，可以直接写实现类，不用改之前的代码，维护起来比较方便。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Pg数据库常用SQL(持续更新)</title>
+      <link>https://isyuanpeng.github.io/posts/tech/pg-common-sql/</link>
+      <pubDate>Wed, 02 Mar 2022 19:09:58 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/pg-common-sql/</guid>
+      <description>&lt;h2 id=&#34;普通操作&#34;&gt;普通操作&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;更新多参数SQL&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;update table_a a set (col_a, col_b) = (select b.col_a, b.col_b from table_b b where a.col_c = b.col_c) where exists (select 1 from table_b b where a.col_c = b.col_c)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;分组排序&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;select * from (select *, row_number() over(partition by col_a order by col_b) rn from table_a) t where rn = 1;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;分组排序删除&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;delete from table_a where id in (select id from (select id, row_number() over(partition by col_a order by col_b) rn from table_a) t where rn != 1);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;系统类&#34;&gt;系统类&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;查看当前所有连接，连接个数&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;4
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;5
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;select * from pg_stat_activity;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;select count(1) from pg_stat_activity;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;# 查询最大连接数
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;show max_connections;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description>
+    </item>
+    
+    <item>
+      <title>Markdown Syntax Guide</title>
+      <link>https://isyuanpeng.github.io/posts/tech/markdown-syntax/</link>
+      <pubDate>Mon, 11 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/markdown-syntax/</guid>
+      <description>Sample article showcasing basic Markdown syntax and formatting for HTML elements.</description>
+    </item>
+    
+  </channel>
+</rss>

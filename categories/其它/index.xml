@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>其它 on Isyuanpeng</title>
+    <link>https://isyuanpeng.github.io/categories/%E5%85%B6%E5%AE%83/</link>
+    <description>Recent content in 其它 on Isyuanpeng</description>
+    <image>
+      <url>https://isyuanpeng.github.io/papermod-cover.png</url>
+      <link>https://isyuanpeng.github.io/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 13 Jan 2023 15:33:27 +0800</lastBuildDate><atom:link href="https://isyuanpeng.github.io/categories/%E5%85%B6%E5%AE%83/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2023 Tech Plan</title>
+      <link>https://isyuanpeng.github.io/posts/other/2023-tech-plan/</link>
+      <pubDate>Fri, 13 Jan 2023 15:33:27 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/other/2023-tech-plan/</guid>
+      <description>&lt;h2 id=&#34;2023一组技术提升计划&#34;&gt;2023一组技术提升计划&lt;/h2&gt;
+&lt;p&gt;2023年整体技术方面聚焦在代码规范和代码质量上面，希望能够通过推动代码规范的执行和代码质量的审核来提升软件品质。&lt;/p&gt;
+&lt;h3 id=&#34;规范&#34;&gt;规范&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;代码规范：统一代码规范，使用阿里巴巴代码规范，IDEA安装阿里巴巴规范插件。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;代码规范中强制要求的必须执行，其它项按自己的风格使用。&lt;/li&gt;
+&lt;li&gt;旧代码不做要求，新代码强制执行。&lt;/li&gt;
+&lt;li&gt;二季度结束后和年度结束后，随机抽查新代码，形成考核结果。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;文档规范：中大型项目需要有开发文档，就写在README中，讲述开发逻辑和开发中不为人知的秘密&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;文档书写使用Markdown语法，每个项目的README中都有语法链接&lt;/li&gt;
+&lt;li&gt;文档中包含但不限于需求描述，实现方案，升级记录，注意事项等。&lt;/li&gt;
+&lt;li&gt;旧代码不做要求，新代码强制执行。&lt;/li&gt;
+&lt;li&gt;二季度结束后和年度结束后，随机抽查新代码，形成考核结果。&lt;/li&gt;
+&lt;li&gt;开发文档模板会在年前提供出来。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;为什么要进行代码规范和文档规范&#34;&gt;为什么要进行代码规范和文档规范&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;目前代码中，因个人风格的不通，代码风格差异也比较大，在维护代码的时候要去不停的适应不同人的代码风格，因此规范代码风格，减少维护适应代码时间。&lt;/li&gt;
+&lt;li&gt;目前代码中，因为没有好的规范，所以部分地方还是存在风险，通过实行好的代码规范来避免风险产生问题。&lt;/li&gt;
+&lt;li&gt;目前代码中，因为没有文档，所以每次看代码遇到不懂的地方需要去猜，可能存在误差。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;质量&#34;&gt;质量&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;代码审核：周六分享会开发人员把自己上周的开发工作说一遍，视开发内容决定是否需要代码审核
+&lt;ul&gt;
+&lt;li&gt;如果需要代码审核，必须要有开发文档，让组员能够理解在干什么&lt;/li&gt;
+&lt;li&gt;使用代码IDEA插件搭配Upsource快速审核,https://www.jianshu.com/p/fab6539a6749&lt;/li&gt;
+&lt;li&gt;写代码的人讲解自己的代码，阐述清楚为什么这么写&lt;/li&gt;
+&lt;li&gt;鼓励自己提交代码审核，量化代码审核次数&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;内容输出&#34;&gt;内容输出&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;完善一组wiki，问题和开发技术输出，&lt;/li&gt;
+&lt;li&gt;周六分享会后技术分享同样提交wiki&lt;/li&gt;
+&lt;li&gt;周六分享会后技术分享完毕后如果有想分享的东西同样可以分享&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>Everyday Question</title>
+      <link>https://isyuanpeng.github.io/posts/other/everyday-question/</link>
+      <pubDate>Wed, 22 Jun 2022 10:18:49 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/other/everyday-question/</guid>
+      <description>&lt;h2 id=&#34;每日一问&#34;&gt;每日一问&lt;/h2&gt;
+&lt;h3 id=&#34;2022-06-21-setter--getter&#34;&gt;2022-06-21 setter &amp;amp; getter&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;setter 和 gettter 的实际意义&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;为什么要有setter &amp;amp; getter, public dot直接使用不是更方便快捷吗？ 而且setter和getter最终的效果也是读写&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;安全：程序可以选择只读或只写或读写&lt;/li&gt;
+&lt;li&gt;灵活：如果不仅仅只是读写属性值，可以自由变换&lt;/li&gt;
+&lt;li&gt;封装：隐藏内部实现细节&lt;/li&gt;
+&lt;li&gt;健壮：便于维护，扩展&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;由上一问，为什么public是不安全的呢？&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;如果写sdk的话，那么有些数据是不想对外修改的，这时候public的作用就体现出来了。如果只是业务代码则，权限体现的不太大。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;扩展：Java的四大特性 - 直接粘贴&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;封装&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;What：隐藏信息，保护数据访问。
+How：暴露有限接口和属性，需要编程语言提供访问控制的语法。
+Why：提高代码可维护性；降低接口复杂度，提高类的易用性。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;抽象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;What: 隐藏具体实现，使用者只需关心功能，无需关心实现。
+How: 通过接口类或者抽象类实现，特殊语法机制非必须。
+Why: 提高代码的扩展性、维护性；降低复杂度，减少细节负担。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;继承&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;What: 表示 is-a 关系，分为单继承和多继承。
+How: 需要编程语言提供特殊语法机制。例如 Java 的 “extends”，C++ 的 “:” 。
+Why: 解决代码复用问题。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;多态&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;What: 子类替换父类，在运行时调用子类的实现。
+How: 需要编程语言提供特殊的语法机制。比如继承、接口类、duck-typing。
+Why: 提高代码扩展性和复用性。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;2022-06-22-编译反编译&#34;&gt;2022-06-22 编译&amp;amp;反编译&lt;/h3&gt;
+&lt;p&gt;编译：源码 -&amp;gt; 字节码
+反编译：字节码 -&amp;gt; 源码&lt;/p&gt;
+&lt;h4 id=&#34;什么是字节码采用字节码的好处是什么&#34;&gt;什么是字节码，采用字节码的好处是什么？&lt;/h4&gt;
+&lt;p&gt;在 Java 中，JVM 可以理解的代码就叫做字节码（即扩展名为 .class 的文件），它不面向任何特定的处理器，只面向虚拟机。Java 语言通过字节码的方式，在一定程度上解决了传统解释型语言执行效率低的问题，同时又保留了解释型语言可移植的特点。所以 Java 程序运行时比较高效，而且，由于字节码并不针对一种特定的机器，因此，Java 程序无须重新编译便可在多种不同操作系统的计算机上运行。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Effective Java Reading Notes - 1</title>
+      <link>https://isyuanpeng.github.io/posts/other/effective-java-notes/</link>
+      <pubDate>Thu, 09 Jun 2022 15:53:18 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/other/effective-java-notes/</guid>
+      <description>&lt;h2 id=&#34;effective-java-reading-notes---1&#34;&gt;Effective Java Reading Notes - 1&lt;/h2&gt;
+&lt;p&gt;最近感觉自己对于Java越来越陌生了，遂看EffectiveJava来温习一下。这本书就是一个清单，分为90个item。&lt;/p&gt;
+&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;简介里面就简单说明了一下本书的重点，重点不在于如何写出高性能的Java代码，而是写出clear，correct，usable，robust，flexible，maintainable的代码。&lt;/p&gt;
+&lt;h2 id=&#34;creating-and-destroying-objects&#34;&gt;Creating and Destroying Objects&lt;/h2&gt;
+&lt;h3 id=&#34;item-1-consider-static-factory-methods-instead-of-constructors&#34;&gt;Item 1: Consider static factory methods instead of constructors&lt;/h3&gt;
+&lt;p&gt;获取一个类的实例的传统方式是提供构造方法。另外一种方式是创建静态工厂方法，这里的工厂并不是设计模式中的工厂。之前有个同事喜欢使用静态工厂方法来创建类（Luzihao5），具体看到他的代码就可以知道。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;// 书中的样例使用了基本类型转换包装类的例子
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;public static Boolean valueOf(boolean b) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    return b ? Boolean.TRUE : Boolean.FALSE;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;下面列举一下静态工厂方法获取类实例的优点和缺点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;advantages:
+&lt;ul&gt;
+&lt;li&gt;自定义方法名称：构造方法只能是类名称，而静态工厂方法可以取具体含义的名称。这点确实，如果有多个构造函数的话，往往需要去找到底使用哪个构造函数来创建实例。&lt;/li&gt;
+&lt;li&gt;不需要每次都创建一个新的对象：如上面的例子，每次只需要返回定义好的常量即可。&lt;/li&gt;
+&lt;li&gt;静态方法返回的类型可以是定义返回类型的子类&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;item-6-avoid-creating-unnecessary-objects&#34;&gt;Item 6: Avoid creating unnecessary objects&lt;/h2&gt;
+&lt;p&gt;如题名，避免创建不必要的对象。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;以String作为例子：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;String s = new String(&amp;#34;bikini&amp;#34;);    // 创建一个新的实例
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;String s = &amp;#34;bikini&amp;#34;;    // 从String池创建 以后无论创建多少个 bikini 都会指向第一次创建的地址
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;以正则表达式的匹配为例：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 4
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 5
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 6
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 7
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 8
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 9
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;10
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;11
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;12
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;// Performance can be greatly inproved
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;static boolean isRomanNumberal(String s) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    return s.matches(&amp;#34;^(?=.)&amp;#34;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;// Reusing expensive object for improved performence
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;public class RomanNumberals {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    private static final Pattern ROMAN = Pattern.compile(&amp;#34;^(?=.)&amp;#34;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    static boolean isRomanNumeral(String s) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        return ROMAN.matchers(s).matches();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;使用基础类型而不是包装类&lt;/li&gt;
+&lt;/ol&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

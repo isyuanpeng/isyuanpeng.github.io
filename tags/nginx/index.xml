@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Nginx on Isyuanpeng</title>
+    <link>https://isyuanpeng.github.io/tags/nginx/</link>
+    <description>Recent content in Nginx on Isyuanpeng</description>
+    <image>
+      <url>https://isyuanpeng.github.io/papermod-cover.png</url>
+      <link>https://isyuanpeng.github.io/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 23 Mar 2023 19:01:29 +0800</lastBuildDate><atom:link href="https://isyuanpeng.github.io/tags/nginx/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Nginx代理配置实战</title>
+      <link>https://isyuanpeng.github.io/posts/tech/nginx-proxy/</link>
+      <pubDate>Thu, 23 Mar 2023 19:01:29 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/nginx-proxy/</guid>
+      <description>&lt;h2 id=&#34;浅析代理&#34;&gt;浅析代理&lt;/h2&gt;
+&lt;h3 id=&#34;nginx功能&#34;&gt;Nginx功能&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;正向代理：客户端不知道服务端，也就是说客户端需要配置代理服务器来，代理服务器再去访问真正的服务端。挂梯子就是正向代理的应用。&lt;/li&gt;
+&lt;li&gt;反向代理：服务端不知道客户端，客户端不需要进行任何配置，用户只请求反向代理地址，反向代理服务器选择目标服务器，获取数据返回客户端。&lt;/li&gt;
+&lt;li&gt;负载均衡：在反向代理中，我们可以使用负载均衡去将请求分配到不同的服务器上。&lt;/li&gt;
+&lt;li&gt;动静分离：Nginx将接到的请求分为动态请求和静态请求，这在实际的应用中对应了前后端。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;nginx原理&#34;&gt;Nginx原理&lt;/h3&gt;
+&lt;h4 id=&#34;master---worker-模式&#34;&gt;Master - Worker 模式&lt;/h4&gt;
+&lt;p&gt;在启动Nginx后，我们通过ps -ef可以发现有关nginx的进程有一个master process和n个worker process，并且我们查看nginx监听的端口，可以看到监听了80端口。&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;../image/nginx_process.png&#34; alt=&#34;nginx-process&#34;  title=&#34;Nginx Process&#34;  /&gt;
+&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Master process: master进程的作用主要是读取并且验证nginx.conf, 并且管理worker进程，给worker进程传递消息。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Worker process: 每一个Worker进程都维护了一个线程去处理连接和请求(避免一个线程造成的线程切换问题)，一般cpu几核就有几个worker进程。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;所有的worker进程都是从master进程fork()过来的，worker进程提供好listenfd的接口, 为了保证只有一个进程处理连接，所有的Worker进程在注册listenfd接口读取事件前抢互斥锁accept_mutex，抢到互斥锁的那个进程注册listenfd读事件，在读事件里面调用accept接受连接，开始处理请求。&lt;/li&gt;
+&lt;li&gt;Nginx采取上面的这种进程模型的好处：
+&lt;ul&gt;
+&lt;li&gt;独立进程不需要加锁，省去锁的开销&lt;/li&gt;
+&lt;li&gt;独立进程互不影响，服务不会中断&lt;/li&gt;
+&lt;li&gt;独立进程异常退出，只影响该进程的请求&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9e187f1f170e4efc826bb5f90f6e6b71~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp&#34; alt=&#34;nginx-arch&#34;  title=&#34;nginx arch&#34;  /&gt;
+&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Cache Manager process: 除了上面两个进程外，我们还可以看到Cache Manager process, 与之对应的还有Cache Loader process(在nginx服务启动的时候由主进程生成，缓存数据加载完成后退出), Cache Manager process负责缓存索引的还礼，通过缓存机制，可以提高对请求的响应效率。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/dadff6c0f3494d3d8863cbac729baf89~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp&#34; alt=&#34;nginx-all-arch&#34;  title=&#34;nginx all arch&#34;  /&gt;
+&lt;/p&gt;
+&lt;h4 id=&#34;模块化&#34;&gt;模块化&lt;/h4&gt;
+&lt;p&gt;Nginx从功能上可以分为：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Handlers: 处理请求，进行输出内容和修改headers等，一般只有一个&lt;/li&gt;
+&lt;li&gt;Filters: 接收请求进行链式修改&lt;/li&gt;
+&lt;li&gt;Proxies: Nginx的Htpp Upstream等模块，主要和后端进行交互，实现服务代理和负载均衡等&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Nginx（内核）本身做的工作实际很少，当它接到一个 HTTP 请求时，它仅仅是通过查找配置文件将此次请求映射到一个 location block，而此 location 中所配置的各个指令则会启动不同的模块去完成工作，因此模块可以看做 Nginx 真正的劳动工作者。通常一个 location 中的指令会涉及一个 Handler 模块和多个 Filter 模块（当然，多个location可以复用同一个模块）。Handler模块负责处理请求，完成响应内容的生成，而 Filter 模块对响应内容进行处理。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

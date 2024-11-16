@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Tags on Isyuanpeng</title>
+    <link>https://isyuanpeng.github.io/tags/</link>
+    <description>Recent content in Tags on Isyuanpeng</description>
+    <image>
+      <url>https://isyuanpeng.github.io/papermod-cover.png</url>
+      <link>https://isyuanpeng.github.io/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 25 Nov 2023 11:39:30 +0800</lastBuildDate><atom:link href="https://isyuanpeng.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>QUIC</title>
+      <link>https://isyuanpeng.github.io/tags/quic/</link>
+      <pubDate>Sat, 25 Nov 2023 11:39:30 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/tags/quic/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Maven</title>
+      <link>https://isyuanpeng.github.io/tags/maven/</link>
+      <pubDate>Wed, 21 Jun 2023 18:40:34 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/tags/maven/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>DEBUG</title>
+      <link>https://isyuanpeng.github.io/tags/debug/</link>
+      <pubDate>Mon, 08 May 2023 18:52:46 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/tags/debug/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Nginx</title>
+      <link>https://isyuanpeng.github.io/tags/nginx/</link>
+      <pubDate>Thu, 23 Mar 2023 19:01:29 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/tags/nginx/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>问题</title>
+      <link>https://isyuanpeng.github.io/tags/%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Mon, 27 Feb 2023 18:11:45 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/tags/%E9%97%AE%E9%A2%98/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Plan</title>
+      <link>https://isyuanpeng.github.io/tags/plan/</link>
+      <pubDate>Fri, 13 Jan 2023 15:33:27 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/tags/plan/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>启动脚本</title>
+      <link>https://isyuanpeng.github.io/tags/%E5%90%AF%E5%8A%A8%E8%84%9A%E6%9C%AC/</link>
+      <pubDate>Wed, 11 Jan 2023 21:24:12 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/tags/%E5%90%AF%E5%8A%A8%E8%84%9A%E6%9C%AC/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>DDD</title>
+      <link>https://isyuanpeng.github.io/tags/ddd/</link>
+      <pubDate>Tue, 10 Jan 2023 15:22:22 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/tags/ddd/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Yaml</title>
+      <link>https://isyuanpeng.github.io/tags/yaml/</link>
+      <pubDate>Sat, 08 Oct 2022 11:10:20 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/tags/yaml/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Design</title>
+      <link>https://isyuanpeng.github.io/tags/design/</link>
+      <pubDate>Thu, 29 Sep 2022 10:04:14 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/tags/design/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Question</title>
+      <link>https://isyuanpeng.github.io/tags/question/</link>
+      <pubDate>Wed, 22 Jun 2022 10:18:49 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/tags/question/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Kafka</title>
+      <link>https://isyuanpeng.github.io/tags/kafka/</link>
+      <pubDate>Fri, 10 Jun 2022 18:09:16 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/tags/kafka/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Java</title>
+      <link>https://isyuanpeng.github.io/tags/java/</link>
+      <pubDate>Thu, 09 Jun 2022 15:53:18 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/tags/java/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Android</title>
+      <link>https://isyuanpeng.github.io/tags/android/</link>
+      <pubDate>Wed, 06 Apr 2022 10:25:28 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/tags/android/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Spring</title>
+      <link>https://isyuanpeng.github.io/tags/spring/</link>
+      <pubDate>Tue, 15 Mar 2022 17:23:11 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/tags/spring/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Design-Pattern</title>
+      <link>https://isyuanpeng.github.io/tags/design-pattern/</link>
+      <pubDate>Thu, 03 Mar 2022 18:30:14 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/tags/design-pattern/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Pg</title>
+      <link>https://isyuanpeng.github.io/tags/pg/</link>
+      <pubDate>Wed, 02 Mar 2022 19:09:58 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/tags/pg/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>EasyCode</title>
+      <link>https://isyuanpeng.github.io/tags/easycode/</link>
+      <pubDate>Sat, 12 Feb 2022 15:12:48 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/tags/easycode/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>IDEA</title>
+      <link>https://isyuanpeng.github.io/tags/idea/</link>
+      <pubDate>Sat, 12 Feb 2022 15:12:48 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/tags/idea/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>自动生成代码</title>
+      <link>https://isyuanpeng.github.io/tags/%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90%E4%BB%A3%E7%A0%81/</link>
+      <pubDate>Sat, 12 Feb 2022 15:12:48 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/tags/%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90%E4%BB%A3%E7%A0%81/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Css</title>
+      <link>https://isyuanpeng.github.io/tags/css/</link>
+      <pubDate>Mon, 11 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/tags/css/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Html</title>
+      <link>https://isyuanpeng.github.io/tags/html/</link>
+      <pubDate>Mon, 11 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/tags/html/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Markdown</title>
+      <link>https://isyuanpeng.github.io/tags/markdown/</link>
+      <pubDate>Mon, 11 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/tags/markdown/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Themes</title>
+      <link>https://isyuanpeng.github.io/tags/themes/</link>
+      <pubDate>Mon, 11 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/tags/themes/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

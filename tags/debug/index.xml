@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>DEBUG on Isyuanpeng</title>
+    <link>https://isyuanpeng.github.io/tags/debug/</link>
+    <description>Recent content in DEBUG on Isyuanpeng</description>
+    <image>
+      <url>https://isyuanpeng.github.io/papermod-cover.png</url>
+      <link>https://isyuanpeng.github.io/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Mon, 08 May 2023 18:52:46 +0800</lastBuildDate><atom:link href="https://isyuanpeng.github.io/tags/debug/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>DEBUG</title>
+      <link>https://isyuanpeng.github.io/posts/tech/debug/</link>
+      <pubDate>Mon, 08 May 2023 18:52:46 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/debug/</guid>
+      <description>&lt;h2 id=&#34;浅析几种不同的debug方法欢迎大家补充&#34;&gt;浅析几种不同的DEBUG方法，欢迎大家补充&lt;/h2&gt;
+&lt;h3 id=&#34;远程debug&#34;&gt;远程DEBUG&lt;/h3&gt;
+&lt;p&gt;当本地的代码因为各种原因无法正常启动的时候，可以选择使用远程DEBUG，这种方法要求和线上的代码一致，具体方法如下，&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://blog-vx.oss-cn-beijing.aliyuncs.com/5bf8a29492a5216afb7183603bca288.png&#34; alt=&#34;remote_debug&#34;  /&gt;
+&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step1&lt;/strong&gt;: 新建一个remote jvm debug，填入需要线上服务所在服务器ip，复制Command line arguments for remote JVM，选择需要debug的module。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step2&lt;/strong&gt;: 服务器中启动脚本修改添加Step1中复制的arguments&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;java -jar -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 remote-debug-1.0-SNAPSHOT.jar
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;公司的jsvc启动的话，要放在mainclass前面，注意JDK的版本，查看JAVA_HOME的版本，jdk8就配在jdk8的启动命令处，jdk11同理。配置好启动脚本后，重启服务。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-gdscript3&#34; data-lang=&#34;gdscript3&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;_JSVC &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;D&lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;{_ServerName} &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;home &lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;JAVA_HOME &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;cwd &lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;{_HOME_DIR}&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;config &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;umask &lt;span style=&#34;color:#ae81ff&#34;&gt;0011&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;Djava&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;security&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;egd&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;file:&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;dev&lt;span style=&#34;color:#f92672&#34;&gt;/./&lt;/span&gt;urandom &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;Djava&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;net&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;preferIPv4Stack&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;true &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;Dcom&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;jndi&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ldap&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;connect&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;pool&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;protocol&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;plain ssl&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;XX:MetaspaceSize&lt;span style=&#34;color:#f92672&#34;&gt;=$&lt;/span&gt;{_MetaspaceSize} &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;XX:MaxMetaspaceSize&lt;span style=&#34;color:#f92672&#34;&gt;=$&lt;/span&gt;{_MaxMetaspaceSize} &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;Xms&lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;{_Xms} &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;Xmx&lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;{_Xmx} &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;Xmn&lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;{_Xmn} &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;XX:SurvivorRatio&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;XX:&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;HeapDumpOnOutOfMemoryError &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;XX:&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;DisableExplicitGC &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;XX:&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;PrintGCDetails &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;XX:&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;PrintGCDateStamps &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;XX:&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;PrintGCTimeStamps &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;Xloggc:&lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;{_HOME_DIR}&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;logs&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;gc&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;log &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;XX:&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;UseGCLogFileRotation &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;XX:NumberOfGCLogFiles&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;XX:GCLogFileSize&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;M &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;Djava&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;io&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;tmpdir&lt;span style=&#34;color:#f92672&#34;&gt;=$&lt;/span&gt;{_HOME_DIR}&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;temp  &lt;span style=&#34;color:#f92672&#34;&gt;*-&lt;/span&gt;agentlib:jdwp&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;transport&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;dt_socket,server&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;y,suspend&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;n,address&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;5005&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;Dloader&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;main&lt;span style=&#34;color:#f92672&#34;&gt;=$&lt;/span&gt;{_MainClass}  &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;wait &lt;span style=&#34;color:#ae81ff&#34;&gt;60&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;pidfile &lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;_Pid &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;outfile &lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;{_LogOut} &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;errfile &lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;{_LogErr} &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;cp &lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;{_Classpath_jdk8} &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;procname &lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;{_SystemctlName} &lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;$&lt;/span&gt;{_StarCLASS}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Step3&lt;/strong&gt;: 重启好服务后，IDEA启动远程debug。显示连接正常即可，如果连接time out查询服务5005端口是否起来，如果没有起来则查看服务启动问题。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step4&lt;/strong&gt;: 打断点，线上服务页面操作即可进入断点。&lt;/p&gt;
+&lt;h3 id=&#34;nginx代理debug&#34;&gt;Nginx代理DEBUG&lt;/h3&gt;
+&lt;p&gt;在进行某次问题的排查的时候，需要debug单点登录(外部依赖)的流程，线上和线下的组件代码不一致，但是依赖的单点登录jar包一致，测试发现IDEA远程DEBUG并不能debug外部依赖的jar包。&lt;/p&gt;
+&lt;p&gt;由于线上服务使用的频率不高，所以直接启动本地的代码作为线上服务，使用nginx反向代理线上服务到本地，此时就可以愉快的进行外部jar包的debug，具体方法如下。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step1&lt;/strong&gt;: 启动本地服务&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step2&lt;/strong&gt;: 找到集群代理组件所在的服务器，进入代理组件内部/opt/opsmgr/web/components/cluster.1/data/proxy_section，修改proxy_https.conf文件，找到需要反向代理的组件location，以iface为例，修改proxy_pass的参数为本地启动服务的地址。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 1
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 2
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 3
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 4
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 5
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 6
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 7
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 8
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt; 9
+&lt;/span&gt;&lt;span style=&#34;white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;location /iface-web/ {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        proxy_set_header   Host             $http_host;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        proxy_set_header   X-Real-IP        $remote_addr;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        proxy_set_header   X-Forwarded-Proto  $scheme;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        proxy_cookie_path /iface-web &amp;#34;/iface-web;httponly; secure&amp;#34;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        #proxy_pass http://10.195.185.23:8037/iface-web/;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        proxy_pass http://10.195.169.165:8037/iface-web/;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Step3&lt;/strong&gt;: 重启nginx&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

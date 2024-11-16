@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Design on Isyuanpeng</title>
+    <link>https://isyuanpeng.github.io/tags/design/</link>
+    <description>Recent content in Design on Isyuanpeng</description>
+    <image>
+      <url>https://isyuanpeng.github.io/papermod-cover.png</url>
+      <link>https://isyuanpeng.github.io/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 29 Sep 2022 10:04:14 +0800</lastBuildDate><atom:link href="https://isyuanpeng.github.io/tags/design/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Chain of Responsibility</title>
+      <link>https://isyuanpeng.github.io/posts/tech/chain-of-responsibility/</link>
+      <pubDate>Thu, 29 Sep 2022 10:04:14 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/chain-of-responsibility/</guid>
+      <description>&lt;h2 id=&#34;责任链设计模式实战&#34;&gt;责任链设计模式实战&lt;/h2&gt;
+&lt;h3 id=&#34;责任链设计模式&#34;&gt;责任链设计模式&lt;/h3&gt;
+&lt;h4 id=&#34;责任链设计模式-1&#34;&gt;责任链设计模式&lt;/h4&gt;
+&lt;blockquote&gt;
+&lt;p&gt;学习网站: &lt;a href=&#34;https://refactoring.guru/design-patterns&#34;&gt;https://refactoring.guru/design-patterns&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h5 id=&#34;优点&#34;&gt;优点&lt;/h5&gt;
+&lt;ol&gt;
+&lt;li&gt;符合单一职责原则：后期修改只需要修改具体的实现类。&lt;/li&gt;
+&lt;li&gt;开闭原则：后期增加逻辑只需要新增具体的实现类。&lt;/li&gt;
+&lt;/ol&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
