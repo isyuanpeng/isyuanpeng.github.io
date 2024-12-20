@@ -18,7 +18,7 @@
 <link rel="mask-icon" href="https://isyuanpeng.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<meta name="generator" content="Hugo 0.138.0">
+<meta name="generator" content="Hugo 0.140.0">
 <link rel="alternate" type="application/rss+xml" href="https://isyuanpeng.github.io/categories/%E6%8A%80%E6%9C%AF/index.xml">
 <link rel="alternate" hreflang="en" href="https://isyuanpeng.github.io/categories/%E6%8A%80%E6%9C%AF/" />
 <noscript>
@@ -152,6 +152,29 @@
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
+    <h2>Android Learning 7
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>今天学习Repository和WorkManager
+Repository Repository pattern也是一种设计模式，叫做存储库模式。看一下官方的原文：
+A repository mediates between data sources (such as persistent models, web services, and caches) and the rest of the app.
+大意就是一个Repository相当于在数据源(持久化实体类，网络服务，缓存)和app其余的服务之间的中间层。简而言之，就是提供一个数据操作代理层。调用者不需要知道数据是从哪来，如何处理，只需要使用数据即可。这样有几个好处：
+代码更容易维护，切换数据源的时候业务代码不需要更改
+数据处理逻辑和业务逻辑分离，可以对这两个代码分别进行测试
+减少代码重复
+降低代码出错的几率
+为什么要有Repository 经过前几天的学习，我们已经学习了ROOM以及DAO层数据的访问，那么还需要Repository干什么呢？通过上面的优点我们可以知道，避免直接访问数据。同事也解决了多数据源的问题，一个App的数据源可以是多个，数据库，接口等等。Repository对这两种情况进行封装，可以以一种统一的方式进行数据的拉取。
+所以Repository其实是一种代码规范，并不是组件。
+Repository例子 1 2 3 4 5 6 7 8 9 10 11 12 13 14 @Singleton class PlantRepository @Inject constructor(private val plantDao: PlantDao) { // use the dao fun getPlants() = plantDao.getPlants() fun getPlant(plantId: String) = plantDao.getPlant(plantId) fun getPlantsWithGrowZoneNumber(growZoneNumber: Int) = plantDao.getPlantsWithGrowZoneNumber(growZoneNumber) // use the network service fun requestApi(): Plant } 项目中的实际运用 在市局测温项目中，实际上对Repository的使用更为复杂，整体的结构为首先定义一层datasource的接口类，然后在定义datasource的实现类，这里仅仅定义了一个remotedatasource的实现类，根据命名我感觉原本的架构想法应该是对于数据调接口一个实现类，数据库操作一个实现类。
+...</p>
+  </section>
+  <footer class="entry-footer">&lt;span title=&#39;2022-03-31 17:45:16 &#43;0800 &#43;0800&#39;&gt;March 31, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
+  <a class="entry-link" aria-label="post link to Android Learning 7" href="https://isyuanpeng.github.io/posts/tech/android-learning-7/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
     <h2>Android Learning 6
     </h2>
   </header>
@@ -165,7 +188,7 @@ RecyclerView的使用 Step 1: 将所需要使用RecyclerView的布局添加Recyc
 1 2 3 4 5 6 7 8 9 &lt;androidx.recyclerview.widget.RecyclerView android:id=&#34;@&#43;id/sleep_list&#34; android:layout_width=&#34;0dp&#34; android:layout_height=&#34;0dp&#34; app:layout_constraintBottom_toTopOf=&#34;@&#43;id/clear_button&#34; app:layout_constraintEnd_toEndOf=&#34;parent&#34; app:layout_constraintStart_toStartOf=&#34;parent&#34; app:layout_constraintTop_toBottomOf=&#34;@&#43;id/stop_button&#34; app:layoutManager=&#34;androidx.recyclerview.widget.LinearLayoutManager&#34;/&gt; Step 2：创建单个的Item的View，这里是TextView
 ...</p>
   </section>
-  <footer class="entry-footer">&lt;span title=&#39;2022-03-30 15:48:57 &#43;0800 CST&#39;&gt;March 30, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;2 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
+  <footer class="entry-footer">&lt;span title=&#39;2022-03-30 15:48:57 &#43;0800 &#43;0800&#39;&gt;March 30, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;2 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
   <a class="entry-link" aria-label="post link to Android Learning 6" href="https://isyuanpeng.github.io/posts/tech/android-learning-6/"></a>
 </article>
 
@@ -187,7 +210,7 @@ Entity 实体类就是我们常见的实体类，使用的注解也和JPA类似
 1 2 3 4 5 6 @Entity(tableName = &#34;users&#34;) data class User ( @PrimaryKey val id: Int, @ColumnInfo(name = &#34;first_name&#34;) val firstName: String?, @ColumnInfo(name = &#34;last_name&#34;) val lastName: String? ) Dao 在Dao类中定义方法来操作数据库。下面是一个简单样例：
 ...</p>
   </section>
-  <footer class="entry-footer">&lt;span title=&#39;2022-03-29 17:47:49 &#43;0800 CST&#39;&gt;March 29, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;2 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
+  <footer class="entry-footer">&lt;span title=&#39;2022-03-29 17:47:49 &#43;0800 &#43;0800&#39;&gt;March 29, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;2 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
   <a class="entry-link" aria-label="post link to Android Learning 5" href="https://isyuanpeng.github.io/posts/tech/android-learning-5/"></a>
 </article>
 
@@ -210,7 +233,7 @@ LiveData格式 在写代码的时候根据固定的格式可以很轻松的写�
 1 2 3 4 5 6 7 8 9 10 11 12 // viewModel中定义LiveData 以及LiveData改变的处理逻辑 // 下面这段代码就是定义了一个游戏结束的flag， private val _eventGameFinish = MutableLiveData&lt;Boolean&gt;() val eventGameFinish: LiveData&lt;Boolean&gt; get() = _eventGameFinish // 然后在fragment中监听LiveData的更新 根据LiveData中存储的flag进行不同的页面处理 viewModel.eventGameFinish.observe(viewLifecycleOwner, Observer { hasFinished -&gt; if (hasFinished) { gameFinished() } }) 在其中有几个点需要明确一下:
 ...</p>
   </section>
-  <footer class="entry-footer">&lt;span title=&#39;2022-03-28 19:14:32 &#43;0800 CST&#39;&gt;March 28, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
+  <footer class="entry-footer">&lt;span title=&#39;2022-03-28 19:14:32 &#43;0800 &#43;0800&#39;&gt;March 28, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
   <a class="entry-link" aria-label="post link to Android Learning 4" href="https://isyuanpeng.github.io/posts/tech/android-learning-4/"></a>
 </article>
 
@@ -232,29 +255,8 @@ RelativeLayout 相对布局，以相对位置显示子控件。说白了，就�
 1 2 android:layout_below=&#34;@&#43;id/buttonA&#34; android:layout_centerHorizontal=&#34;true&#34; alignParentXx: 这个系列的参数都是相较于父控件而言的，相对于父控件停靠在哪个位置，Top, Bottom, left, right
 ...</p>
   </section>
-  <footer class="entry-footer">&lt;span title=&#39;2022-03-22 17:23:57 &#43;0800 CST&#39;&gt;March 22, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;3 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
+  <footer class="entry-footer">&lt;span title=&#39;2022-03-22 17:23:57 &#43;0800 &#43;0800&#39;&gt;March 22, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;3 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
   <a class="entry-link" aria-label="post link to Android Learning 3" href="https://isyuanpeng.github.io/posts/tech/android-learning-3/"></a>
-</article>
-
-<article class="post-entry tag-entry"> 
-  <header class="entry-header">
-    <h2>Android Learning 2
-    </h2>
-  </header>
-  <section class="entry-content">
-    <p>今天先创建第一个app，跟的课程是google推荐的Developing Android Apps with Kotlin https://classroom.udacity.com/courses/ud9012
-由于上面这个课程都是视频，所以也跟着google的kotlin android training get started补充理论知识
-1. Explore Android Studio 上一篇文章已经讲过了gradle在项目中的结构，除了gradle外，其它的代码文件的分布也和java的项目类似，主要说一下其它文件夹。
-res/layout android的布局文件夹，每一个Activity对应一个xml布局文件，在布局文件里面可以看到Activity的页面UI显示。
-AndroidManifest.xml 一直以为是mainfest，结果是manifest(清单)，列举了android系统运行app所需要的清单(Activity列表和权限)。
-2. Anatomy(剖析) of Basic Android Project 下面就开始进行第一个app的开发，app叫dice roller(投色子)，创建一个空项目后打开运行可以看到Hello World，就证明整个环境是通的。下面看代码。
-MainActivity 首先看到的类是MainActivity，MainActivity就是Hello world这个页面的Activity。而页面的layout就是res/layout下的activity_main.xml，layout命名规则名称后置。对于Activity和layout中的xml的理解，和前端的html和js的关系类似，js处理交互逻辑，html显示页面UI，这里就是Activity处理交互逻辑，xml文件显示页面UI。
-1 class MainActivity : AppCompatActivity() { ... 可以看到MainActicity继承自AppCompatActivity，AppCompatAcitvity是Activity的一个子类，兼容性和新特性都很好。
-onCreate() 1 2 3 4 override fun onCreate(savedInstanceState: Bundle?) { super.onCreate(savedInstanceState) setContentView(R.layout.activity_main) } Activity不用构造器去初始化对象，而是用生命周期函数，onCreate()就是一个生命周期函数，它是Activity生命周期中的开始。
-...</p>
-  </section>
-  <footer class="entry-footer">&lt;span title=&#39;2022-03-18 10:20:34 &#43;0800 CST&#39;&gt;March 18, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;2 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
-  <a class="entry-link" aria-label="post link to Android Learning 2" href="https://isyuanpeng.github.io/posts/tech/android-learning-2/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

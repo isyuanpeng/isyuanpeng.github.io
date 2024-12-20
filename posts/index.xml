@@ -10,7 +10,92 @@
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 25 Nov 2023 11:39:30 +0800</lastBuildDate><atom:link href="https://isyuanpeng.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 19 Dec 2024 18:11:06 +0800</lastBuildDate><atom:link href="https://isyuanpeng.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ClassLoader</title>
+      <link>https://isyuanpeng.github.io/posts/tech/classloader/</link>
+      <pubDate>Thu, 19 Dec 2024 18:11:06 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/tech/classloader/</guid>
+      <description>&lt;h2 id=&#34;深入理解classloader&#34;&gt;深入理解ClassLoader&lt;/h2&gt;
+&lt;h3 id=&#34;是什么&#34;&gt;是什么?&lt;/h3&gt;
+&lt;p&gt;相信大家在准备面试的时候都会背过Java的类加载机制，双亲委派模型。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;就是当JVM收到一个类加载请求的时候，当前的类加载器首先会将类加载器传递给它的父类，父类尝试加载，如果失败继续向上传递，如果所有的父类都无法加载，则当前类加载器自己处理。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;那这段话理解起来还是比较容易的，但是具体是如何做的呢？下面进行分析。&lt;/p&gt;
+&lt;h3 id=&#34;为什么&#34;&gt;为什么?&lt;/h3&gt;
+&lt;p&gt;那为什么要使用双亲委派模型吗？当前类加载器自己处理不行吗？&lt;/p&gt;
+&lt;p&gt;如果我们自己写了一个&lt;code&gt;java.lang.Object&lt;/code&gt;类的话，那当前的类加载器直接选择加载的话，那加载的类中就会有两个一样的Object类。应用程序将会变的非常混乱。&lt;/p&gt;
+&lt;h3 id=&#34;怎么做&#34;&gt;怎么做?&lt;/h3&gt;
+&lt;p&gt;下面从源码开始看Java是如何进行类加载的。&lt;/p&gt;
+&lt;h4 id=&#34;classloader&#34;&gt;ClassLoader&lt;/h4&gt;
+&lt;h5 id=&#34;介绍&#34;&gt;介绍&lt;/h5&gt;
+&lt;p&gt;先进入ClassLoader类中&lt;code&gt;public abstract class ClassLoader&lt;/code&gt;， 可以先看一下doc，介绍了ClassLoader这个类，&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A class loader is an object that is responsible for loading classes. The class ClassLoader is an abstract class. Given the binary name of a class, a class loader should attempt to locate or generate data that constitutes a definition for the class. A typical strategy is to transform the name into a file name and then read a &amp;ldquo;class file&amp;rdquo; of that name from a file system.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Home Network</title>
+      <link>https://isyuanpeng.github.io/posts/life/home-network/</link>
+      <pubDate>Sun, 15 Dec 2024 23:11:26 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/life/home-network/</guid>
+      <description>&lt;h1 id=&#34;5000块打造极致实用的全屋智能一-网络篇&#34;&gt;5000块打造极致实用的全屋智能(一)-网络篇&lt;/h1&gt;
+&lt;p&gt;在新房最初装修时，就已经想好了家里要做智能家居，并且由于预算比较低，所以整体除了水电希望能够5000块钱完成自己想要的效果。&lt;/p&gt;
+&lt;h2 id=&#34;需求&#34;&gt;需求&lt;/h2&gt;
+&lt;p&gt;先看一下我们家的整体的装修划分区域：&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://no1.isyuanpeng.xyz:10082/i/2024/12/15/675ef83388a34.png&#34; alt=&#34;home-area&#34;  title=&#34;Home Area&#34;  /&gt;
+&lt;/p&gt;
+&lt;p&gt;那在前期的设想中，整体还是以灯的自动控制和语音控制为主，我自己也没有什么花里胡哨的需求，&lt;/p&gt;
+&lt;p&gt;我比较在意的有：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;晚上下班开门后玄关灯自动亮起，客厅的窗帘拉上。&lt;/li&gt;
+&lt;li&gt;通往走廊的灯可以随着人走进自动亮起，离开后自动熄灭。&lt;/li&gt;
+&lt;li&gt;次卫干区的灯随着人走入自动亮起，离开后自动熄灭。&lt;/li&gt;
+&lt;li&gt;厨房的灯随着人进入自动亮起，离开后自动熄灭。&lt;/li&gt;
+&lt;li&gt;主卧走廊的灯随着人进入自动亮起，离开后自动熄灭。&lt;/li&gt;
+&lt;li&gt;主次卫的灯随着人进入自动亮起，离开后自动熄灭。&lt;/li&gt;
+&lt;li&gt;晚上睡觉后全屋的灯光，窗帘都处于关闭状态。&lt;/li&gt;
+&lt;li&gt;整体的生态要求米家+homekit双平台&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;我不在意的是:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;全屋的灯光色温可以调整，因为我之前用的智能灯除了安装好后调整色温，之后再也没有调整过。&lt;/li&gt;
+&lt;li&gt;各种各样的灯带，灯带对于我来说一直不感冒，越简单越好，复杂就会导致各种各样的问题。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;网络搭建&#34;&gt;网络搭建&lt;/h2&gt;
+&lt;p&gt;装修初期，首先会进行改水电，那强电最主要的预留零线和开关插座就不用多说了，弱电就比较复杂了，需要自己根据自身的情况简单设计一下。&lt;/p&gt;
+&lt;p&gt;现在市面上的解决方案基本上都是全屋wifi，也就是每个重要房间出一根网线，然后后期用全屋wifi的面板，就是86盒子大小的面板，拥有wifi的能力。这种方式是目前主流的，已经经过验证了，但是对于我来说有几点问题：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;太贵了，一个面板就要两三百，再加上poe供电的路由器，整体可能在1500-2000块钱左右，如果钱都花在这上面，那后续的智能家居购买的空间就比较局促了。&lt;/li&gt;
+&lt;li&gt;散热问题，据说发热比较严重。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;那对我来说，我的方案就是，在客厅和主卧房间放置路由器，因为我家里面闲置路由器比较多，能找出来两台红米ax3000，所以就想到在两个相隔比较远的房间放置路由器，进行mesh组网，目前路由器已经是搭建完毕，整体还是全屋都能覆盖的。&lt;/p&gt;
+&lt;h3 id=&#34;弱电箱&#34;&gt;弱电箱&lt;/h3&gt;
+&lt;p&gt;弱电箱我没有选择改位置，改位置需要多花钱，依然是放在玄关鞋柜的下面，弱电箱里面一共放了两个设备，光猫+软路由，光猫桥接，软路由拨号控制整个屋子的网络。&lt;/p&gt;
+&lt;h3 id=&#34;网络拓扑图&#34;&gt;网络拓扑图&lt;/h3&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://no1.isyuanpeng.xyz:10082/i/2024/12/15/675ef83388a34.png&#34; alt=&#34;home-network&#34;  title=&#34;Home Network&#34;  /&gt;
+&lt;/p&gt;
+&lt;p&gt;目前的网络就是这样了，自己还挺满意的，后面如果有问题的话再进行修改的。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Github Project</title>
+      <link>https://isyuanpeng.github.io/posts/other/github-project/</link>
+      <pubDate>Sat, 16 Nov 2024 15:53:43 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/other/github-project/</guid>
+      <description>&lt;h2 id=&#34;开源github项目&#34;&gt;开源github项目&lt;/h2&gt;
+&lt;p&gt;后面可能会用到。&lt;/p&gt;
+&lt;h3 id=&#34;人脸识别&#34;&gt;人脸识别&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;CompareFace：https://github.com/exadel-inc/CompreFace?tab=readme-ov-file&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;heading&#34;&gt;&lt;/h3&gt;</description>
+    </item>
+    
     <item>
       <title>一个基于Quic协议的Http转Udp代理工具</title>
       <link>https://isyuanpeng.github.io/posts/tech/%E4%B8%80%E4%B8%AA%E5%9F%BA%E4%BA%8Equic%E5%8D%8F%E8%AE%AE%E7%9A%84http%E8%BD%ACudp%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7/</link>

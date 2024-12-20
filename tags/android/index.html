@@ -18,7 +18,7 @@
 <link rel="mask-icon" href="https://isyuanpeng.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<meta name="generator" content="Hugo 0.138.0">
+<meta name="generator" content="Hugo 0.140.0">
 <link rel="alternate" type="application/rss+xml" href="https://isyuanpeng.github.io/tags/android/index.xml">
 <link rel="alternate" hreflang="en" href="https://isyuanpeng.github.io/tags/android/" />
 <noscript>
@@ -162,7 +162,7 @@
 1 2 3 4 inflate(int resource, ViewGroup root) inflate(int resource, ViewGroup root, boolean attachToRoot) inflate(XmlPullParser parser, ViewGroup root) inflate(XmlPullParser parser, ViewGroup root, boolean attachToRoot) 看源码可知，四个方法，前三个其实都是调用的第四个。
 ...</p>
   </section>
-  <footer class="entry-footer">&lt;span title=&#39;2022-04-06 10:25:28 &#43;0800 CST&#39;&gt;April 6, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;3 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
+  <footer class="entry-footer">&lt;span title=&#39;2022-04-06 10:25:28 &#43;0800 &#43;0800&#39;&gt;April 6, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;3 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
   <a class="entry-link" aria-label="post link to Android Learning 9" href="https://isyuanpeng.github.io/posts/tech/android-learning-9/"></a>
 </article>
 
@@ -202,7 +202,7 @@ ViewPager2 有点难以理解Sunflower如何做到在两个fragment之间滑动�
 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 &lt;LinearLayout android:layout_width=&#34;match_parent&#34; android:layout_height=&#34;match_parent&#34; android:orientation=&#34;vertical&#34;&gt; &lt;TextView android:id=&#34;@&#43;id/header_title&#34; android:layout_width=&#34;match_parent&#34; android:layout_height=&#34;60dp&#34; android:gravity=&#34;center&#34; android:text=&#34;@string/app_name&#34; android:textAppearance=&#34;?attr/textAppearanceHeadline5&#34; android:textColor=&#34;@color/sunflower_white&#34; android:textSize=&#34;30sp&#34; /&gt; &lt;com.google.android.material.tabs.TabLayout android:id=&#34;@&#43;id/tab_layout&#34; android:layout_width=&#34;match_parent&#34; android:layout_height=&#34;60dp&#34; style=&#34;@style/Widget.MaterialComponents.TabLayout.Colored&#34; app:tabIconTint=&#34;@drawable/tab_icon_color_selector&#34; app:tabTextColor=&#34;?attr/colorPrimaryDark&#34; /&gt; &lt;androidx.viewpager2.widget.ViewPager2 android:id=&#34;@&#43;id/view_pager&#34; android:layout_width=&#34;match_parent&#34; android:layout_height=&#34;match_parent&#34; /&gt; &lt;/LinearLayout&gt; 为了方便，直接使用了线性布局。
 ...</p>
   </section>
-  <footer class="entry-footer">&lt;span title=&#39;2022-04-01 10:27:47 &#43;0800 CST&#39;&gt;April 1, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;2 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
+  <footer class="entry-footer">&lt;span title=&#39;2022-04-01 10:27:47 &#43;0800 &#43;0800&#39;&gt;April 1, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;2 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
   <a class="entry-link" aria-label="post link to Android Learning 8" href="https://isyuanpeng.github.io/posts/tech/android-learning-8/"></a>
 </article>
 
@@ -225,7 +225,7 @@ A repository mediates between data sources (such as persistent models, web servi
 Repository例子 1 2 3 4 5 6 7 8 9 10 11 12 13 14 @Singleton class PlantRepository @Inject constructor(private val plantDao: PlantDao) { // use the dao fun getPlants() = plantDao.getPlants() fun getPlant(plantId: String) = plantDao.getPlant(plantId) fun getPlantsWithGrowZoneNumber(growZoneNumber: Int) = plantDao.getPlantsWithGrowZoneNumber(growZoneNumber) // use the network service fun requestApi(): Plant } 项目中的实际运用 在市局测温项目中，实际上对Repository的使用更为复杂，整体的结构为首先定义一层datasource的接口类，然后在定义datasource的实现类，这里仅仅定义了一个remotedatasource的实现类，根据命名我感觉原本的架构想法应该是对于数据调接口一个实现类，数据库操作一个实现类。
 ...</p>
   </section>
-  <footer class="entry-footer">&lt;span title=&#39;2022-03-31 17:45:16 &#43;0800 CST&#39;&gt;March 31, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
+  <footer class="entry-footer">&lt;span title=&#39;2022-03-31 17:45:16 &#43;0800 &#43;0800&#39;&gt;March 31, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
   <a class="entry-link" aria-label="post link to Android Learning 7" href="https://isyuanpeng.github.io/posts/tech/android-learning-7/"></a>
 </article>
 
@@ -244,7 +244,7 @@ RecyclerView的使用 Step 1: 将所需要使用RecyclerView的布局添加Recyc
 1 2 3 4 5 6 7 8 9 &lt;androidx.recyclerview.widget.RecyclerView android:id=&#34;@&#43;id/sleep_list&#34; android:layout_width=&#34;0dp&#34; android:layout_height=&#34;0dp&#34; app:layout_constraintBottom_toTopOf=&#34;@&#43;id/clear_button&#34; app:layout_constraintEnd_toEndOf=&#34;parent&#34; app:layout_constraintStart_toStartOf=&#34;parent&#34; app:layout_constraintTop_toBottomOf=&#34;@&#43;id/stop_button&#34; app:layoutManager=&#34;androidx.recyclerview.widget.LinearLayoutManager&#34;/&gt; Step 2：创建单个的Item的View，这里是TextView
 ...</p>
   </section>
-  <footer class="entry-footer">&lt;span title=&#39;2022-03-30 15:48:57 &#43;0800 CST&#39;&gt;March 30, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;2 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
+  <footer class="entry-footer">&lt;span title=&#39;2022-03-30 15:48:57 &#43;0800 &#43;0800&#39;&gt;March 30, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;2 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
   <a class="entry-link" aria-label="post link to Android Learning 6" href="https://isyuanpeng.github.io/posts/tech/android-learning-6/"></a>
 </article>
 
@@ -266,7 +266,7 @@ Entity 实体类就是我们常见的实体类，使用的注解也和JPA类似
 1 2 3 4 5 6 @Entity(tableName = &#34;users&#34;) data class User ( @PrimaryKey val id: Int, @ColumnInfo(name = &#34;first_name&#34;) val firstName: String?, @ColumnInfo(name = &#34;last_name&#34;) val lastName: String? ) Dao 在Dao类中定义方法来操作数据库。下面是一个简单样例：
 ...</p>
   </section>
-  <footer class="entry-footer">&lt;span title=&#39;2022-03-29 17:47:49 &#43;0800 CST&#39;&gt;March 29, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;2 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
+  <footer class="entry-footer">&lt;span title=&#39;2022-03-29 17:47:49 &#43;0800 &#43;0800&#39;&gt;March 29, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;2 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
   <a class="entry-link" aria-label="post link to Android Learning 5" href="https://isyuanpeng.github.io/posts/tech/android-learning-5/"></a>
 </article>
 <footer class="page-footer">

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Github on Isyuanpeng</title>
+    <link>https://isyuanpeng.github.io/tags/github/</link>
+    <description>Recent content in Github on Isyuanpeng</description>
+    <image>
+      <url>https://isyuanpeng.github.io/papermod-cover.png</url>
+      <link>https://isyuanpeng.github.io/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 16 Nov 2024 15:53:43 +0800</lastBuildDate><atom:link href="https://isyuanpeng.github.io/tags/github/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Github Project</title>
+      <link>https://isyuanpeng.github.io/posts/other/github-project/</link>
+      <pubDate>Sat, 16 Nov 2024 15:53:43 +0800</pubDate>
+      
+      <guid>https://isyuanpeng.github.io/posts/other/github-project/</guid>
+      <description>&lt;h2 id=&#34;开源github项目&#34;&gt;开源github项目&lt;/h2&gt;
+&lt;p&gt;后面可能会用到。&lt;/p&gt;
+&lt;h3 id=&#34;人脸识别&#34;&gt;人脸识别&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;CompareFace：https://github.com/exadel-inc/CompreFace?tab=readme-ov-file&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;heading&#34;&gt;&lt;/h3&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

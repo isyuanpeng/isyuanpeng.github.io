@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Home Network | Isyuanpeng</title>
+<meta name="keywords" content="life" />
+<meta name="description" content="5000块打造极致实用的全屋智能(一)-网络篇
+在新房最初装修时，就已经想好了家里要做智能家居，并且由于预算比较低，所以整体除了水电希望能够5000块钱完成自己想要的效果。
+需求
+先看一下我们家的整体的装修划分区域：
+
+
+那在前期的设想中，整体还是以灯的自动控制和语音控制为主，我自己也没有什么花里胡哨的需求，
+我比较在意的有：
+
+晚上下班开门后玄关灯自动亮起，客厅的窗帘拉上。
+通往走廊的灯可以随着人走进自动亮起，离开后自动熄灭。
+次卫干区的灯随着人走入自动亮起，离开后自动熄灭。
+厨房的灯随着人进入自动亮起，离开后自动熄灭。
+主卧走廊的灯随着人进入自动亮起，离开后自动熄灭。
+主次卫的灯随着人进入自动亮起，离开后自动熄灭。
+晚上睡觉后全屋的灯光，窗帘都处于关闭状态。
+整体的生态要求米家&#43;homekit双平台
+
+我不在意的是:
+
+全屋的灯光色温可以调整，因为我之前用的智能灯除了安装好后调整色温，之后再也没有调整过。
+各种各样的灯带，灯带对于我来说一直不感冒，越简单越好，复杂就会导致各种各样的问题。
+
+网络搭建
+装修初期，首先会进行改水电，那强电最主要的预留零线和开关插座就不用多说了，弱电就比较复杂了，需要自己根据自身的情况简单设计一下。
+现在市面上的解决方案基本上都是全屋wifi，也就是每个重要房间出一根网线，然后后期用全屋wifi的面板，就是86盒子大小的面板，拥有wifi的能力。这种方式是目前主流的，已经经过验证了，但是对于我来说有几点问题：
+
+太贵了，一个面板就要两三百，再加上poe供电的路由器，整体可能在1500-2000块钱左右，如果钱都花在这上面，那后续的智能家居购买的空间就比较局促了。
+散热问题，据说发热比较严重。
+
+那对我来说，我的方案就是，在客厅和主卧房间放置路由器，因为我家里面闲置路由器比较多，能找出来两台红米ax3000，所以就想到在两个相隔比较远的房间放置路由器，进行mesh组网，目前路由器已经是搭建完毕，整体还是全屋都能覆盖的。
+弱电箱
+弱电箱我没有选择改位置，改位置需要多花钱，依然是放在玄关鞋柜的下面，弱电箱里面一共放了两个设备，光猫&#43;软路由，光猫桥接，软路由拨号控制整个屋子的网络。
+网络拓扑图
+
+
+目前的网络就是这样了，自己还挺满意的，后面如果有问题的话再进行修改的。">
+<meta name="author" content="YuanPeng">
+<link rel="canonical" href="https://isyuanpeng.github.io/posts/life/home-network/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.7bdb1411b29ec9fed2b6395a081eabcb3262e7311bda855249d433c8b30a926e.css" integrity="sha256-e9sUEbKeyf7StjlaCB6ryzJi5zEb2oVSSdQzyLMKkm4=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.2eadbb982468c11a433a3e291f01326f2ba43f065e256bf792dbd79640a92316.js" integrity="sha256-Lq27mCRowRpDOj4pHwEybyukPwZeJWv3ktvXlkCpIxY="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://isyuanpeng.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://isyuanpeng.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://isyuanpeng.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://isyuanpeng.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://isyuanpeng.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<meta name="generator" content="Hugo 0.140.0">
+<link rel="alternate" hreflang="en" href="https://isyuanpeng.github.io/posts/life/home-network/" />
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Home Network" />
+<meta property="og:description" content="5000块打造极致实用的全屋智能(一)-网络篇
+在新房最初装修时，就已经想好了家里要做智能家居，并且由于预算比较低，所以整体除了水电希望能够5000块钱完成自己想要的效果。
+需求
+先看一下我们家的整体的装修划分区域：
+
+
+那在前期的设想中，整体还是以灯的自动控制和语音控制为主，我自己也没有什么花里胡哨的需求，
+我比较在意的有：
+
+晚上下班开门后玄关灯自动亮起，客厅的窗帘拉上。
+通往走廊的灯可以随着人走进自动亮起，离开后自动熄灭。
+次卫干区的灯随着人走入自动亮起，离开后自动熄灭。
+厨房的灯随着人进入自动亮起，离开后自动熄灭。
+主卧走廊的灯随着人进入自动亮起，离开后自动熄灭。
+主次卫的灯随着人进入自动亮起，离开后自动熄灭。
+晚上睡觉后全屋的灯光，窗帘都处于关闭状态。
+整体的生态要求米家&#43;homekit双平台
+
+我不在意的是:
+
+全屋的灯光色温可以调整，因为我之前用的智能灯除了安装好后调整色温，之后再也没有调整过。
+各种各样的灯带，灯带对于我来说一直不感冒，越简单越好，复杂就会导致各种各样的问题。
+
+网络搭建
+装修初期，首先会进行改水电，那强电最主要的预留零线和开关插座就不用多说了，弱电就比较复杂了，需要自己根据自身的情况简单设计一下。
+现在市面上的解决方案基本上都是全屋wifi，也就是每个重要房间出一根网线，然后后期用全屋wifi的面板，就是86盒子大小的面板，拥有wifi的能力。这种方式是目前主流的，已经经过验证了，但是对于我来说有几点问题：
+
+太贵了，一个面板就要两三百，再加上poe供电的路由器，整体可能在1500-2000块钱左右，如果钱都花在这上面，那后续的智能家居购买的空间就比较局促了。
+散热问题，据说发热比较严重。
+
+那对我来说，我的方案就是，在客厅和主卧房间放置路由器，因为我家里面闲置路由器比较多，能找出来两台红米ax3000，所以就想到在两个相隔比较远的房间放置路由器，进行mesh组网，目前路由器已经是搭建完毕，整体还是全屋都能覆盖的。
+弱电箱
+弱电箱我没有选择改位置，改位置需要多花钱，依然是放在玄关鞋柜的下面，弱电箱里面一共放了两个设备，光猫&#43;软路由，光猫桥接，软路由拨号控制整个屋子的网络。
+网络拓扑图
+
+
+目前的网络就是这样了，自己还挺满意的，后面如果有问题的话再进行修改的。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://isyuanpeng.github.io/posts/life/home-network/" /><meta property="og:image" content="https://isyuanpeng.github.io/papermod-cover.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-12-15T23:11:26&#43;08:00" />
+<meta property="article:modified_time" content="2024-12-15T23:11:26&#43;08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://isyuanpeng.github.io/papermod-cover.png"/>
+
+<meta name="twitter:title" content="Home Network"/>
+<meta name="twitter:description" content="5000块打造极致实用的全屋智能(一)-网络篇
+在新房最初装修时，就已经想好了家里要做智能家居，并且由于预算比较低，所以整体除了水电希望能够5000块钱完成自己想要的效果。
+需求
+先看一下我们家的整体的装修划分区域：
+
+
+那在前期的设想中，整体还是以灯的自动控制和语音控制为主，我自己也没有什么花里胡哨的需求，
+我比较在意的有：
+
+晚上下班开门后玄关灯自动亮起，客厅的窗帘拉上。
+通往走廊的灯可以随着人走进自动亮起，离开后自动熄灭。
+次卫干区的灯随着人走入自动亮起，离开后自动熄灭。
+厨房的灯随着人进入自动亮起，离开后自动熄灭。
+主卧走廊的灯随着人进入自动亮起，离开后自动熄灭。
+主次卫的灯随着人进入自动亮起，离开后自动熄灭。
+晚上睡觉后全屋的灯光，窗帘都处于关闭状态。
+整体的生态要求米家&#43;homekit双平台
+
+我不在意的是:
+
+全屋的灯光色温可以调整，因为我之前用的智能灯除了安装好后调整色温，之后再也没有调整过。
+各种各样的灯带，灯带对于我来说一直不感冒，越简单越好，复杂就会导致各种各样的问题。
+
+网络搭建
+装修初期，首先会进行改水电，那强电最主要的预留零线和开关插座就不用多说了，弱电就比较复杂了，需要自己根据自身的情况简单设计一下。
+现在市面上的解决方案基本上都是全屋wifi，也就是每个重要房间出一根网线，然后后期用全屋wifi的面板，就是86盒子大小的面板，拥有wifi的能力。这种方式是目前主流的，已经经过验证了，但是对于我来说有几点问题：
+
+太贵了，一个面板就要两三百，再加上poe供电的路由器，整体可能在1500-2000块钱左右，如果钱都花在这上面，那后续的智能家居购买的空间就比较局促了。
+散热问题，据说发热比较严重。
+
+那对我来说，我的方案就是，在客厅和主卧房间放置路由器，因为我家里面闲置路由器比较多，能找出来两台红米ax3000，所以就想到在两个相隔比较远的房间放置路由器，进行mesh组网，目前路由器已经是搭建完毕，整体还是全屋都能覆盖的。
+弱电箱
+弱电箱我没有选择改位置，改位置需要多花钱，依然是放在玄关鞋柜的下面，弱电箱里面一共放了两个设备，光猫&#43;软路由，光猫桥接，软路由拨号控制整个屋子的网络。
+网络拓扑图
+
+
+目前的网络就是这样了，自己还挺满意的，后面如果有问题的话再进行修改的。"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://isyuanpeng.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Home Network",
+      "item": "https://isyuanpeng.github.io/posts/life/home-network/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Home Network",
+  "name": "Home Network",
+  "description": "5000块打造极致实用的全屋智能(一)-网络篇 在新房最初装修时，就已经想好了家里要做智能家居，并且由于预算比较低，所以整体除了水电希望能够5000块钱完成自己想要的效果。\n需求 先看一下我们家的整体的装修划分区域：\n那在前期的设想中，整体还是以灯的自动控制和语音控制为主，我自己也没有什么花里胡哨的需求，\n我比较在意的有：\n晚上下班开门后玄关灯自动亮起，客厅的窗帘拉上。 通往走廊的灯可以随着人走进自动亮起，离开后自动熄灭。 次卫干区的灯随着人走入自动亮起，离开后自动熄灭。 厨房的灯随着人进入自动亮起，离开后自动熄灭。 主卧走廊的灯随着人进入自动亮起，离开后自动熄灭。 主次卫的灯随着人进入自动亮起，离开后自动熄灭。 晚上睡觉后全屋的灯光，窗帘都处于关闭状态。 整体的生态要求米家+homekit双平台 我不在意的是:\n全屋的灯光色温可以调整，因为我之前用的智能灯除了安装好后调整色温，之后再也没有调整过。 各种各样的灯带，灯带对于我来说一直不感冒，越简单越好，复杂就会导致各种各样的问题。 网络搭建 装修初期，首先会进行改水电，那强电最主要的预留零线和开关插座就不用多说了，弱电就比较复杂了，需要自己根据自身的情况简单设计一下。\n现在市面上的解决方案基本上都是全屋wifi，也就是每个重要房间出一根网线，然后后期用全屋wifi的面板，就是86盒子大小的面板，拥有wifi的能力。这种方式是目前主流的，已经经过验证了，但是对于我来说有几点问题：\n太贵了，一个面板就要两三百，再加上poe供电的路由器，整体可能在1500-2000块钱左右，如果钱都花在这上面，那后续的智能家居购买的空间就比较局促了。 散热问题，据说发热比较严重。 那对我来说，我的方案就是，在客厅和主卧房间放置路由器，因为我家里面闲置路由器比较多，能找出来两台红米ax3000，所以就想到在两个相隔比较远的房间放置路由器，进行mesh组网，目前路由器已经是搭建完毕，整体还是全屋都能覆盖的。\n弱电箱 弱电箱我没有选择改位置，改位置需要多花钱，依然是放在玄关鞋柜的下面，弱电箱里面一共放了两个设备，光猫+软路由，光猫桥接，软路由拨号控制整个屋子的网络。\n网络拓扑图 目前的网络就是这样了，自己还挺满意的，后面如果有问题的话再进行修改的。\n",
+  "keywords": [
+    "life"
+  ],
+  "articleBody": "5000块打造极致实用的全屋智能(一)-网络篇 在新房最初装修时，就已经想好了家里要做智能家居，并且由于预算比较低，所以整体除了水电希望能够5000块钱完成自己想要的效果。\n需求 先看一下我们家的整体的装修划分区域：\n那在前期的设想中，整体还是以灯的自动控制和语音控制为主，我自己也没有什么花里胡哨的需求，\n我比较在意的有：\n晚上下班开门后玄关灯自动亮起，客厅的窗帘拉上。 通往走廊的灯可以随着人走进自动亮起，离开后自动熄灭。 次卫干区的灯随着人走入自动亮起，离开后自动熄灭。 厨房的灯随着人进入自动亮起，离开后自动熄灭。 主卧走廊的灯随着人进入自动亮起，离开后自动熄灭。 主次卫的灯随着人进入自动亮起，离开后自动熄灭。 晚上睡觉后全屋的灯光，窗帘都处于关闭状态。 整体的生态要求米家+homekit双平台 我不在意的是:\n全屋的灯光色温可以调整，因为我之前用的智能灯除了安装好后调整色温，之后再也没有调整过。 各种各样的灯带，灯带对于我来说一直不感冒，越简单越好，复杂就会导致各种各样的问题。 网络搭建 装修初期，首先会进行改水电，那强电最主要的预留零线和开关插座就不用多说了，弱电就比较复杂了，需要自己根据自身的情况简单设计一下。\n现在市面上的解决方案基本上都是全屋wifi，也就是每个重要房间出一根网线，然后后期用全屋wifi的面板，就是86盒子大小的面板，拥有wifi的能力。这种方式是目前主流的，已经经过验证了，但是对于我来说有几点问题：\n太贵了，一个面板就要两三百，再加上poe供电的路由器，整体可能在1500-2000块钱左右，如果钱都花在这上面，那后续的智能家居购买的空间就比较局促了。 散热问题，据说发热比较严重。 那对我来说，我的方案就是，在客厅和主卧房间放置路由器，因为我家里面闲置路由器比较多，能找出来两台红米ax3000，所以就想到在两个相隔比较远的房间放置路由器，进行mesh组网，目前路由器已经是搭建完毕，整体还是全屋都能覆盖的。\n弱电箱 弱电箱我没有选择改位置，改位置需要多花钱，依然是放在玄关鞋柜的下面，弱电箱里面一共放了两个设备，光猫+软路由，光猫桥接，软路由拨号控制整个屋子的网络。\n网络拓扑图 目前的网络就是这样了，自己还挺满意的，后面如果有问题的话再进行修改的。\n",
+  "wordCount" : "27",
+  "inLanguage": "en",
+  "datePublished": "2024-12-15T23:11:26+08:00",
+  "dateModified": "2024-12-15T23:11:26+08:00",
+  "author":[{
+    "@type": "Person",
+    "name": "YuanPeng"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://isyuanpeng.github.io/posts/life/home-network/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Isyuanpeng",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://isyuanpeng.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://isyuanpeng.github.io/" accesskey="h" title="Isyuanpeng (Alt + H)">Isyuanpeng</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://isyuanpeng.github.io/archives" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/about" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/series/" title="Series">
+                    <span>Series</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://isyuanpeng.github.io/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://isyuanpeng.github.io/">Home</a>&nbsp;»&nbsp;<a href="https://isyuanpeng.github.io/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Home Network
+    </h1>
+    <div class="post-meta">&lt;span title=&#39;2024-12-15 23:11:26 &#43;0800 &#43;0800&#39;&gt;December 15, 2024&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;YuanPeng
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">目录</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#5000%e5%9d%97%e6%89%93%e9%80%a0%e6%9e%81%e8%87%b4%e5%ae%9e%e7%94%a8%e7%9a%84%e5%85%a8%e5%b1%8b%e6%99%ba%e8%83%bd%e4%b8%80-%e7%bd%91%e7%bb%9c%e7%af%87" aria-label="5000块打造极致实用的全屋智能(一)-网络篇">5000块打造极致实用的全屋智能(一)-网络篇</a><ul>
+                            
+                    <li>
+                        <a href="#%e9%9c%80%e6%b1%82" aria-label="需求">需求</a></li>
+                    <li>
+                        <a href="#%e7%bd%91%e7%bb%9c%e6%90%ad%e5%bb%ba" aria-label="网络搭建">网络搭建</a><ul>
+                            
+                    <li>
+                        <a href="#%e5%bc%b1%e7%94%b5%e7%ae%b1" aria-label="弱电箱">弱电箱</a></li>
+                    <li>
+                        <a href="#%e7%bd%91%e7%bb%9c%e6%8b%93%e6%89%91%e5%9b%be" aria-label="网络拓扑图">网络拓扑图</a>
+                    </li>
+                </ul>
+                </li>
+                </ul>
+                </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script>
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+  <div class="post-content"><h1 id="5000块打造极致实用的全屋智能一-网络篇">5000块打造极致实用的全屋智能(一)-网络篇<a hidden class="anchor" aria-hidden="true" href="#5000块打造极致实用的全屋智能一-网络篇">#</a></h1>
+<p>在新房最初装修时，就已经想好了家里要做智能家居，并且由于预算比较低，所以整体除了水电希望能够5000块钱完成自己想要的效果。</p>
+<h2 id="需求">需求<a hidden class="anchor" aria-hidden="true" href="#需求">#</a></h2>
+<p>先看一下我们家的整体的装修划分区域：</p>
+<p><img loading="lazy" src="http://no1.isyuanpeng.xyz:10082/i/2024/12/15/675ef83388a34.png" alt="home-area"  title="Home Area"  />
+</p>
+<p>那在前期的设想中，整体还是以灯的自动控制和语音控制为主，我自己也没有什么花里胡哨的需求，</p>
+<p>我比较在意的有：</p>
+<ol>
+<li>晚上下班开门后玄关灯自动亮起，客厅的窗帘拉上。</li>
+<li>通往走廊的灯可以随着人走进自动亮起，离开后自动熄灭。</li>
+<li>次卫干区的灯随着人走入自动亮起，离开后自动熄灭。</li>
+<li>厨房的灯随着人进入自动亮起，离开后自动熄灭。</li>
+<li>主卧走廊的灯随着人进入自动亮起，离开后自动熄灭。</li>
+<li>主次卫的灯随着人进入自动亮起，离开后自动熄灭。</li>
+<li>晚上睡觉后全屋的灯光，窗帘都处于关闭状态。</li>
+<li>整体的生态要求米家+homekit双平台</li>
+</ol>
+<p>我不在意的是:</p>
+<ol>
+<li>全屋的灯光色温可以调整，因为我之前用的智能灯除了安装好后调整色温，之后再也没有调整过。</li>
+<li>各种各样的灯带，灯带对于我来说一直不感冒，越简单越好，复杂就会导致各种各样的问题。</li>
+</ol>
+<h2 id="网络搭建">网络搭建<a hidden class="anchor" aria-hidden="true" href="#网络搭建">#</a></h2>
+<p>装修初期，首先会进行改水电，那强电最主要的预留零线和开关插座就不用多说了，弱电就比较复杂了，需要自己根据自身的情况简单设计一下。</p>
+<p>现在市面上的解决方案基本上都是全屋wifi，也就是每个重要房间出一根网线，然后后期用全屋wifi的面板，就是86盒子大小的面板，拥有wifi的能力。这种方式是目前主流的，已经经过验证了，但是对于我来说有几点问题：</p>
+<ol>
+<li>太贵了，一个面板就要两三百，再加上poe供电的路由器，整体可能在1500-2000块钱左右，如果钱都花在这上面，那后续的智能家居购买的空间就比较局促了。</li>
+<li>散热问题，据说发热比较严重。</li>
+</ol>
+<p>那对我来说，我的方案就是，在客厅和主卧房间放置路由器，因为我家里面闲置路由器比较多，能找出来两台红米ax3000，所以就想到在两个相隔比较远的房间放置路由器，进行mesh组网，目前路由器已经是搭建完毕，整体还是全屋都能覆盖的。</p>
+<h3 id="弱电箱">弱电箱<a hidden class="anchor" aria-hidden="true" href="#弱电箱">#</a></h3>
+<p>弱电箱我没有选择改位置，改位置需要多花钱，依然是放在玄关鞋柜的下面，弱电箱里面一共放了两个设备，光猫+软路由，光猫桥接，软路由拨号控制整个屋子的网络。</p>
+<h3 id="网络拓扑图">网络拓扑图<a hidden class="anchor" aria-hidden="true" href="#网络拓扑图">#</a></h3>
+<p><img loading="lazy" src="http://no1.isyuanpeng.xyz:10082/i/2024/12/15/675ef83388a34.png" alt="home-network"  title="Home Network"  />
+</p>
+<p>目前的网络就是这样了，自己还挺满意的，后面如果有问题的话再进行修改的。</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://isyuanpeng.github.io/tags/life/">Life</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://isyuanpeng.github.io/posts/tech/classloader/">
+    <span class="title">« Prev Page</span>
+    <br>
+    <span>ClassLoader</span>
+  </a>
+  <a class="next" href="https://isyuanpeng.github.io/posts/other/github-project/">
+    <span class="title">Next Page »</span>
+    <br>
+    <span>Github Project</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2024 <a href="https://isyuanpeng.github.io/">Isyuanpeng</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = 'copy';
+
+        function copyingDone() {
+            copybutton.innerText = 'copied!';
+            setTimeout(() => {
+                copybutton.innerText = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

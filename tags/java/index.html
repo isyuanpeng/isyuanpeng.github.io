@@ -18,7 +18,7 @@
 <link rel="mask-icon" href="https://isyuanpeng.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<meta name="generator" content="Hugo 0.138.0">
+<meta name="generator" content="Hugo 0.140.0">
 <link rel="alternate" type="application/rss+xml" href="https://isyuanpeng.github.io/tags/java/index.xml">
 <link rel="alternate" hreflang="en" href="https://isyuanpeng.github.io/tags/java/" />
 <noscript>
@@ -152,6 +152,26 @@
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
+    <h2>ClassLoader
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>深入理解ClassLoader 是什么? 相信大家在准备面试的时候都会背过Java的类加载机制，双亲委派模型。
+就是当JVM收到一个类加载请求的时候，当前的类加载器首先会将类加载器传递给它的父类，父类尝试加载，如果失败继续向上传递，如果所有的父类都无法加载，则当前类加载器自己处理。
+那这段话理解起来还是比较容易的，但是具体是如何做的呢？下面进行分析。
+为什么? 那为什么要使用双亲委派模型吗？当前类加载器自己处理不行吗？
+如果我们自己写了一个java.lang.Object类的话，那当前的类加载器直接选择加载的话，那加载的类中就会有两个一样的Object类。应用程序将会变的非常混乱。
+怎么做? 下面从源码开始看Java是如何进行类加载的。
+ClassLoader 介绍 先进入ClassLoader类中public abstract class ClassLoader， 可以先看一下doc，介绍了ClassLoader这个类，
+A class loader is an object that is responsible for loading classes. The class ClassLoader is an abstract class. Given the binary name of a class, a class loader should attempt to locate or generate data that constitutes a definition for the class. A typical strategy is to transform the name into a file name and then read a “class file” of that name from a file system.
+...</p>
+  </section>
+  <footer class="entry-footer">&lt;span title=&#39;2024-12-19 18:11:06 &#43;0800 &#43;0800&#39;&gt;December 19, 2024&lt;/span&gt;&amp;nbsp;·&amp;nbsp;3 min&amp;nbsp;·&amp;nbsp;YuanPeng</footer>
+  <a class="entry-link" aria-label="post link to ClassLoader" href="https://isyuanpeng.github.io/posts/tech/classloader/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
     <h2>Effective Java Reading Notes - 1
     </h2>
   </header>
@@ -163,7 +183,7 @@ Creating and Destroying Objects Item 1: Consider static factory methods instead 
 advantages: 自定义方法名称：构造方法只能是类名称，而静态工厂方法可以取具体含义的名称。这点确实，如果有多个构造函数的话，往往需要去找到底使用哪个构造函数来创建实例。 不需要每次都创建一个新的对象：如上面的例子，每次只需要返回定义好的常量即可。 静态方法返回的类型可以是定义返回类型的子类 Item 6: Avoid creating unnecessary objects 如题名，避免创建不必要的对象。
 以String作为例子： 1 2 String s = new String(&#34;bikini&#34;); // 创建一个新的实例 String s = &#34;bikini&#34;; // 从String池创建 以后无论创建多少个 bikini 都会指向第一次创建的地址 以正则表达式的匹配为例： 1 2 3 4 5 6 7 8 9 10 11 12 // Performance can be greatly inproved static boolean isRomanNumberal(String s) { return s.matches(&#34;^(?=.)&#34;) } // Reusing expensive object for improved performence public class RomanNumberals { private static final Pattern ROMAN = Pattern.compile(&#34;^(?=.)&#34;); static boolean isRomanNumeral(String s) { return ROMAN.matchers(s).matches(); } } 使用基础类型而不是包装类 </p>
   </section>
-  <footer class="entry-footer">&lt;span title=&#39;2022-06-09 15:53:18 &#43;0800 CST&#39;&gt;June 9, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
+  <footer class="entry-footer">&lt;span title=&#39;2022-06-09 15:53:18 &#43;0800 &#43;0800&#39;&gt;June 9, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
   <a class="entry-link" aria-label="post link to Effective Java Reading Notes - 1" href="https://isyuanpeng.github.io/posts/other/effective-java-notes/"></a>
 </article>
     </main>

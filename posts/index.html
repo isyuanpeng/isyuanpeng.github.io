@@ -18,7 +18,7 @@
 <link rel="mask-icon" href="https://isyuanpeng.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<meta name="generator" content="Hugo 0.138.0">
+<meta name="generator" content="Hugo 0.140.0">
 <link rel="alternate" type="application/rss+xml" href="https://isyuanpeng.github.io/posts/index.xml">
 <link rel="alternate" hreflang="en" href="https://isyuanpeng.github.io/posts/" />
 <noscript>
@@ -167,6 +167,61 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2>ClassLoader
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>深入理解ClassLoader 是什么? 相信大家在准备面试的时候都会背过Java的类加载机制，双亲委派模型。
+就是当JVM收到一个类加载请求的时候，当前的类加载器首先会将类加载器传递给它的父类，父类尝试加载，如果失败继续向上传递，如果所有的父类都无法加载，则当前类加载器自己处理。
+那这段话理解起来还是比较容易的，但是具体是如何做的呢？下面进行分析。
+为什么? 那为什么要使用双亲委派模型吗？当前类加载器自己处理不行吗？
+如果我们自己写了一个java.lang.Object类的话，那当前的类加载器直接选择加载的话，那加载的类中就会有两个一样的Object类。应用程序将会变的非常混乱。
+怎么做? 下面从源码开始看Java是如何进行类加载的。
+ClassLoader 介绍 先进入ClassLoader类中public abstract class ClassLoader， 可以先看一下doc，介绍了ClassLoader这个类，
+A class loader is an object that is responsible for loading classes. The class ClassLoader is an abstract class. Given the binary name of a class, a class loader should attempt to locate or generate data that constitutes a definition for the class. A typical strategy is to transform the name into a file name and then read a “class file” of that name from a file system.
+...</p>
+  </section>
+  <footer class="entry-footer">&lt;span title=&#39;2024-12-19 18:11:06 &#43;0800 &#43;0800&#39;&gt;December 19, 2024&lt;/span&gt;&amp;nbsp;·&amp;nbsp;3 min&amp;nbsp;·&amp;nbsp;YuanPeng</footer>
+  <a class="entry-link" aria-label="post link to ClassLoader" href="https://isyuanpeng.github.io/posts/tech/classloader/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>Home Network
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>5000块打造极致实用的全屋智能(一)-网络篇 在新房最初装修时，就已经想好了家里要做智能家居，并且由于预算比较低，所以整体除了水电希望能够5000块钱完成自己想要的效果。
+需求 先看一下我们家的整体的装修划分区域：
+那在前期的设想中，整体还是以灯的自动控制和语音控制为主，我自己也没有什么花里胡哨的需求，
+我比较在意的有：
+晚上下班开门后玄关灯自动亮起，客厅的窗帘拉上。 通往走廊的灯可以随着人走进自动亮起，离开后自动熄灭。 次卫干区的灯随着人走入自动亮起，离开后自动熄灭。 厨房的灯随着人进入自动亮起，离开后自动熄灭。 主卧走廊的灯随着人进入自动亮起，离开后自动熄灭。 主次卫的灯随着人进入自动亮起，离开后自动熄灭。 晚上睡觉后全屋的灯光，窗帘都处于关闭状态。 整体的生态要求米家&#43;homekit双平台 我不在意的是:
+全屋的灯光色温可以调整，因为我之前用的智能灯除了安装好后调整色温，之后再也没有调整过。 各种各样的灯带，灯带对于我来说一直不感冒，越简单越好，复杂就会导致各种各样的问题。 网络搭建 装修初期，首先会进行改水电，那强电最主要的预留零线和开关插座就不用多说了，弱电就比较复杂了，需要自己根据自身的情况简单设计一下。
+现在市面上的解决方案基本上都是全屋wifi，也就是每个重要房间出一根网线，然后后期用全屋wifi的面板，就是86盒子大小的面板，拥有wifi的能力。这种方式是目前主流的，已经经过验证了，但是对于我来说有几点问题：
+太贵了，一个面板就要两三百，再加上poe供电的路由器，整体可能在1500-2000块钱左右，如果钱都花在这上面，那后续的智能家居购买的空间就比较局促了。 散热问题，据说发热比较严重。 那对我来说，我的方案就是，在客厅和主卧房间放置路由器，因为我家里面闲置路由器比较多，能找出来两台红米ax3000，所以就想到在两个相隔比较远的房间放置路由器，进行mesh组网，目前路由器已经是搭建完毕，整体还是全屋都能覆盖的。
+弱电箱 弱电箱我没有选择改位置，改位置需要多花钱，依然是放在玄关鞋柜的下面，弱电箱里面一共放了两个设备，光猫&#43;软路由，光猫桥接，软路由拨号控制整个屋子的网络。
+网络拓扑图 目前的网络就是这样了，自己还挺满意的，后面如果有问题的话再进行修改的。
+</p>
+  </section>
+  <footer class="entry-footer">&lt;span title=&#39;2024-12-15 23:11:26 &#43;0800 &#43;0800&#39;&gt;December 15, 2024&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;YuanPeng</footer>
+  <a class="entry-link" aria-label="post link to Home Network" href="https://isyuanpeng.github.io/posts/life/home-network/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>Github Project
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>开源github项目 后面可能会用到。
+人脸识别 CompareFace：https://github.com/exadel-inc/CompreFace?tab=readme-ov-file </p>
+  </section>
+  <footer class="entry-footer">&lt;span title=&#39;2024-11-16 15:53:43 &#43;0800 &#43;0800&#39;&gt;November 16, 2024&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;yuanpeng</footer>
+  <a class="entry-link" aria-label="post link to Github Project" href="https://isyuanpeng.github.io/posts/other/github-project/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2>一个基于Quic协议的Http转Udp代理工具
     </h2>
   </header>
@@ -185,7 +240,7 @@ Udp不可靠，存在丢包的情况 Udp有报文大小限制，1480bytes Udp不
 HTTP/3 &amp; Quic HTTP/3 is the third major version of the Hypertext Transfer Protocol used to exchange information on the World Wide Web, complementing the widely-deployed HTTP/1.1 and HTTP/2. Unlike previous versions which relied on the well-established TCP (published in 1974),[2] HTTP/3 uses QUIC, a multiplexed transport protocol built on UDP.[3] On 6 June 2022, IETF published HTTP/3 as a Proposed Standard in RFC 9114.[4]
 ...</p>
   </section>
-  <footer class="entry-footer">&lt;span title=&#39;2023-11-25 11:39:30 &#43;0800 CST&#39;&gt;November 25, 2023&lt;/span&gt;&amp;nbsp;·&amp;nbsp;4 min&amp;nbsp;·&amp;nbsp;yuanpeng11</footer>
+  <footer class="entry-footer">&lt;span title=&#39;2023-11-25 11:39:30 &#43;0800 &#43;0800&#39;&gt;November 25, 2023&lt;/span&gt;&amp;nbsp;·&amp;nbsp;4 min&amp;nbsp;·&amp;nbsp;yuanpeng11</footer>
   <a class="entry-link" aria-label="post link to 一个基于Quic协议的Http转Udp代理工具" href="https://isyuanpeng.github.io/posts/tech/%E4%B8%80%E4%B8%AA%E5%9F%BA%E4%BA%8Equic%E5%8D%8F%E8%AE%AE%E7%9A%84http%E8%BD%ACudp%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7/"></a>
 </article>
 
@@ -201,70 +256,8 @@ Step 1：需要在settings.xml配置af仓库的用户名和密码
 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 &lt;!-- servers | This is a list of authentication profiles, keyed by the server-id used within the system. | Authentication profiles can be used whenever maven must make a connection to a remote server. |--&gt; &lt;servers&gt; &lt;!-- server | Specifies the authentication information to use when connecting to a particular server, identified by | a unique name within the system (referred to by the &#39;id&#39; attribute below). | | NOTE: You should either specify username/password OR privateKey/passphrase, since these pairings are | used together. | --&gt; &lt;server&gt; &lt;id&gt;xxx-release&lt;/id&gt; &lt;username&gt;xxx&lt;/username&gt; &lt;password&gt;xxx&lt;/password&gt; &lt;/server&gt; &lt;/servers&gt; Step 2：要Deploy的module的pom文件中添加要上传的af仓库，id要和上面settings.xml中的id对应
 ...</p>
   </section>
-  <footer class="entry-footer">&lt;span title=&#39;2023-06-21 18:40:34 &#43;0800 CST&#39;&gt;June 21, 2023&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;yuanpeng11</footer>
+  <footer class="entry-footer">&lt;span title=&#39;2023-06-21 18:40:34 &#43;0800 &#43;0800&#39;&gt;June 21, 2023&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;yuanpeng11</footer>
   <a class="entry-link" aria-label="post link to Maven之Deploy使用" href="https://isyuanpeng.github.io/posts/tech/maven%E4%B9%8Bdeploy%E4%BD%BF%E7%94%A8/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>DEBUG
-    </h2>
-  </header>
-  <section class="entry-content">
-    <p>浅析几种不同的DEBUG方法，欢迎大家补充 远程DEBUG 当本地的代码因为各种原因无法正常启动的时候，可以选择使用远程DEBUG，这种方法要求和线上的代码一致，具体方法如下，
-Step1: 新建一个remote jvm debug，填入需要线上服务所在服务器ip，复制Command line arguments for remote JVM，选择需要debug的module。
-Step2: 服务器中启动脚本修改添加Step1中复制的arguments
-1 java -jar -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 remote-debug-1.0-SNAPSHOT.jar 公司的jsvc启动的话，要放在mainclass前面，注意JDK的版本，查看JAVA_HOME的版本，jdk8就配在jdk8的启动命令处，jdk11同理。配置好启动脚本后，重启服务。
-1 $_JSVC -D${_ServerName} -home $JAVA_HOME -cwd ${_HOME_DIR}/config -umask 0011 -Djava.security.egd=file:/dev/./urandom -Djava.net.preferIPv4Stack=true -Dcom.sun.jndi.ldap.connect.pool.protocol=&#34;plain ssl&#34; -XX:MetaspaceSize=${_MetaspaceSize} -XX:MaxMetaspaceSize=${_MaxMetaspaceSize} -Xms${_Xms} -Xmx${_Xmx} -Xmn${_Xmn} -XX:SurvivorRatio=8 -XX:&#43;HeapDumpOnOutOfMemoryError -XX:&#43;DisableExplicitGC -XX:&#43;PrintGCDetails -XX:&#43;PrintGCDateStamps -XX:&#43;PrintGCTimeStamps -Xloggc:${_HOME_DIR}/logs/gc.log -XX:&#43;UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=8M -Djava.io.tmpdir=${_HOME_DIR}/temp *-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005* -Dloader.main=${_MainClass} -wait 60 -pidfile $_Pid -outfile ${_LogOut} -errfile ${_LogErr} -cp ${_Classpath_jdk8} -procname ${_SystemctlName} $1 ${_StarCLASS} Step3: 重启好服务后，IDEA启动远程debug。显示连接正常即可，如果连接time out查询服务5005端口是否起来，如果没有起来则查看服务启动问题。
-Step4: 打断点，线上服务页面操作即可进入断点。
-Nginx代理DEBUG 在进行某次问题的排查的时候，需要debug单点登录(外部依赖)的流程，线上和线下的组件代码不一致，但是依赖的单点登录jar包一致，测试发现IDEA远程DEBUG并不能debug外部依赖的jar包。
-由于线上服务使用的频率不高，所以直接启动本地的代码作为线上服务，使用nginx反向代理线上服务到本地，此时就可以愉快的进行外部jar包的debug，具体方法如下。
-Step1: 启动本地服务
-Step2: 找到集群代理组件所在的服务器，进入代理组件内部/opt/opsmgr/web/components/cluster.1/data/proxy_section，修改proxy_https.conf文件，找到需要反向代理的组件location，以iface为例，修改proxy_pass的参数为本地启动服务的地址。
-1 2 3 4 5 6 7 8 9 10 location /iface-web/ { proxy_set_header Host $http_host; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_cookie_path /iface-web &#34;/iface-web;httponly; secure&#34;; #proxy_pass http://10.195.185.23:8037/iface-web/; proxy_pass http://10.195.169.165:8037/iface-web/; } Step3: 重启nginx
-...</p>
-  </section>
-  <footer class="entry-footer">&lt;span title=&#39;2023-05-08 18:52:46 &#43;0800 CST&#39;&gt;May 8, 2023&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;yuanpeng11</footer>
-  <a class="entry-link" aria-label="post link to DEBUG" href="https://isyuanpeng.github.io/posts/tech/debug/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>Nginx代理配置实战
-    </h2>
-  </header>
-  <section class="entry-content">
-    <p>浅析代理 Nginx功能 正向代理：客户端不知道服务端，也就是说客户端需要配置代理服务器来，代理服务器再去访问真正的服务端。挂梯子就是正向代理的应用。 反向代理：服务端不知道客户端，客户端不需要进行任何配置，用户只请求反向代理地址，反向代理服务器选择目标服务器，获取数据返回客户端。 负载均衡：在反向代理中，我们可以使用负载均衡去将请求分配到不同的服务器上。 动静分离：Nginx将接到的请求分为动态请求和静态请求，这在实际的应用中对应了前后端。 Nginx原理 Master - Worker 模式 在启动Nginx后，我们通过ps -ef可以发现有关nginx的进程有一个master process和n个worker process，并且我们查看nginx监听的端口，可以看到监听了80端口。
-Master process: master进程的作用主要是读取并且验证nginx.conf, 并且管理worker进程，给worker进程传递消息。
-Worker process: 每一个Worker进程都维护了一个线程去处理连接和请求(避免一个线程造成的线程切换问题)，一般cpu几核就有几个worker进程。
-所有的worker进程都是从master进程fork()过来的，worker进程提供好listenfd的接口, 为了保证只有一个进程处理连接，所有的Worker进程在注册listenfd接口读取事件前抢互斥锁accept_mutex，抢到互斥锁的那个进程注册listenfd读事件，在读事件里面调用accept接受连接，开始处理请求。 Nginx采取上面的这种进程模型的好处： 独立进程不需要加锁，省去锁的开销 独立进程互不影响，服务不会中断 独立进程异常退出，只影响该进程的请求 Cache Manager process: 除了上面两个进程外，我们还可以看到Cache Manager process, 与之对应的还有Cache Loader process(在nginx服务启动的时候由主进程生成，缓存数据加载完成后退出), Cache Manager process负责缓存索引的还礼，通过缓存机制，可以提高对请求的响应效率。 模块化 Nginx从功能上可以分为：
-Handlers: 处理请求，进行输出内容和修改headers等，一般只有一个 Filters: 接收请求进行链式修改 Proxies: Nginx的Htpp Upstream等模块，主要和后端进行交互，实现服务代理和负载均衡等 Nginx（内核）本身做的工作实际很少，当它接到一个 HTTP 请求时，它仅仅是通过查找配置文件将此次请求映射到一个 location block，而此 location 中所配置的各个指令则会启动不同的模块去完成工作，因此模块可以看做 Nginx 真正的劳动工作者。通常一个 location 中的指令会涉及一个 Handler 模块和多个 Filter 模块（当然，多个location可以复用同一个模块）。Handler模块负责处理请求，完成响应内容的生成，而 Filter 模块对响应内容进行处理。
-...</p>
-  </section>
-  <footer class="entry-footer">&lt;span title=&#39;2023-03-23 19:01:29 &#43;0800 CST&#39;&gt;March 23, 2023&lt;/span&gt;&amp;nbsp;·&amp;nbsp;2 min&amp;nbsp;·&amp;nbsp;yuanpeng11</footer>
-  <a class="entry-link" aria-label="post link to Nginx代理配置实战" href="https://isyuanpeng.github.io/posts/tech/nginx-proxy/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>Aries No Log
-    </h2>
-  </header>
-  <section class="entry-content">
-    <p>log4j线上不打印日志 问题描述 使用log4j的项目(包名com.abc)在服务器上未打印日志，本地控制台打印正常，文件中未输出。
-日志文件能够正常生成，并且也有日志打印，但是业务日志没有打印。
-只打印了com.xxx包下的日志。
-问题分析 出现日志无法打印的问题大概率就在logback.xml的配置上，具体logback的配置参数的具体解释网上有很多，具体可以看一下
-https://juejin.cn/post/7200549600590282789
-在logback.xml中可以发现一个配置项:
-1 2 3 4 5 6 7 &lt;!-- 本地测试时，可以修改level 以便打印debug日志 --&gt; &lt;!--定义com.xxx包下的类日志向哪个appender写入日志--&gt; &lt;logger name=&#34;com.xxx&#34; level=&#34;info&#34; additivity=&#34;false&#34;&gt; &lt;appender-ref ref=&#34;FILE-debug&#34; /&gt; &lt;appender-ref ref=&#34;FILE-error&#34; /&gt; &lt;appender-ref ref=&#34;STDOUT&#34; /&gt; &lt;/logger&gt; logger标签可以指定特定包的输出，additivity字段含义如下
-如果logger里面配置了additivity=“false”，就会覆盖root的，只打印一遍；但是additivity=“true”，就会向上层再次传递，不会覆盖，而是打印两遍！
-通过查看logback.xml文件我们可以发现，整个文件中只使用了一个logger打印com.xxx包下的日志，而我们的项目的package为com.abc。
-问题解决 至此问题已经排查完毕，那问题的解决也很简单，新增加一个com.abc的logger即可
-1 2 3 4 5 6 7 &lt;!-- 本地测试时，可以修改level 以便打印debug日志 --&gt; &lt;!--定义com.xxx 包下的类日志向哪个appender写入日志--&gt; &lt;logger name=&#34;com.abc&#34; level=&#34;info&#34; additivity=&#34;false&#34;&gt; &lt;appender-ref ref=&#34;FILE-debug&#34; /&gt; &lt;appender-ref ref=&#34;FILE-error&#34; /&gt; &lt;appender-ref ref=&#34;STDOUT&#34; /&gt; &lt;/logger&gt; </p>
-  </section>
-  <footer class="entry-footer">&lt;span title=&#39;2023-02-27 18:11:45 &#43;0800 CST&#39;&gt;February 27, 2023&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;YuanPeng</footer>
-  <a class="entry-link" aria-label="post link to Aries No Log" href="https://isyuanpeng.github.io/posts/question/aries-no-log/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

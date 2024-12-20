@@ -18,7 +18,7 @@
 <link rel="mask-icon" href="https://isyuanpeng.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<meta name="generator" content="Hugo 0.138.0">
+<meta name="generator" content="Hugo 0.140.0">
 <link rel="alternate" type="application/rss+xml" href="https://isyuanpeng.github.io/categories/%E6%8A%80%E6%9C%AF/index.xml">
 <link rel="alternate" hreflang="en" href="https://isyuanpeng.github.io/categories/%E6%8A%80%E6%9C%AF/" />
 <noscript>
@@ -152,6 +152,27 @@
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
+    <h2>Android Learning 2
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>今天先创建第一个app，跟的课程是google推荐的Developing Android Apps with Kotlin https://classroom.udacity.com/courses/ud9012
+由于上面这个课程都是视频，所以也跟着google的kotlin android training get started补充理论知识
+1. Explore Android Studio 上一篇文章已经讲过了gradle在项目中的结构，除了gradle外，其它的代码文件的分布也和java的项目类似，主要说一下其它文件夹。
+res/layout android的布局文件夹，每一个Activity对应一个xml布局文件，在布局文件里面可以看到Activity的页面UI显示。
+AndroidManifest.xml 一直以为是mainfest，结果是manifest(清单)，列举了android系统运行app所需要的清单(Activity列表和权限)。
+2. Anatomy(剖析) of Basic Android Project 下面就开始进行第一个app的开发，app叫dice roller(投色子)，创建一个空项目后打开运行可以看到Hello World，就证明整个环境是通的。下面看代码。
+MainActivity 首先看到的类是MainActivity，MainActivity就是Hello world这个页面的Activity。而页面的layout就是res/layout下的activity_main.xml，layout命名规则名称后置。对于Activity和layout中的xml的理解，和前端的html和js的关系类似，js处理交互逻辑，html显示页面UI，这里就是Activity处理交互逻辑，xml文件显示页面UI。
+1 class MainActivity : AppCompatActivity() { ... 可以看到MainActicity继承自AppCompatActivity，AppCompatAcitvity是Activity的一个子类，兼容性和新特性都很好。
+onCreate() 1 2 3 4 override fun onCreate(savedInstanceState: Bundle?) { super.onCreate(savedInstanceState) setContentView(R.layout.activity_main) } Activity不用构造器去初始化对象，而是用生命周期函数，onCreate()就是一个生命周期函数，它是Activity生命周期中的开始。
+...</p>
+  </section>
+  <footer class="entry-footer">&lt;span title=&#39;2022-03-18 10:20:34 &#43;0800 &#43;0800&#39;&gt;March 18, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;2 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
+  <a class="entry-link" aria-label="post link to Android Learning 2" href="https://isyuanpeng.github.io/posts/tech/android-learning-2/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
     <h2>Android Learning 1
     </h2>
   </header>
@@ -164,7 +185,7 @@ https://www.zhihu.com/question/30432152
 1 2 3 4 5 6 7 8 9 root: gradle: wrapper: - gradle-wrapper.properties # 指定gradle版本号 - gradle-wrapper.jar # 安装部署gradle包 - build.gradle # 构建脚本 - settings.gradle # 指定工程名 - gradlew.bat # windows安装gradle命令 去执行jar包 - gradlew # linux安装gradle命令 去执行jar包 Gradle Wrapper(gradlew) 直到现在见到Gradle Wrapper(包装纸)也很迷惑，不知道这是什么，有什么作用。下面先从官方的解释开始看起：
 ...</p>
   </section>
-  <footer class="entry-footer">&lt;span title=&#39;2022-03-17 10:35:42 &#43;0800 CST&#39;&gt;March 17, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;2 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
+  <footer class="entry-footer">&lt;span title=&#39;2022-03-17 10:35:42 &#43;0800 &#43;0800&#39;&gt;March 17, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;2 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
   <a class="entry-link" aria-label="post link to Android Learning 1" href="https://isyuanpeng.github.io/posts/tech/android-learning-1/"></a>
 </article>
 
@@ -183,7 +204,7 @@ The CLASSPATH variable is one way to tell applications, including the JDK tools,
 Spring中的classpath 我们在很多的项目代码的config代码中都可以看到 @PropertySource(value = &#34;classpath:map-config.yaml&#34;) 类似的代码，在这里也用到了classpath，这里的classpath什么作用呢？
 ...</p>
   </section>
-  <footer class="entry-footer">&lt;span title=&#39;2022-03-15 17:23:11 &#43;0800 CST&#39;&gt;March 15, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
+  <footer class="entry-footer">&lt;span title=&#39;2022-03-15 17:23:11 &#43;0800 &#43;0800&#39;&gt;March 15, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
   <a class="entry-link" aria-label="post link to 揭秘Classpath" href="https://isyuanpeng.github.io/posts/tech/spring-classpath/"></a>
 </article>
 
@@ -198,7 +219,7 @@ Spring中的classpath 我们在很多的项目代码的config代码中都可以�
 代码 1. 创建一个Handler接口类 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 /** * @Author Yuanpeng * @Description 处理健康码请求携带参数的类 根据不同的类型进行 不同的处理 * @Date 2022/1/10 */ public interface HealthCodeHandler { /** * 处理健康码信息的逻辑 * @param query 前置信息 * @return 处理的结果 包括开门信息 健康码信息 核酸信息 疫苗信息等 */ HealthCodeResult handle(HealthCodeQuery query); /** * 获取请求的类型 1.人员唯一标识 personId 2.身份证号 3.二维码 4.人员卡号 5.人脸图片 6.市民卡 * @return 类型 */ Integer getType(); } 2. 创建不同的Handler实现类，这里以二维码的实现类举例 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 /** * @Author Yuanpeng * @Description 处理二维码的实现类 * @Date 2022/1/10 */ @Service public class QrCodeHandler implements HealthCodeHandler { private static final Logger log = LoggerFactory.getLogger(QrCodeHandler.class); @Override public HealthCodeResult handle(HealthCodeQuery query) { HealthCodeResult result = ResultUtils.getDefaultHeathCodeResult(query, false); // logic code return result; } @Override public Integer getType() { return HealthCodeConstants.QR_CODE_TYPE; } 3. 将所有实现了Handler接口类的实例注入容器 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 /** * @Author Yuanpeng * @Description 策略模式的工厂类 加载所有的HealthCodeHandler类 * @Date 2022/1/10 */ @Component public class HealthCodeHandlerFactory implements InitializingBean, ApplicationContextAware { private static final Map&lt;Integer, HealthCodeHandler&gt; HEALTH_CODE_HANDLER_MAP = new HashMap&lt;&gt;(6); private ApplicationContext appContext; /** * 根据健康码信息类型获取对应的处理器 * * @param type 健康码信息类型 * @return 健康码信息类型对应的处理器 */ public HealthCodeHandler getHandler(Integer type) { return HEALTH_CODE_HANDLER_MAP.get(type); } @Override public void afterPropertiesSet() { // 将 Spring 容器中所有的 HealthCodeHandler 注册到 FORM_SUBMIT_HANDLER_MAP appContext.getBeansOfType(HealthCodeHandler.class) .values() .forEach(handler -&gt; HEALTH_CODE_HANDLER_MAP.put(handler.getType(), handler)); } @Override public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException { appContext = applicationContext; } } 4. 入口处根据传参中的type进行不同类的调用 1 2 3 // 使用策略模式来实现对不同类型请求的处理，如果需要添加其它类型信息的处理 只需要实现相应的HealthCodeHandler即可 HealthCodeHandler handler = healthCodeHandlerFactory.getHandler(query.getCardNoType()); HealthCodeResult result = handler.handle(query); 至此，完成了业务上的需求，同时后期如果还有其它类型的开门方式，可以直接写实现类，不用改之前的代码，维护起来比较方便。
 ...</p>
   </section>
-  <footer class="entry-footer">&lt;span title=&#39;2022-03-03 18:30:14 &#43;0800 CST&#39;&gt;March 3, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;2 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
+  <footer class="entry-footer">&lt;span title=&#39;2022-03-03 18:30:14 &#43;0800 &#43;0800&#39;&gt;March 3, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;2 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
   <a class="entry-link" aria-label="post link to 设计模式-策略模式实战" href="https://isyuanpeng.github.io/posts/tech/design-pattern-strategy/"></a>
 </article>
 
@@ -210,25 +231,13 @@ Spring中的classpath 我们在很多的项目代码的config代码中都可以�
   <section class="entry-content">
     <p>普通操作 更新多参数SQL 1 update table_a a set (col_a, col_b) = (select b.col_a, b.col_b from table_b b where a.col_c = b.col_c) where exists (select 1 from table_b b where a.col_c = b.col_c) 分组排序 1 select * from (select *, row_number() over(partition by col_a order by col_b) rn from table_a) t where rn = 1; 分组排序删除 1 delete from table_a where id in (select id from (select id, row_number() over(partition by col_a order by col_b) rn from table_a) t where rn != 1); 系统类 查看当前所有连接，连接个数 1 2 3 4 5 6 select * from pg_stat_activity; select count(1) from pg_stat_activity; # 查询最大连接数 show max_connections; </p>
   </section>
-  <footer class="entry-footer">&lt;span title=&#39;2022-03-02 19:09:58 &#43;0800 CST&#39;&gt;March 2, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
+  <footer class="entry-footer">&lt;span title=&#39;2022-03-02 19:09:58 &#43;0800 &#43;0800&#39;&gt;March 2, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
   <a class="entry-link" aria-label="post link to Pg数据库常用SQL(持续更新)" href="https://isyuanpeng.github.io/posts/tech/pg-common-sql/"></a>
-</article>
-
-<article class="post-entry tag-entry"> 
-  <header class="entry-header">
-    <h2>Markdown Syntax Guide
-    </h2>
-  </header>
-  <section class="entry-content">
-    <p>This article offers a sample of basic Markdown syntax that can be used in Hugo content files, also it shows whether basic HTML elements are decorated with CSS in a Hugo theme.
-...</p>
-  </section>
-  <footer class="entry-footer">&lt;span title=&#39;2019-03-11 00:00:00 &#43;0000 UTC&#39;&gt;March 11, 2019&lt;/span&gt;&amp;nbsp;·&amp;nbsp;3 min&amp;nbsp;·&amp;nbsp;Hugo Authors</footer>
-  <a class="entry-link" aria-label="post link to Markdown Syntax Guide" href="https://isyuanpeng.github.io/posts/tech/markdown-syntax/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">
     <a class="prev" href="https://isyuanpeng.github.io/categories/%E6%8A%80%E6%9C%AF/page/3/">« Prev Page</a>
+    <a class="next" href="https://isyuanpeng.github.io/categories/%E6%8A%80%E6%9C%AF/page/5/">Next Page »</a>
   </nav>
 </footer>
     </main>

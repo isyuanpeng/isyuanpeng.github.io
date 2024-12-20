@@ -18,7 +18,7 @@
 <link rel="mask-icon" href="https://isyuanpeng.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<meta name="generator" content="Hugo 0.138.0">
+<meta name="generator" content="Hugo 0.140.0">
 <link rel="alternate" type="application/rss+xml" href="https://isyuanpeng.github.io/categories/%E5%85%B6%E5%AE%83/index.xml">
 <link rel="alternate" hreflang="en" href="https://isyuanpeng.github.io/categories/%E5%85%B6%E5%AE%83/" />
 <noscript>
@@ -161,7 +161,7 @@
 代码规范中强制要求的必须执行，其它项按自己的风格使用。 旧代码不做要求，新代码强制执行。 二季度结束后和年度结束后，随机抽查新代码，形成考核结果。 文档规范：中大型项目需要有开发文档，就写在README中，讲述开发逻辑和开发中不为人知的秘密
 文档书写使用Markdown语法，每个项目的README中都有语法链接 文档中包含但不限于需求描述，实现方案，升级记录，注意事项等。 旧代码不做要求，新代码强制执行。 二季度结束后和年度结束后，随机抽查新代码，形成考核结果。 开发文档模板会在年前提供出来。 为什么要进行代码规范和文档规范 目前代码中，因个人风格的不通，代码风格差异也比较大，在维护代码的时候要去不停的适应不同人的代码风格，因此规范代码风格，减少维护适应代码时间。 目前代码中，因为没有好的规范，所以部分地方还是存在风险，通过实行好的代码规范来避免风险产生问题。 目前代码中，因为没有文档，所以每次看代码遇到不懂的地方需要去猜，可能存在误差。 质量 代码审核：周六分享会开发人员把自己上周的开发工作说一遍，视开发内容决定是否需要代码审核 如果需要代码审核，必须要有开发文档，让组员能够理解在干什么 使用代码IDEA插件搭配Upsource快速审核,https://www.jianshu.com/p/fab6539a6749 写代码的人讲解自己的代码，阐述清楚为什么这么写 鼓励自己提交代码审核，量化代码审核次数 内容输出 完善一组wiki，问题和开发技术输出， 周六分享会后技术分享同样提交wiki 周六分享会后技术分享完毕后如果有想分享的东西同样可以分享 </p>
   </section>
-  <footer class="entry-footer">&lt;span title=&#39;2023-01-13 15:33:27 &#43;0800 CST&#39;&gt;January 13, 2023&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;yuanpeng11</footer>
+  <footer class="entry-footer">&lt;span title=&#39;2023-01-13 15:33:27 &#43;0800 &#43;0800&#39;&gt;January 13, 2023&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;yuanpeng11</footer>
   <a class="entry-link" aria-label="post link to 2023 Tech Plan" href="https://isyuanpeng.github.io/posts/other/2023-tech-plan/"></a>
 </article>
 
@@ -175,14 +175,14 @@
 安全：程序可以选择只读或只写或读写 灵活：如果不仅仅只是读写属性值，可以自由变换 封装：隐藏内部实现细节 健壮：便于维护，扩展 由上一问，为什么public是不安全的呢？
 如果写sdk的话，那么有些数据是不想对外修改的，这时候public的作用就体现出来了。如果只是业务代码则，权限体现的不太大。 扩展：Java的四大特性 - 直接粘贴
 封装
-What：隐藏信息，保护数据访问。How：暴露有限接口和属性，需要编程语言提供访问控制的语法。Why：提高代码可维护性；降低接口复杂度，提高类的易用性。抽象
-What: 隐藏具体实现，使用者只需关心功能，无需关心实现。How: 通过接口类或者抽象类实现，特殊语法机制非必须。Why: 提高代码的扩展性、维护性；降低复杂度，减少细节负担。继承
-What: 表示 is-a 关系，分为单继承和多继承。How: 需要编程语言提供特殊语法机制。例如 Java 的 “extends”，C&#43;&#43; 的 “:” 。Why: 解决代码复用问题。多态
-What: 子类替换父类，在运行时调用子类的实现。How: 需要编程语言提供特殊的语法机制。比如继承、接口类、duck-typing。Why: 提高代码扩展性和复用性。2022-06-22 编译&amp;反编译 编译：源码 -&gt; 字节码 反编译：字节码 -&gt; 源码
+What：隐藏信息，保护数据访问。 How：暴露有限接口和属性，需要编程语言提供访问控制的语法。 Why：提高代码可维护性；降低接口复杂度，提高类的易用性。 抽象
+What: 隐藏具体实现，使用者只需关心功能，无需关心实现。 How: 通过接口类或者抽象类实现，特殊语法机制非必须。 Why: 提高代码的扩展性、维护性；降低复杂度，减少细节负担。 继承
+What: 表示 is-a 关系，分为单继承和多继承。 How: 需要编程语言提供特殊语法机制。例如 Java 的 “extends”，C&#43;&#43; 的 “:” 。 Why: 解决代码复用问题。 多态
+What: 子类替换父类，在运行时调用子类的实现。 How: 需要编程语言提供特殊的语法机制。比如继承、接口类、duck-typing。 Why: 提高代码扩展性和复用性。 2022-06-22 编译&amp;反编译 编译：源码 -&gt; 字节码 反编译：字节码 -&gt; 源码
 什么是字节码，采用字节码的好处是什么？ 在 Java 中，JVM 可以理解的代码就叫做字节码（即扩展名为 .class 的文件），它不面向任何特定的处理器，只面向虚拟机。Java 语言通过字节码的方式，在一定程度上解决了传统解释型语言执行效率低的问题，同时又保留了解释型语言可移植的特点。所以 Java 程序运行时比较高效，而且，由于字节码并不针对一种特定的机器，因此，Java 程序无须重新编译便可在多种不同操作系统的计算机上运行。
 ...</p>
   </section>
-  <footer class="entry-footer">&lt;span title=&#39;2022-06-22 10:18:49 &#43;0800 CST&#39;&gt;June 22, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;3 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
+  <footer class="entry-footer">&lt;span title=&#39;2022-06-22 10:18:49 &#43;0800 &#43;0800&#39;&gt;June 22, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;3 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
   <a class="entry-link" aria-label="post link to Everyday Question" href="https://isyuanpeng.github.io/posts/other/everyday-question/"></a>
 </article>
 
@@ -199,7 +199,7 @@ Creating and Destroying Objects Item 1: Consider static factory methods instead 
 advantages: 自定义方法名称：构造方法只能是类名称，而静态工厂方法可以取具体含义的名称。这点确实，如果有多个构造函数的话，往往需要去找到底使用哪个构造函数来创建实例。 不需要每次都创建一个新的对象：如上面的例子，每次只需要返回定义好的常量即可。 静态方法返回的类型可以是定义返回类型的子类 Item 6: Avoid creating unnecessary objects 如题名，避免创建不必要的对象。
 以String作为例子： 1 2 String s = new String(&#34;bikini&#34;); // 创建一个新的实例 String s = &#34;bikini&#34;; // 从String池创建 以后无论创建多少个 bikini 都会指向第一次创建的地址 以正则表达式的匹配为例： 1 2 3 4 5 6 7 8 9 10 11 12 // Performance can be greatly inproved static boolean isRomanNumberal(String s) { return s.matches(&#34;^(?=.)&#34;) } // Reusing expensive object for improved performence public class RomanNumberals { private static final Pattern ROMAN = Pattern.compile(&#34;^(?=.)&#34;); static boolean isRomanNumeral(String s) { return ROMAN.matchers(s).matches(); } } 使用基础类型而不是包装类 </p>
   </section>
-  <footer class="entry-footer">&lt;span title=&#39;2022-06-09 15:53:18 &#43;0800 CST&#39;&gt;June 9, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
+  <footer class="entry-footer">&lt;span title=&#39;2022-06-09 15:53:18 &#43;0800 &#43;0800&#39;&gt;June 9, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
   <a class="entry-link" aria-label="post link to Effective Java Reading Notes - 1" href="https://isyuanpeng.github.io/posts/other/effective-java-notes/"></a>
 </article>
     </main>

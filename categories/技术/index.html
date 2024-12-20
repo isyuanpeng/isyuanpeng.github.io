@@ -18,7 +18,7 @@
 <link rel="mask-icon" href="https://isyuanpeng.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<meta name="generator" content="Hugo 0.138.0">
+<meta name="generator" content="Hugo 0.140.0">
 <link rel="alternate" type="application/rss+xml" href="https://isyuanpeng.github.io/categories/%E6%8A%80%E6%9C%AF/index.xml">
 <link rel="alternate" hreflang="en" href="https://isyuanpeng.github.io/categories/%E6%8A%80%E6%9C%AF/" />
 <noscript>
@@ -152,6 +152,26 @@
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
+    <h2>ClassLoader
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>深入理解ClassLoader 是什么? 相信大家在准备面试的时候都会背过Java的类加载机制，双亲委派模型。
+就是当JVM收到一个类加载请求的时候，当前的类加载器首先会将类加载器传递给它的父类，父类尝试加载，如果失败继续向上传递，如果所有的父类都无法加载，则当前类加载器自己处理。
+那这段话理解起来还是比较容易的，但是具体是如何做的呢？下面进行分析。
+为什么? 那为什么要使用双亲委派模型吗？当前类加载器自己处理不行吗？
+如果我们自己写了一个java.lang.Object类的话，那当前的类加载器直接选择加载的话，那加载的类中就会有两个一样的Object类。应用程序将会变的非常混乱。
+怎么做? 下面从源码开始看Java是如何进行类加载的。
+ClassLoader 介绍 先进入ClassLoader类中public abstract class ClassLoader， 可以先看一下doc，介绍了ClassLoader这个类，
+A class loader is an object that is responsible for loading classes. The class ClassLoader is an abstract class. Given the binary name of a class, a class loader should attempt to locate or generate data that constitutes a definition for the class. A typical strategy is to transform the name into a file name and then read a “class file” of that name from a file system.
+...</p>
+  </section>
+  <footer class="entry-footer">&lt;span title=&#39;2024-12-19 18:11:06 &#43;0800 &#43;0800&#39;&gt;December 19, 2024&lt;/span&gt;&amp;nbsp;·&amp;nbsp;3 min&amp;nbsp;·&amp;nbsp;YuanPeng</footer>
+  <a class="entry-link" aria-label="post link to ClassLoader" href="https://isyuanpeng.github.io/posts/tech/classloader/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
     <h2>一个基于Quic协议的Http转Udp代理工具
     </h2>
   </header>
@@ -170,7 +190,7 @@ Udp不可靠，存在丢包的情况 Udp有报文大小限制，1480bytes Udp不
 HTTP/3 &amp; Quic HTTP/3 is the third major version of the Hypertext Transfer Protocol used to exchange information on the World Wide Web, complementing the widely-deployed HTTP/1.1 and HTTP/2. Unlike previous versions which relied on the well-established TCP (published in 1974),[2] HTTP/3 uses QUIC, a multiplexed transport protocol built on UDP.[3] On 6 June 2022, IETF published HTTP/3 as a Proposed Standard in RFC 9114.[4]
 ...</p>
   </section>
-  <footer class="entry-footer">&lt;span title=&#39;2023-11-25 11:39:30 &#43;0800 CST&#39;&gt;November 25, 2023&lt;/span&gt;&amp;nbsp;·&amp;nbsp;4 min&amp;nbsp;·&amp;nbsp;yuanpeng11</footer>
+  <footer class="entry-footer">&lt;span title=&#39;2023-11-25 11:39:30 &#43;0800 &#43;0800&#39;&gt;November 25, 2023&lt;/span&gt;&amp;nbsp;·&amp;nbsp;4 min&amp;nbsp;·&amp;nbsp;yuanpeng11</footer>
   <a class="entry-link" aria-label="post link to 一个基于Quic协议的Http转Udp代理工具" href="https://isyuanpeng.github.io/posts/tech/%E4%B8%80%E4%B8%AA%E5%9F%BA%E4%BA%8Equic%E5%8D%8F%E8%AE%AE%E7%9A%84http%E8%BD%ACudp%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7/"></a>
 </article>
 
@@ -186,7 +206,7 @@ Step 1：需要在settings.xml配置af仓库的用户名和密码
 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 &lt;!-- servers | This is a list of authentication profiles, keyed by the server-id used within the system. | Authentication profiles can be used whenever maven must make a connection to a remote server. |--&gt; &lt;servers&gt; &lt;!-- server | Specifies the authentication information to use when connecting to a particular server, identified by | a unique name within the system (referred to by the &#39;id&#39; attribute below). | | NOTE: You should either specify username/password OR privateKey/passphrase, since these pairings are | used together. | --&gt; &lt;server&gt; &lt;id&gt;xxx-release&lt;/id&gt; &lt;username&gt;xxx&lt;/username&gt; &lt;password&gt;xxx&lt;/password&gt; &lt;/server&gt; &lt;/servers&gt; Step 2：要Deploy的module的pom文件中添加要上传的af仓库，id要和上面settings.xml中的id对应
 ...</p>
   </section>
-  <footer class="entry-footer">&lt;span title=&#39;2023-06-21 18:40:34 &#43;0800 CST&#39;&gt;June 21, 2023&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;yuanpeng11</footer>
+  <footer class="entry-footer">&lt;span title=&#39;2023-06-21 18:40:34 &#43;0800 &#43;0800&#39;&gt;June 21, 2023&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;yuanpeng11</footer>
   <a class="entry-link" aria-label="post link to Maven之Deploy使用" href="https://isyuanpeng.github.io/posts/tech/maven%E4%B9%8Bdeploy%E4%BD%BF%E7%94%A8/"></a>
 </article>
 
@@ -209,7 +229,7 @@ Step2: 找到集群代理组件所在的服务器，进入代理组件内部/opt
 1 2 3 4 5 6 7 8 9 10 location /iface-web/ { proxy_set_header Host $http_host; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_cookie_path /iface-web &#34;/iface-web;httponly; secure&#34;; #proxy_pass http://10.195.185.23:8037/iface-web/; proxy_pass http://10.195.169.165:8037/iface-web/; } Step3: 重启nginx
 ...</p>
   </section>
-  <footer class="entry-footer">&lt;span title=&#39;2023-05-08 18:52:46 &#43;0800 CST&#39;&gt;May 8, 2023&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;yuanpeng11</footer>
+  <footer class="entry-footer">&lt;span title=&#39;2023-05-08 18:52:46 &#43;0800 &#43;0800&#39;&gt;May 8, 2023&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;yuanpeng11</footer>
   <a class="entry-link" aria-label="post link to DEBUG" href="https://isyuanpeng.github.io/posts/tech/debug/"></a>
 </article>
 
@@ -226,22 +246,8 @@ Worker process: 每一个Worker进程都维护了一个线程去处理连接和�
 Handlers: 处理请求，进行输出内容和修改headers等，一般只有一个 Filters: 接收请求进行链式修改 Proxies: Nginx的Htpp Upstream等模块，主要和后端进行交互，实现服务代理和负载均衡等 Nginx（内核）本身做的工作实际很少，当它接到一个 HTTP 请求时，它仅仅是通过查找配置文件将此次请求映射到一个 location block，而此 location 中所配置的各个指令则会启动不同的模块去完成工作，因此模块可以看做 Nginx 真正的劳动工作者。通常一个 location 中的指令会涉及一个 Handler 模块和多个 Filter 模块（当然，多个location可以复用同一个模块）。Handler模块负责处理请求，完成响应内容的生成，而 Filter 模块对响应内容进行处理。
 ...</p>
   </section>
-  <footer class="entry-footer">&lt;span title=&#39;2023-03-23 19:01:29 &#43;0800 CST&#39;&gt;March 23, 2023&lt;/span&gt;&amp;nbsp;·&amp;nbsp;2 min&amp;nbsp;·&amp;nbsp;yuanpeng11</footer>
+  <footer class="entry-footer">&lt;span title=&#39;2023-03-23 19:01:29 &#43;0800 &#43;0800&#39;&gt;March 23, 2023&lt;/span&gt;&amp;nbsp;·&amp;nbsp;2 min&amp;nbsp;·&amp;nbsp;yuanpeng11</footer>
   <a class="entry-link" aria-label="post link to Nginx代理配置实战" href="https://isyuanpeng.github.io/posts/tech/nginx-proxy/"></a>
-</article>
-
-<article class="post-entry tag-entry"> 
-  <header class="entry-header">
-    <h2>Yaml File as Config File Using
-    </h2>
-  </header>
-  <section class="entry-content">
-    <p>Spring中使用yaml作为配置文件 写定制的时候经常会遇到这样的情况，一些小而繁杂的配置项在数据库中配置太过麻烦，卸载application.properties中又太过臃肿，针对这种情况，我们可以使用yaml作为配置文件，直接在model类中将yaml配置引入即可。具体使用方法如下:
-Step1: 创建yaml解析类 1 2 3 4 5 6 7 8 9 10 11 public class YamlPropertySourceFactory implements PropertySourceFactory { @Override public PropertySource&lt;?&gt; createPropertySource(String name, EncodedResource resource) throws IOException { Resource classResource = resource.getResource(); if (classResource.exists()) { PropertySource&lt;?&gt; sources = new YamlPropertySourceLoader().load(resource.getResource().getFilename(), classResource,null); return sources==null ? new MapPropertySource(name, new HashMap&lt;&gt;()) : sources; } return new MapPropertySource(name, new HashMap&lt;&gt;()); } } Step2: 设置配置文件 在项目的
-...</p>
-  </section>
-  <footer class="entry-footer">&lt;span title=&#39;2022-10-08 11:10:20 &#43;0800 CST&#39;&gt;October 8, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;Yuanpeng11</footer>
-  <a class="entry-link" aria-label="post link to Yaml File as Config File Using" href="https://isyuanpeng.github.io/posts/tech/yaml-file-as-config-file-using/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">
