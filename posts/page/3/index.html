@@ -167,18 +167,6 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2>DDD
-    </h2>
-  </header>
-  <section class="entry-content">
-    <p>DDD - 领域驱动设计 领域模型 什么事领域模型</p>
-  </section>
-  <footer class="entry-footer">&lt;span title=&#39;2023-01-10 15:22:22 &#43;0800 &#43;0800&#39;&gt;January 10, 2023&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;Yuanpeng11</footer>
-  <a class="entry-link" aria-label="post link to DDD" href="https://isyuanpeng.github.io/posts/reading/ddd/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
     <h2>Maven Question
     </h2>
   </header>
@@ -240,6 +228,24 @@ What: 子类替换父类，在运行时调用子类的实现。 How: 需要编�
   </section>
   <footer class="entry-footer">&lt;span title=&#39;2022-06-22 10:18:49 &#43;0800 &#43;0800&#39;&gt;June 22, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;3 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
   <a class="entry-link" aria-label="post link to Everyday Question" href="https://isyuanpeng.github.io/posts/other/everyday-question/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>论如何在没有Kafkatool的情况下存活
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>论如何在没有Kafkatool的情况下存活 众所周知，最近服务器加固的越来越高，导致有些服务器的kafka已经不能在kafkatool上访问，当然不排除是kafkatool有问题，但是无论是哪种情况，Kafka命令的使用已经迫在眉睫，所以总结一下。
+kafka的安装 https://downloads.apache.org/kafka/
+安装 .tgz版本的，no src.tgz，src代表着source，下载下来的是资源，还需要gradle编译，有点麻烦。
+安装完成后启动zookeeper，关于zookeeper，虽然我们有在使用，但是它是什么呢？为什么Kafka要用它？还有什么场景会使用Zk？关于Zk的问题有点多，后面单独开一个章节去学习Zk。
+关于所有的脚本都在/bin目录下，我们可以看到命名非常清晰，我们可以直接上手使用。
+启动Zk命令 1 2 // -daemon代表后台运行 后面还可以指定特定的配置文件 如果没有指定就会默认使用 /config/zookeeper.properties ./zookeeper-server-start.sh -daemon 启动kafka 1 2 // 和Zk同样的道理 ./kafka-server-start.sh -daemon Kafka的使用 Topic的创建 常用命令 查询kafka topic列表 ./kafka-topics.sh –list –zookeeper localhost:
+</p>
+  </section>
+  <footer class="entry-footer">&lt;span title=&#39;2022-06-10 18:09:16 &#43;0800 &#43;0800&#39;&gt;June 10, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
+  <a class="entry-link" aria-label="post link to 论如何在没有Kafkatool的情况下存活" href="https://isyuanpeng.github.io/posts/tech/kafka-commond/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

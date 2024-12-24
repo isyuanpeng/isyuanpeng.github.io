@@ -167,25 +167,6 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2>Android Learning 6
-    </h2>
-  </header>
-  <section class="entry-content">
-    <p>昨日主要学习了ROOM和协程，今天补充一些协程的知识，并且学习RecyclerView, Adapter和WorkManager。
-RecyclerView 在app中，有很多地方都需要用到列表来展示多个item，android提供了RecyclerView来支持大型列表，并且RecyclerView支持滑动，在显示有限个数量的item后，剩下的item需要滑动来获取。今天在昨天的睡眠质量的app的基础上将首页的历史记录改成使用RecyclerView来展示。
-Adapter 适配器模式 在Android的学习中，有很多的设计模式可以学习，这次来到了适配器模式。
-定义：用包装类来包装不兼容的对象，将一个类的接口转换成客户希望的另外一个接口。 举一个所有博文中都会举的一个例子，比如说在国际旅行的时候，在不同的国家充电器的规格都不一样，如果想要充电的话就需要转换器，那么这个转换器就相当于一个中间层，这个中间层就是Adapter层，通过这层来进行一个接口的转换达到兼容的目的。
-关于具体的思想在下面的慢慢使用中体会
-RecyclerView的使用 Step 1: 将所需要使用RecyclerView的布局添加RecyclerView
-1 2 3 4 5 6 7 8 9 &lt;androidx.recyclerview.widget.RecyclerView android:id=&#34;@&#43;id/sleep_list&#34; android:layout_width=&#34;0dp&#34; android:layout_height=&#34;0dp&#34; app:layout_constraintBottom_toTopOf=&#34;@&#43;id/clear_button&#34; app:layout_constraintEnd_toEndOf=&#34;parent&#34; app:layout_constraintStart_toStartOf=&#34;parent&#34; app:layout_constraintTop_toBottomOf=&#34;@&#43;id/stop_button&#34; app:layoutManager=&#34;androidx.recyclerview.widget.LinearLayoutManager&#34;/&gt; Step 2：创建单个的Item的View，这里是TextView
-...</p>
-  </section>
-  <footer class="entry-footer">&lt;span title=&#39;2022-03-30 15:48:57 &#43;0800 &#43;0800&#39;&gt;March 30, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;2 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
-  <a class="entry-link" aria-label="post link to Android Learning 6" href="https://isyuanpeng.github.io/posts/tech/android-learning-6/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
     <h2>Android Learning 5
     </h2>
   </header>
@@ -270,6 +251,24 @@ onCreate() 1 2 3 4 override fun onCreate(savedInstanceState: Bundle?) { super.on
   </section>
   <footer class="entry-footer">&lt;span title=&#39;2022-03-18 10:20:34 &#43;0800 &#43;0800&#39;&gt;March 18, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;2 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
   <a class="entry-link" aria-label="post link to Android Learning 2" href="https://isyuanpeng.github.io/posts/tech/android-learning-2/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>Android Learning 1
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>2021年10月份成为兼职Android开发，之前一直没正式系统学习，现在开一个series来记录Android的学习。
+Gradle 开始学习android的时候，相信gradle是大家绕不开的一个地方，因为android的环境很难调通，很多依赖下载也是状况百出。但是即使这样，很多人也是选择解决问题后就不去深究背后的原理，选择直接绕过gradle直接写项目，遂在android学习的第一章先学习gradle。 题外话，最新版的springboot已经由maven改为使用gradle来进行构建项目。
+什么是Gradle gradle本质上是个打包工具，结合了ant和maven的优点(没感觉出来)
+https://www.zhihu.com/question/30432152
+先把普通的gradle目录结构放出来，便于后面的理解。
+1 2 3 4 5 6 7 8 9 root: gradle: wrapper: - gradle-wrapper.properties # 指定gradle版本号 - gradle-wrapper.jar # 安装部署gradle包 - build.gradle # 构建脚本 - settings.gradle # 指定工程名 - gradlew.bat # windows安装gradle命令 去执行jar包 - gradlew # linux安装gradle命令 去执行jar包 Gradle Wrapper(gradlew) 直到现在见到Gradle Wrapper(包装纸)也很迷惑，不知道这是什么，有什么作用。下面先从官方的解释开始看起：
+...</p>
+  </section>
+  <footer class="entry-footer">&lt;span title=&#39;2022-03-17 10:35:42 &#43;0800 &#43;0800&#39;&gt;March 17, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;2 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
+  <a class="entry-link" aria-label="post link to Android Learning 1" href="https://isyuanpeng.github.io/posts/tech/android-learning-1/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

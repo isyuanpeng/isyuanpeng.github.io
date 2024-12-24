@@ -574,17 +574,6 @@
     </item>
     
     <item>
-      <title>DDD</title>
-      <link>https://isyuanpeng.github.io/posts/reading/ddd/</link>
-      <pubDate>Tue, 10 Jan 2023 15:22:22 +0800</pubDate>
-      
-      <guid>https://isyuanpeng.github.io/posts/reading/ddd/</guid>
-      <description>&lt;h2 id=&#34;ddd---领域驱动设计&#34;&gt;DDD - 领域驱动设计&lt;/h2&gt;
-&lt;h3 id=&#34;领域模型&#34;&gt;领域模型&lt;/h3&gt;
-&lt;h4 id=&#34;什么事领域模型&#34;&gt;什么事领域模型&lt;/h4&gt;</description>
-    </item>
-    
-    <item>
       <title>Maven Question</title>
       <link>https://isyuanpeng.github.io/posts/tech/maven-question/</link>
       <pubDate>Sat, 07 Jan 2023 19:29:40 +0800</pubDate>

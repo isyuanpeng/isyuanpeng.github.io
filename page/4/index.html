@@ -163,24 +163,6 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2>论如何在没有Kafkatool的情况下存活
-    </h2>
-  </header>
-  <section class="entry-content">
-    <p>论如何在没有Kafkatool的情况下存活 众所周知，最近服务器加固的越来越高，导致有些服务器的kafka已经不能在kafkatool上访问，当然不排除是kafkatool有问题，但是无论是哪种情况，Kafka命令的使用已经迫在眉睫，所以总结一下。
-kafka的安装 https://downloads.apache.org/kafka/
-安装 .tgz版本的，no src.tgz，src代表着source，下载下来的是资源，还需要gradle编译，有点麻烦。
-安装完成后启动zookeeper，关于zookeeper，虽然我们有在使用，但是它是什么呢？为什么Kafka要用它？还有什么场景会使用Zk？关于Zk的问题有点多，后面单独开一个章节去学习Zk。
-关于所有的脚本都在/bin目录下，我们可以看到命名非常清晰，我们可以直接上手使用。
-启动Zk命令 1 2 // -daemon代表后台运行 后面还可以指定特定的配置文件 如果没有指定就会默认使用 /config/zookeeper.properties ./zookeeper-server-start.sh -daemon 启动kafka 1 2 // 和Zk同样的道理 ./kafka-server-start.sh -daemon Kafka的使用 Topic的创建 常用命令 查询kafka topic列表 ./kafka-topics.sh –list –zookeeper localhost:
-</p>
-  </section>
-  <footer class="entry-footer">&lt;span title=&#39;2022-06-10 18:09:16 &#43;0800 &#43;0800&#39;&gt;June 10, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
-  <a class="entry-link" aria-label="post link to 论如何在没有Kafkatool的情况下存活" href="https://isyuanpeng.github.io/posts/tech/kafka-commond/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
     <h2>Effective Java Reading Notes - 1
     </h2>
   </header>
@@ -273,6 +255,25 @@ Repository例子 1 2 3 4 5 6 7 8 9 10 11 12 13 14 @Singleton class PlantReposito
   </section>
   <footer class="entry-footer">&lt;span title=&#39;2022-03-31 17:45:16 &#43;0800 &#43;0800&#39;&gt;March 31, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
   <a class="entry-link" aria-label="post link to Android Learning 7" href="https://isyuanpeng.github.io/posts/tech/android-learning-7/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>Android Learning 6
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>昨日主要学习了ROOM和协程，今天补充一些协程的知识，并且学习RecyclerView, Adapter和WorkManager。
+RecyclerView 在app中，有很多地方都需要用到列表来展示多个item，android提供了RecyclerView来支持大型列表，并且RecyclerView支持滑动，在显示有限个数量的item后，剩下的item需要滑动来获取。今天在昨天的睡眠质量的app的基础上将首页的历史记录改成使用RecyclerView来展示。
+Adapter 适配器模式 在Android的学习中，有很多的设计模式可以学习，这次来到了适配器模式。
+定义：用包装类来包装不兼容的对象，将一个类的接口转换成客户希望的另外一个接口。 举一个所有博文中都会举的一个例子，比如说在国际旅行的时候，在不同的国家充电器的规格都不一样，如果想要充电的话就需要转换器，那么这个转换器就相当于一个中间层，这个中间层就是Adapter层，通过这层来进行一个接口的转换达到兼容的目的。
+关于具体的思想在下面的慢慢使用中体会
+RecyclerView的使用 Step 1: 将所需要使用RecyclerView的布局添加RecyclerView
+1 2 3 4 5 6 7 8 9 &lt;androidx.recyclerview.widget.RecyclerView android:id=&#34;@&#43;id/sleep_list&#34; android:layout_width=&#34;0dp&#34; android:layout_height=&#34;0dp&#34; app:layout_constraintBottom_toTopOf=&#34;@&#43;id/clear_button&#34; app:layout_constraintEnd_toEndOf=&#34;parent&#34; app:layout_constraintStart_toStartOf=&#34;parent&#34; app:layout_constraintTop_toBottomOf=&#34;@&#43;id/stop_button&#34; app:layoutManager=&#34;androidx.recyclerview.widget.LinearLayoutManager&#34;/&gt; Step 2：创建单个的Item的View，这里是TextView
+...</p>
+  </section>
+  <footer class="entry-footer">&lt;span title=&#39;2022-03-30 15:48:57 &#43;0800 &#43;0800&#39;&gt;March 30, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;2 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
+  <a class="entry-link" aria-label="post link to Android Learning 6" href="https://isyuanpeng.github.io/posts/tech/android-learning-6/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">
