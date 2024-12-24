@@ -18,7 +18,7 @@
 <link rel="mask-icon" href="https://isyuanpeng.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<meta name="generator" content="Hugo 0.140.0">
+<meta name="generator" content="Hugo 0.140.1">
 <link rel="alternate" type="application/rss+xml" href="https://isyuanpeng.github.io/index.xml">
 <link rel="alternate" type="application/json" href="https://isyuanpeng.github.io/index.json">
 <link rel="alternate" hreflang="en" href="https://isyuanpeng.github.io/" />
@@ -163,27 +163,6 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2>Everyday Question
-    </h2>
-  </header>
-  <section class="entry-content">
-    <p>每日一问 2022-06-21 setter &amp; getter setter 和 gettter 的实际意义 为什么要有setter &amp; getter, public dot直接使用不是更方便快捷吗？ 而且setter和getter最终的效果也是读写
-安全：程序可以选择只读或只写或读写 灵活：如果不仅仅只是读写属性值，可以自由变换 封装：隐藏内部实现细节 健壮：便于维护，扩展 由上一问，为什么public是不安全的呢？
-如果写sdk的话，那么有些数据是不想对外修改的，这时候public的作用就体现出来了。如果只是业务代码则，权限体现的不太大。 扩展：Java的四大特性 - 直接粘贴
-封装
-What：隐藏信息，保护数据访问。 How：暴露有限接口和属性，需要编程语言提供访问控制的语法。 Why：提高代码可维护性；降低接口复杂度，提高类的易用性。 抽象
-What: 隐藏具体实现，使用者只需关心功能，无需关心实现。 How: 通过接口类或者抽象类实现，特殊语法机制非必须。 Why: 提高代码的扩展性、维护性；降低复杂度，减少细节负担。 继承
-What: 表示 is-a 关系，分为单继承和多继承。 How: 需要编程语言提供特殊语法机制。例如 Java 的 “extends”，C&#43;&#43; 的 “:” 。 Why: 解决代码复用问题。 多态
-What: 子类替换父类，在运行时调用子类的实现。 How: 需要编程语言提供特殊的语法机制。比如继承、接口类、duck-typing。 Why: 提高代码扩展性和复用性。 2022-06-22 编译&amp;反编译 编译：源码 -&gt; 字节码 反编译：字节码 -&gt; 源码
-什么是字节码，采用字节码的好处是什么？ 在 Java 中，JVM 可以理解的代码就叫做字节码（即扩展名为 .class 的文件），它不面向任何特定的处理器，只面向虚拟机。Java 语言通过字节码的方式，在一定程度上解决了传统解释型语言执行效率低的问题，同时又保留了解释型语言可移植的特点。所以 Java 程序运行时比较高效，而且，由于字节码并不针对一种特定的机器，因此，Java 程序无须重新编译便可在多种不同操作系统的计算机上运行。
-...</p>
-  </section>
-  <footer class="entry-footer">&lt;span title=&#39;2022-06-22 10:18:49 &#43;0800 &#43;0800&#39;&gt;June 22, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;3 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
-  <a class="entry-link" aria-label="post link to Everyday Question" href="https://isyuanpeng.github.io/posts/other/everyday-question/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
     <h2>论如何在没有Kafkatool的情况下存活
     </h2>
   </header>
@@ -271,6 +250,29 @@ ViewPager2 有点难以理解Sunflower如何做到在两个fragment之间滑动�
   </section>
   <footer class="entry-footer">&lt;span title=&#39;2022-04-01 10:27:47 &#43;0800 &#43;0800&#39;&gt;April 1, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;2 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
   <a class="entry-link" aria-label="post link to Android Learning 8" href="https://isyuanpeng.github.io/posts/tech/android-learning-8/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>Android Learning 7
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>今天学习Repository和WorkManager
+Repository Repository pattern也是一种设计模式，叫做存储库模式。看一下官方的原文：
+A repository mediates between data sources (such as persistent models, web services, and caches) and the rest of the app.
+大意就是一个Repository相当于在数据源(持久化实体类，网络服务，缓存)和app其余的服务之间的中间层。简而言之，就是提供一个数据操作代理层。调用者不需要知道数据是从哪来，如何处理，只需要使用数据即可。这样有几个好处：
+代码更容易维护，切换数据源的时候业务代码不需要更改
+数据处理逻辑和业务逻辑分离，可以对这两个代码分别进行测试
+减少代码重复
+降低代码出错的几率
+为什么要有Repository 经过前几天的学习，我们已经学习了ROOM以及DAO层数据的访问，那么还需要Repository干什么呢？通过上面的优点我们可以知道，避免直接访问数据。同事也解决了多数据源的问题，一个App的数据源可以是多个，数据库，接口等等。Repository对这两种情况进行封装，可以以一种统一的方式进行数据的拉取。
+所以Repository其实是一种代码规范，并不是组件。
+Repository例子 1 2 3 4 5 6 7 8 9 10 11 12 13 14 @Singleton class PlantRepository @Inject constructor(private val plantDao: PlantDao) { // use the dao fun getPlants() = plantDao.getPlants() fun getPlant(plantId: String) = plantDao.getPlant(plantId) fun getPlantsWithGrowZoneNumber(growZoneNumber: Int) = plantDao.getPlantsWithGrowZoneNumber(growZoneNumber) // use the network service fun requestApi(): Plant } 项目中的实际运用 在市局测温项目中，实际上对Repository的使用更为复杂，整体的结构为首先定义一层datasource的接口类，然后在定义datasource的实现类，这里仅仅定义了一个remotedatasource的实现类，根据命名我感觉原本的架构想法应该是对于数据调接口一个实现类，数据库操作一个实现类。
+...</p>
+  </section>
+  <footer class="entry-footer">&lt;span title=&#39;2022-03-31 17:45:16 &#43;0800 &#43;0800&#39;&gt;March 31, 2022&lt;/span&gt;&amp;nbsp;·&amp;nbsp;1 min&amp;nbsp;·&amp;nbsp;YuanPeng11</footer>
+  <a class="entry-link" aria-label="post link to Android Learning 7" href="https://isyuanpeng.github.io/posts/tech/android-learning-7/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">
